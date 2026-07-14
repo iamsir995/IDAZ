@@ -1,0 +1,311 @@
+@import "tailwindcss";
+
+/* ============================================================
+   IDAZ BRANDING — Apple Liquid Glass OS 26 Design System
+   Primary: #F5A623 | Surface: #F5F5F7 (Apple Signature)
+   Glass: rgba(255,255,255,0.72) + blur(40px)
+   ============================================================ */
+
+@theme {
+  /* Background surfaces */
+  --color-background: #F5F5F7;
+  --color-surface: #FFFFFF;
+  --color-surface-secondary: #F5F5F7;
+  --color-foreground: #1D1D1F;
+
+  /* IDAZ Brand */
+  --color-idaz-orange: #F5A623;
+  --color-idaz-orange-dark: #D4891A;
+  --color-idaz-orange-light: #FEF3E2;
+  --color-idaz-black: #1D1D1F;
+  --color-idaz-gray: #F5F5F7;
+  --color-idaz-gray-mid: #D2D2D7;
+  --color-idaz-gray-dark: #86868B;
+  --color-idaz-text-muted: #6E6E73;
+  --color-idaz-text-secondary: #424245;
+
+  /* Glass tokens */
+  --glass-bg: rgba(255, 255, 255, 0.72);
+  --glass-border: rgba(255, 255, 255, 0.82);
+  --glass-shadow: 0 4px 40px rgba(0, 0, 0, 0.06);
+  --glass-blur: blur(40px) saturate(180%);
+
+  /* SF Pro Typography System */
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* ============================================================
+   BASE
+   ============================================================ */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: #F5F5F7;
+  color: #1D1D1F;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* ============================================================
+   APPLE LIQUID GLASS — Core Classes
+   ============================================================ */
+
+/* Primary glass panel — navbar, modals, overlays */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.82);
+  box-shadow: 0 4px 40px rgba(0, 0, 0, 0.06), inset 0 0 0 0.5px rgba(255,255,255,0.9);
+}
+
+/* Card glass — content cards */
+.glass-card {
+  background: rgba(255, 255, 255, 0.80);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.90);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.04), inset 0 0 0 0.5px rgba(255,255,255,0.8);
+}
+
+/* Frosted card — slightly more opaque for content */
+.glass-frosted {
+  background: rgba(255, 255, 255, 0.90);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  border: 1px solid rgba(209, 209, 214, 0.5);
+  box-shadow: 0 2px 24px rgba(0, 0, 0, 0.05);
+}
+
+/* ============================================================
+   BACKGROUND SYSTEM — Light Warm (Apple Signature)
+   ============================================================ */
+.bg-apple-light {
+  background-color: #F5F5F7;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 20% -20%, rgba(245, 166, 35, 0.12) 0px, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 110%, rgba(255, 200, 80, 0.10) 0px, transparent 60%),
+    radial-gradient(ellipse 50% 60% at 50% 50%, rgba(255, 255, 255, 0.4) 0px, transparent 100%);
+  background-attachment: fixed;
+}
+
+/* ============================================================
+   TYPOGRAPHY UTILITIES
+   ============================================================ */
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.015em;
+}
+
+.text-hero {
+  font-size: clamp(2.5rem, 7vw, 5.5rem);
+  line-height: 1.0;
+  letter-spacing: -0.02em;
+  font-weight: 800;
+}
+
+.text-section-title {
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+}
+
+/* Apple HIG Typography System */
+.text-large-title { font-size: 34px; line-height: 41px; letter-spacing: 0.011em; font-weight: 400; }
+.text-title-1 { font-size: 28px; line-height: 34px; letter-spacing: 0.013em; font-weight: 400; }
+.text-title-2 { font-size: 22px; line-height: 28px; letter-spacing: 0.016em; font-weight: 400; }
+.text-title-3 { font-size: 20px; line-height: 25px; letter-spacing: 0.019em; font-weight: 400; }
+.text-headline { font-size: 17px; line-height: 22px; letter-spacing: -0.024em; font-weight: 600; }
+.text-body { font-size: 17px; line-height: 22px; letter-spacing: -0.024em; font-weight: 400; }
+.text-callout { font-size: 16px; line-height: 21px; letter-spacing: -0.020em; font-weight: 400; }
+.text-subheadline { font-size: 15px; line-height: 20px; letter-spacing: -0.016em; font-weight: 400; }
+.text-footnote { font-size: 13px; line-height: 18px; letter-spacing: -0.006em; font-weight: 400; }
+.text-caption-1 { font-size: 12px; line-height: 16px; letter-spacing: 0.000em; font-weight: 400; }
+.text-caption-2 { font-size: 11px; line-height: 13px; letter-spacing: 0.006em; font-weight: 400; }
+
+/* ============================================================
+   COMPONENT UTILITIES
+   ============================================================ */
+
+/* Apple-style pill badge */
+.badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border: 1px solid rgba(245, 166, 35, 0.25);
+  background: rgba(245, 166, 35, 0.08);
+  color: #D4891A;
+}
+
+/* Apple-style divider */
+.apple-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0,0,0,0.08), transparent);
+}
+
+/* ============================================================
+   SECTION SYSTEM
+   ============================================================ */
+.section-base {
+  padding: 6rem 0;
+}
+
+@media (min-width: 768px) {
+  .section-base {
+    padding: 8rem 0;
+  }
+}
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #F5A623;
+  color: #1D1D1F;
+  font-weight: 700;
+  font-size: 16px;
+  padding: 14px 32px;
+  border-radius: 100px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: 'Montserrat', sans-serif;
+}
+
+.btn-primary:hover {
+  background: #D4891A;
+  box-shadow: 0 8px 24px rgba(245, 166, 35, 0.35);
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.72);
+  color: #1D1D1F;
+  font-weight: 700;
+  font-size: 16px;
+  padding: 14px 32px;
+  border-radius: 100px;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+  backdrop-filter: blur(40px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: 'Montserrat', sans-serif;
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+@keyframes blob-float {
+  0%, 100% { transform: translate(0px, 0px) scale(1) rotate(0deg); }
+  25% { transform: translate(20px, -30px) scale(1.05) rotate(5deg); }
+  50% { transform: translate(-15px, 15px) scale(0.95) rotate(-3deg); }
+  75% { transform: translate(10px, -10px) scale(1.02) rotate(2deg); }
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slide-down {
+  from { opacity: 0; transform: translateY(-12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.animate-blob {
+  animation: blob-float 12s ease-in-out infinite;
+}
+
+.animate-fade-up {
+  animation: fade-up 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.animate-slide-down {
+  animation: slide-down 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.animation-delay-200 { animation-delay: 0.2s; }
+.animation-delay-400 { animation-delay: 0.4s; }
+.animation-delay-600 { animation-delay: 0.6s; }
+.animation-delay-2000 { animation-delay: 2s; }
+.animation-delay-4000 { animation-delay: 4s; }
+
+/* ============================================================
+   HOVER EFFECTS
+   ============================================================ */
+.hover-lift {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.08);
+}
+
+/* ============================================================
+   SCROLLBAR (Apple-style thin)
+   ============================================================ */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 100px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.25); }
+
+/* ============================================================
+   DARK GLASS — Footer only
+   ============================================================ */
+.glass-dark {
+  background: rgba(20, 20, 20, 0.85);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ============================================================
+   RESPONSIVE UTILITIES
+   ============================================================ */
+@media (max-width: 640px) {
+  .mobile-full-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}

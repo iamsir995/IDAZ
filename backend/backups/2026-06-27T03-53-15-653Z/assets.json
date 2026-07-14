@@ -1,0 +1,36 @@
+[
+  {
+    "_id": "6a3e47bf43220514e8f29fd0",
+    "name": "FBB8EDC0-6468-4F12-99A6-9BBC22E9B974segment_video_0.mp4",
+    "originalName": "FBB8EDC0-6468-4F12-99A6-9BBC22E9B974segment_video_0.mp4",
+    "url": "/uploads/1782466495880-841398031.mp4",
+    "filePath": "public/uploads/1782466495880-841398031.mp4",
+    "type": "video",
+    "mimeType": "video/mp4",
+    "fileSize": 2789267,
+    "version": 1,
+    "userId": null,
+    "projectId": "6a3e46e043220514e8f29e81",
+    "folderId": null,
+    "uploadedBy": "6a3e46da43220514e8f29e71",
+    "createdAt": "2026-06-26T09:34:55.928Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a3f469d8111961431f4d575",
+    "name": "0B5D9CD0-B8EF-4556-887B-B3B09853575A.jpg",
+    "originalName": "0B5D9CD0-B8EF-4556-887B-B3B09853575A.jpg",
+    "url": "/uploads/1782531741704-87752982.jpg",
+    "filePath": "public/uploads/1782531741704-87752982.jpg",
+    "type": "image",
+    "mimeType": "image/jpeg",
+    "fileSize": 793853,
+    "version": 1,
+    "userId": null,
+    "projectId": "6a3f3cc074359d345d5e1599",
+    "folderId": null,
+    "uploadedBy": "6a3f3cbb74359d345d5e1588",
+    "createdAt": "2026-06-27T03:42:21.763Z",
+    "__v": 0
+  }
+]

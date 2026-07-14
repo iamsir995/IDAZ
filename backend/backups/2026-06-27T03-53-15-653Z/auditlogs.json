@@ -1,0 +1,73 @@
+[
+  {
+    "_id": "6a3f350db90d811dd61a8662",
+    "action": "LOGIN",
+    "userId": "6a3e46da43220514e8f29e71",
+    "ip": "::1",
+    "details": "Đăng nhập thành công (Không cần 2FA)",
+    "createdAt": "2026-06-27T02:27:25.475Z",
+    "updatedAt": "2026-06-27T02:27:25.475Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a3f3b7d3fbd7d6bf0ea8295",
+    "action": "LOGIN",
+    "userId": "6a3e46da43220514e8f29e71",
+    "ip": "::1",
+    "details": "Đăng nhập thành công (Không cần 2FA)",
+    "createdAt": "2026-06-27T02:54:53.083Z",
+    "updatedAt": "2026-06-27T02:54:53.083Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a3f3b873fbd7d6bf0ea8296",
+    "action": "LOGIN",
+    "userId": "6a3e46da43220514e8f29e71",
+    "ip": "::1",
+    "details": "Đăng nhập thành công (Không cần 2FA)",
+    "createdAt": "2026-06-27T02:55:03.672Z",
+    "updatedAt": "2026-06-27T02:55:03.672Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a3f3d62691bc347bc8bf552",
+    "action": "LOGIN",
+    "userId": "6a3f3cbb74359d345d5e1588",
+    "ip": "::1",
+    "details": "Đăng nhập thành công (Không cần 2FA)",
+    "createdAt": "2026-06-27T03:02:58.055Z",
+    "updatedAt": "2026-06-27T03:02:58.055Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a3f40a66fadf0aaa61c0cbe",
+    "action": "LOGIN",
+    "userId": "6a3f3cbb74359d345d5e1588",
+    "ip": "::1",
+    "details": "Đăng nhập thành công (Không cần 2FA)",
+    "createdAt": "2026-06-27T03:16:54.712Z",
+    "updatedAt": "2026-06-27T03:16:54.712Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a3f43448111961431f4d515",
+    "action": "LOGIN",
+    "userId": "6a3f3cbe74359d345d5e1590",
+    "ip": "::1",
+    "details": "Đăng nhập thành công (Không cần 2FA)",
+    "createdAt": "2026-06-27T03:28:04.174Z",
+    "updatedAt": "2026-06-27T03:28:04.174Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a3f469d8111961431f4d576",
+    "action": "UPLOAD_ASSET",
+    "assetId": "6a3f469d8111961431f4d575",
+    "userId": "6a3f3cbb74359d345d5e1588",
+    "ip": "::1",
+    "details": "Tải lên file: 0B5D9CD0-B8EF-4556-887B-B3B09853575A.jpg (0.76 MB)",
+    "createdAt": "2026-06-27T03:42:21.818Z",
+    "updatedAt": "2026-06-27T03:42:21.818Z",
+    "__v": 0
+  }
+]

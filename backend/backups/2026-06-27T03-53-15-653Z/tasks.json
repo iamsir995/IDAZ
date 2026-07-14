@@ -1,0 +1,1817 @@
+[
+  {
+    "_id": "6a3f3cc174359d345d5e15a1",
+    "title": "Làm Animation cho Nút Mua hàng",
+    "role": "content",
+    "status": "done",
+    "project": "6a3f3cc174359d345d5e159b",
+    "dueDate": "2026-07-05T13:15:11.146Z",
+    "priority": "urgent",
+    "assignee": "6a3f3cbd74359d345d5e158d",
+    "checklists": [
+      {
+        "title": "Đảm bảo chuẩn SEO",
+        "isCompleted": true,
+        "_id": "6a3f3cc174359d345d5e15a2"
+      },
+      {
+        "title": "Báo cáo sếp duyệt",
+        "isCompleted": false,
+        "_id": "6a3f3cc174359d345d5e15a3"
+      },
+      {
+        "title": "Test trên Safari/Chrome",
+        "isCompleted": false,
+        "_id": "6a3f3cc174359d345d5e15a4"
+      }
+    ],
+    "comments": [
+      {
+        "user": "6a3f3cbd74359d345d5e158d",
+        "text": "Cần thêm thời gian để fix bug này, khoảng 2 tiếng nữa.",
+        "createdAt": "2026-06-27T02:32:18.465Z",
+        "_id": "6a3f3cc174359d345d5e15a5"
+      },
+      {
+        "user": "6a3f3cbb74359d345d5e1588",
+        "text": "Đã update theo feedback của khách.",
+        "createdAt": "2026-06-26T15:48:31.413Z",
+        "_id": "6a3f3cc174359d345d5e15a6"
+      }
+    ],
+    "timeTracking": [
+      {
+        "user": "6a3f3cbd74359d345d5e158d",
+        "startTime": "2026-06-27T01:28:34.808Z",
+        "endTime": "2026-06-27T03:00:17.368Z",
+        "duration": 4814,
+        "_id": "6a3f3cc174359d345d5e15a7"
+      }
+    ],
+    "assets": [],
+    "createdAt": "2026-06-27T03:00:17.371Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a3f3cc174359d345d5e15a8",
+    "title": "Thiết kế Banner quảng cáo",
+    "role": "content",
+    "status": "todo",
+    "project": "6a3f3cc174359d345d5e15a0",
+    "dueDate": "2026-07-06T21:23:43.605Z",
+    "priority": "normal",
+    "assignee": "6a3f3cbd74359d345d5e158d",
+    "checklists": [
+      {
+        "title": "Báo cáo sếp duyệt",
+        "isCompleted": false,
+        "_id": "6a3f3cc174359d345d5e15a9"
+      },
+      {
+        "title": "Đảm bảo chuẩn SEO",
+        "isCompleted": true,
+        "_id": "6a3f3cc174359d345d5e15aa"
+      }
+    ],
+    "comments": [],
+    "timeTracking": [],
+    "assets": [],
+    "createdAt": "2026-06-27T03:00:17.415Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a3f3cc174359d345d5e15ab",
+    "title": "Tích hợp Thanh toán VNPay",
+    "role": "affiliate",
+    "status": "in_progress",
+    "project": "6a3f3cc174359d345d5e15a0",
+    "dueDate": "2026-06-27T09:18:33.755Z",
+    "priority": "high",
+    "assignee": "6a3f3cbe74359d345d5e1591",
+    "checklists": [
+      {
+        "title": "Kiểm tra Responsive",
+        "isCompleted": true,
+        "_id": "6a3f3cc174359d345d5e15ac"
+      },
+      {
+        "title": "Bàn giao source code",
+        "isCompleted": true,
+        "_id": "6a3f3cc174359d345d5e15ad"
+      },
+      {
+        "title": "Báo cáo sếp duyệt",
+        "isCompleted": false,
+        "_id": "6a3f3cc174359d345d5e15ae"
+      }
+    ],
+    "comments": [],
+    "timeTracking": [
+      {
+        "user": "6a3f3cbe74359d345d5e1591",
+        "startTime": "2026-06-26T09:51:13.955Z",
+        "endTime": "2026-06-27T03:00:17.458Z",
+        "duration": 14117,
+        "_id": "6a3f3cc174359d345d5e15af"
+      }
+    ],
+    "assets": [],
+    "createdAt": "2026-06-27T03:00:17.459Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a3f3cc174359d345d5e15b0",
+    "title": "Viết API Đăng nhập",
+    "role": "dev",
+    "status": "in_progress",
+    "project": "6a3f3cc174359d345d5e159c",
+    "dueDate": "2026-07-01T16:13:04.270Z",
+    "priority": "urgent",
+    "assignee": "6a3f3cbc74359d345d5e158c",
+    "checklists": [
+      {
+        "title": "Kiểm tra Responsive",
+        "isCompleted": false,
+        "_id": "6a3f3cc174359d345d5e15b1"
+      },
+      {
+        "title": "Báo cáo sếp duyệt",
+        "isCompleted": false,
+        "_id": "6a3f3cc174359d345d5e15b2"
+      }
+    ],
+    "comments": [
+      {
+        "user": "6a3f3cbb74359d345d5e1588",
+        "text": "Check lại responsive trên điện thoại bị vỡ layout kìa.",
+        "createdAt": "2026-06-26T10:46:22.084Z",
+        "_id": "6a3f3cc174359d345d5e15b3"
+      },
+      {
+        "user": "6a3f3cbc74359d345d5e158c",
+        "text": "Đã update theo feedback của khách.",
+        "createdAt": "2026-06-26T15:26:10.026Z",
+        "_id": "6a3f3cc174359d345d5e15b4"
+      },
+      {
+        "user": "6a3f3cbb74359d345d5e1588",
+        "text": "Khách hàng yêu cầu đổi màu xanh sang đỏ.",
+        "createdAt": "2026-06-26T09:34:59.992Z",
+        "_id": "6a3f3cc174359d345d5e15b5"
+      }
+    ],
+    "timeTracking": [
+      {
+        "user": "6a3f3cbc74359d345d5e158c",
+        "startTime": "2026-06-26T04:22:23.076Z",
+        "endTime": "2026-06-27T03:00:17.502Z",
+        "duration": 11605,
+        "_id": "6a3f3cc174359d345d5e15b6"
+      }
+    ],
+    "assets": [],
+    "createdAt": "2026-06-27T03:00:17.503Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a3f3cc174359d345d5e15b7",
+    "title": "Tối ưu tốc độ tải trang (LCP)",
+    "role": "intern",
+    "status": "in_progress",
+    "project": "6a3f3cc174359d345d5e159d",
+    "dueDate": "2026-07-02T21:30:50.618Z",
+    "priority": "urgent",
+    "assignee": "6a3f3cbd74359d345d5e158f",
+    "checklists": [
+      {
+        "title": "Test trên Safari/Chrome",
+        "isCompleted": false,
+        "_id": "6a3f3cc174359d345d5e15b8"
+      },
+      {
+        "title": "Bàn giao source code",
+        "isCompleted": true,
+        "_id": "6a3f3cc174359d345d5e15b9"
+      },
+      {
+        "title": "Báo cáo sếp duyệt",
+        "isCompleted": false,
+        "_id": "6a3f3cc174359d345d5e15ba"
+      },
+      {
+        "title": "Đảm bảo chuẩn SEO",
+        "isCompleted": false,
+        "_id": "6a3f3cc174359d345d5e15bb"
+      }
+    ],
+    "comments": [
+      {
+        "user": "6a3f3cbd74359d345d5e158f",
+        "text": "Đã update theo feedback của khách.",
+        "createdAt": "2026-06-26T09:56:08.555Z",
+        "_id": "6a3f3cc174359d345d5e15bc"
+      }
+    ],
+    "timeTracking": [
+      {
+        "user": "6a3f3cbd74359d345d5e158f",
+        "startTime": "2026-06-27T02:57:40.799Z",
+        "endTime": "2026-06-27T03:00:17.544Z",
+        "duration": 5307,
+        "_id": "6a3f3cc174359d345d5e15bd"
+      }
+    ],
+    "assets": [],
+    "createdAt": "2026-06-27T03:00:17.545Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a3f3cc174359d345d5e15be",
+    "title": "Chọn Typography và Bảng màu",
+    "role": "manager",
+    "status": "done",
+    "project": "6a3f3cc174359d345d5e159b",
+    "dueDate": "2026-07-08T00:02:59.566Z",
+    "priority": "urgent",
+    "assignee": "6a3f3cbb74359d345d5e1589",
+    "checklists": [
+      {
+        "title": "Báo cáo sếp duyệt",
+        "isCompleted": false,
+        "_id": "6a3f3cc174359d345d5e15bf"
+      },
+      {
+        "title": "Kiểm tra Responsive",
+        "isCompleted": false,
+        "_id": "6a3f3cc174359d345d5e15c0"
+      },
+      {
+        "title": "Đảm bảo chuẩn SEO",
+        "isCompleted": false,
+        "_id": "6a3f3cc174359d345d5e15c1"
+      }
+    ],
+    "comments": [
+      {
+        "user": "6a3f3cbb74359d345d5e1589",
+        "text": "Check lại responsive trên điện thoại bị vỡ layout kìa.",
+        "createdAt": "2026-06-26T17:27:38.557Z",
+        "_id": "6a3f3cc174359d345d5e15c2"
+      },
+      {
+        "user": "6a3f3cbb74359d345d5e1589",
+        "text": "Sếp review giúp em đoạn code này.",
+        "createdAt": "2026-06-26T13:43:27.288Z",
+        "_id": "6a3f3cc174359d345d5e15c3"
+      }
+    ],
+    "timeTracking": [
+      {
+        "user": "6a3f3cbb74359d345d5e1589",
+        "startTime": "2026-06-26T19:31:11.685Z",
+        "endTime": "2026-06-27T03:00:17.589Z",
+        "duration": 4366,
+        "_id": "6a3f3cc174359d345d5e15c4"
+      }
+    ],
+    "assets": [],
+    "createdAt": "2026-06-27T03:00:17.590Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a3f3cc174359d345d5e15c5",
+    "title": "Viết API Đăng nhập",
+    "role": "affiliate",
+    "status": "todo",
+    "project": "6a3f3cc174359d345d5e159c",
+    "dueDate": "2026-07-08T11:03:17.162Z",
+    "priority": "urgent",
+    "assignee": "6a3f3cbe74359d345d5e1592",
+    "checklists": [
+      {
+        "title": "Kiểm tra Responsive",
+        "isCompleted": true,
+        "_id": "6a3f3cc174359d345d5e15c6"
+      },
+      {
+        "title": "Báo cáo sếp duyệt",
+        "isCompleted": true,
+        "_id": "6a3f3cc174359d345d5e15c7"
+      },
+      {
+        "title": "Kiểm tra Responsive",
+        "isCompleted": true,
+        "_id": "6a3f3cc174359d345d5e15c8"
+      }
+    ],
+    "comments": [
+      {
+        "user": "6a3f3cbe74359d345d5e1592",
+        "text": "Đã hoàn thành xong phần này nhé mọi người.",
+        "createdAt": "2026-06-26T20:32:52.781Z",
+        "_id": "6a3f3cc174359d345d5e15c9"
+      }
+    ],
+    "timeTracking": [],
+    "assets": [],
+    "createdAt": "2026-06-27T03:00:17.641Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a3f3cc174359d345d5e15ca",
+    "title": "Deploy lên AWS EC2",
+    "role": "dev",
+    "status": "done",
+    "project": "6a3f3cc174359d345d5e159f",
+    "dueDate": "2026-07-12T00:04:20.478Z",
+    "priority": "low",
+    "assignee": "6a3f3cbc74359d345d5e158c",
+    "checklists": [
+      {
+        "title": "Test trên Safari/Chrome",
+        "isCompleted": true,
+        "_id": "6a3f3cc174359d345d5e15cb"
+      },
+      {
+        "title": "Bàn giao source code",
+        "isCompleted": false,
+        "_id": "6a3f3cc174359d345d5e15cc"
+      }
+    ],
+    "comments": [],
+    "timeTracking": [
+      {
+        "user": "6a3f3cbc74359d345d5e158c",
+        "startTime": "2026-06-26T20:04:44.901Z",
+        "endTime": "2026-06-27T03:00:17.687Z",
+        "duration": 4092,
+        "_id": "6a3f3cc174359d345d5e15cd"
+      }
+    ],
+    "assets": [],
+    "createdAt": "2026-06-27T03:00:17.688Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a3f3cc174359d345d5e15ce",
+    "title": "Thiết kế Logo Concept 1",
+    "role": "manager",
+    "status": "done",
+    "project": "6a3f3cc074359d345d5e1599",
+    "dueDate": "2026-07-07T14:26:00.729Z",
+    "priority": "low",
+    "assignee": "6a3f3cbb74359d345d5e1589",
+    "checklists": [
+      {
+        "title": "Bàn giao source code",
+        "isCompleted": false,
+        "_id": "6a3f3cc174359d345d5e15cf"
+      },
+      {
+        "title": "Test trên Safari/Chrome",
+        "isCompleted": false,
+        "_id": "6a3f3cc174359d345d5e15d0"
+      },
+      {
+        "title": "Kiểm tra Responsive",
+        "isCompleted": false,
+        "_id": "6a3f3cc174359d345d5e15d1"
+      }
+    ],
+    "comments": [
+      {
+        "user": "6a3f3cbb74359d345d5e1588",
+        "text": "Đã hoàn thành xong phần này nhé mọi người.",
+        "createdAt": "2026-06-26T07:29:05.661Z",
+        "_id": "6a3f3cc174359d345d5e15d2"
+      },
+      {
+        "user": "6a3f3cbb74359d345d5e1589",
+        "text": "Sếp review giúp em đoạn code này.",
+        "createdAt": "2026-06-26T19:28:28.800Z",
+        "_id": "6a3f3cc174359d345d5e15d3"
+      },
+      {
+        "user": "6a3f3cbb74359d345d5e1588",
+        "text": "Đã hoàn thành xong phần này nhé mọi người.",
+        "createdAt": "2026-06-26T16:23:09.183Z",
+        "_id": "6a3f3cc174359d345d5e15d4"
+      }
+    ],
+    "timeTracking": [
+      {
+        "user": "6a3f3cbb74359d345d5e1589",
+        "startTime": "2026-06-26T15:32:19.183Z",
+        "endTime": "2026-06-27T03:00:17.805Z",
+        "duration": 1834,
+        "_id": "6a3f3cc174359d345d5e15d5"
+      }
+    ],
+    "assets": [],
+    "createdAt": "2026-06-27T03:00:17.808Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a3f3cc174359d345d5e15d6",
+    "title": "Deploy lên AWS EC2",
+    "role": "intern",
+    "status": "todo",
+    "project": "6a3f3cc174359d345d5e159f",
+    "dueDate": "2026-07-06T13:39:40.441Z",
+    "priority": "normal",
+    "assignee": "6a3f3cbd74359d345d5e158f",
+    "checklists": [
+      {
+        "title": "Báo cáo sếp duyệt",
+        "isCompleted": true,
+        "_id": "6a3f3cc174359d345d5e15d7"
+      },
+      {
+        "title": "Báo cáo sếp duyệt",
+        "isCompleted": false,
+        "_id": "6a3f3cc174359d345d5e15d8"
+      }
+    ],
+    "comments": [],
+    "timeTracking": [],
+    "assets": [],
+    "createdAt": "2026-06-27T03:00:17.855Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a3f3cc174359d345d5e15d9",
+    "title": "Cắt HTML/CSS Landing Page",
+    "role": "content",
+    "status": "in_progress",
+    "project": "6a3f3cc074359d345d5e1599",
+    "dueDate": "2026-07-04T19:31:47.422Z",
+    "priority": "high",
+    "assignee": "6a3f3cbd74359d345d5e158e",
+    "checklists": [
+      {
+        "title": "Báo cáo sếp duyệt",
+        "isCompleted": true,
+        "_id": "6a3f3cc174359d345d5e15da"
+      }
+    ],
+    "comments": [
+      {
+        "user": "6a3f3cbd74359d345d5e158e",
+        "text": "Khách hàng yêu cầu đổi màu xanh sang đỏ.",
+        "createdAt": "2026-06-26T17:24:42.891Z",
+        "_id": "6a3f3cc174359d345d5e15db"
+      },
+      {
+        "user": "6a3f3cbd74359d345d5e158e",
+        "text": "Sếp review giúp em đoạn code này.",
+        "createdAt": "2026-06-26T10:53:26.520Z",
+        "_id": "6a3f3cc174359d345d5e15dc"
+      }
+    ],
+    "timeTracking": [
+      {
+        "user": "6a3f3cbd74359d345d5e158e",
+        "startTime": "2026-06-26T05:52:31.414Z",
+        "endTime": "2026-06-27T03:00:17.898Z",
+        "duration": 7719,
+        "_id": "6a3f3cc174359d345d5e15dd"
+      }
+    ],
+    "assets": [],
+    "createdAt": "2026-06-27T03:00:17.899Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a3f3cc174359d345d5e15de",
+    "title": "Thiết kế Banner quảng cáo",
+    "role": "content",
+    "status": "in_progress",
+    "project": "6a3f3cc174359d345d5e15a0",
+    "dueDate": "2026-07-07T12:27:52.073Z",
+    "priority": "normal",
+    "assignee": "6a3f3cbd74359d345d5e158e",
+    "checklists": [
+      {
+        "title": "Báo cáo sếp duyệt",
+        "isCompleted": false,
+        "_id": "6a3f3cc174359d345d5e15df"
+      },
+      {
+        "title": "Kiểm tra Responsive",
+        "isCompleted": true,
+        "_id": "6a3f3cc174359d345d5e15e0"
+      },
+      {
+        "title": "Bàn giao source code",
+        "isCompleted": false,
+        "_id": "6a3f3cc174359d345d5e15e1"
+      }
+    ],
+    "comments": [
+      {
+        "user": "6a3f3cbd74359d345d5e158e",
+        "text": "Cần thêm thời gian để fix bug này, khoảng 2 tiếng nữa.",
+        "createdAt": "2026-06-26T19:06:33.319Z",
+        "_id": "6a3f3cc174359d345d5e15e2"
+      },
+      {
+        "user": "6a3f3cbb74359d345d5e1588",
+        "text": "Sếp review giúp em đoạn code này.",
+        "createdAt": "2026-06-26T14:55:10.707Z",
+        "_id": "6a3f3cc174359d345d5e15e3"
+      },
+      {
+        "user": "6a3f3cbd74359d345d5e158e",
+        "text": "Thiết kế đẹp quá, cứ thế triển khai nhé.",
+        "createdAt": "2026-06-26T05:05:29.002Z",
+        "_id": "6a3f3cc174359d345d5e15e4"
+      }
+    ],
+    "timeTracking": [
+      {
+        "user": "6a3f3cbd74359d345d5e158e",
+        "startTime": "2026-06-26T16:56:28.043Z",
+        "endTime": "2026-06-27T03:00:17.944Z",
+        "duration": 11117,
+        "_id": "6a3f3cc174359d345d5e15e5"
+      }
+    ],
+    "assets": [],
+    "createdAt": "2026-06-27T03:00:17.945Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a3f3cc174359d345d5e15e6",
+    "title": "Thiết kế Database Schema",
+    "role": "intern",
+    "status": "in_progress",
+    "project": "6a3f3cc174359d345d5e159e",
+    "dueDate": "2026-07-10T10:56:45.042Z",
+    "priority": "urgent",
+    "assignee": "6a3f3cbe74359d345d5e1590",
+    "checklists": [
+      {
+        "title": "Bàn giao source code",
+        "isCompleted": false,
+        "_id": "6a3f3cc174359d345d5e15e7"
+      },
+      {
+        "title": "Đảm bảo chuẩn SEO",
+        "isCompleted": true,
+        "_id": "6a3f3cc174359d345d5e15e8"
+      }
+    ],
+    "comments": [],
+    "timeTracking": [
+      {
+        "user": "6a3f3cbe74359d345d5e1590",
+        "startTime": "2026-06-26T17:10:21.290Z",
+        "endTime": "2026-06-27T03:00:17.989Z",
+        "duration": 4410,
+        "_id": "6a3f3cc174359d345d5e15e9"
+      }
+    ],
+    "assets": [],
+    "createdAt": "2026-06-27T03:00:17.990Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a3f3cc274359d345d5e15ea",
+    "title": "Thiết kế Logo Concept 1",
+    "role": "manager",
+    "status": "done",
+    "project": "6a3f3cc174359d345d5e15a0",
+    "dueDate": "2026-07-01T11:39:17.128Z",
+    "priority": "urgent",
+    "assignee": "6a3f3cbc74359d345d5e158a",
+    "checklists": [
+      {
+        "title": "Kiểm tra Responsive",
+        "isCompleted": false,
+        "_id": "6a3f3cc274359d345d5e15eb"
+      }
+    ],
+    "comments": [
+      {
+        "user": "6a3f3cbb74359d345d5e1588",
+        "text": "Check lại responsive trên điện thoại bị vỡ layout kìa.",
+        "createdAt": "2026-06-26T08:10:18.495Z",
+        "_id": "6a3f3cc274359d345d5e15ec"
+      },
+      {
+        "user": "6a3f3cbb74359d345d5e1588",
+        "text": "Khách hàng yêu cầu đổi màu xanh sang đỏ.",
+        "createdAt": "2026-06-27T00:30:23.023Z",
+        "_id": "6a3f3cc274359d345d5e15ed"
+      }
+    ],
+    "timeTracking": [
+      {
+        "user": "6a3f3cbc74359d345d5e158a",
+        "startTime": "2026-06-26T09:27:59.041Z",
+        "endTime": "2026-06-27T03:00:18.035Z",
+        "duration": 7910,
+        "_id": "6a3f3cc274359d345d5e15ee"
+      }
+    ],
+    "assets": [],
+    "createdAt": "2026-06-27T03:00:18.036Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a3f3cc274359d345d5e15ef",
+    "title": "Làm Animation cho Nút Mua hàng",
+    "role": "manager",
+    "status": "todo",
+    "project": "6a3f3cc174359d345d5e15a0",
+    "dueDate": "2026-06-29T21:30:09.364Z",
+    "priority": "high",
+    "assignee": "6a3f3cbb74359d345d5e1589",
+    "checklists": [
+      {
+        "title": "Báo cáo sếp duyệt",
+        "isCompleted": true,
+        "_id": "6a3f3cc274359d345d5e15f0"
+      },
+      {
+        "title": "Đảm bảo chuẩn SEO",
+        "isCompleted": true,
+        "_id": "6a3f3cc274359d345d5e15f1"
+      },
+      {
+        "title": "Test trên Safari/Chrome",
+        "isCompleted": true,
+        "_id": "6a3f3cc274359d345d5e15f2"
+      },
+      {
+        "title": "Test trên Safari/Chrome",
+        "isCompleted": true,
+        "_id": "6a3f3cc274359d345d5e15f3"
+      }
+    ],
+    "comments": [],
+    "timeTracking": [],
+    "assets": [],
+    "createdAt": "2026-06-27T03:00:18.080Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a3f3cc274359d345d5e15f4",
+    "title": "Làm Animation cho Nút Mua hàng",
+    "role": "manager",
+    "status": "done",
+    "project": "6a3f3cc174359d345d5e159d",
+    "dueDate": "2026-07-04T09:21:44.450Z",
+    "priority": "normal",
+    "assignee": "6a3f3cbc74359d345d5e158a",
+    "checklists": [
+      {
+        "title": "Kiểm tra Responsive",
+        "isCompleted": false,
+        "_id": "6a3f3cc274359d345d5e15f5"
+      }
+    ],
+    "comments": [
+      {
+        "user": "6a3f3cbc74359d345d5e158a",
+        "text": "Đã update theo feedback của khách.",
+        "createdAt": "2026-06-26T16:06:22.495Z",
+        "_id": "6a3f3cc274359d345d5e15f6"
+      }
+    ],
+    "timeTracking": [
+      {
+        "user": "6a3f3cbc74359d345d5e158a",
+        "startTime": "2026-06-27T01:09:38.298Z",
+        "endTime": "2026-06-27T03:00:18.123Z",
+        "duration": 5734,
+        "_id": "6a3f3cc274359d345d5e15f7"
+      }
+    ],
+    "assets": [],
+    "createdAt": "2026-06-27T03:00:18.124Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a3f3cc274359d345d5e15f8",
+    "title": "Thiết kế Banner quảng cáo",
+    "role": "content",
+    "status": "in_progress",
+    "project": "6a3f3cc174359d345d5e159e",
+    "dueDate": "2026-06-30T07:12:14.995Z",
+    "priority": "urgent",
+    "assignee": "6a3f3cbd74359d345d5e158d",
+    "checklists": [
+      {
+        "title": "Báo cáo sếp duyệt",
+        "isCompleted": false,
+        "_id": "6a3f3cc274359d345d5e15f9"
+      },
+      {
+        "title": "Đảm bảo chuẩn SEO",
+        "isCompleted": true,
+        "_id": "6a3f3cc274359d345d5e15fa"
+      },
+      {
+        "title": "Test trên Safari/Chrome",
+        "isCompleted": true,
+        "_id": "6a3f3cc274359d345d5e15fb"
+      },
+      {
+        "title": "Test trên Safari/Chrome",
+        "isCompleted": true,
+        "_id": "6a3f3cc274359d345d5e15fc"
+      }
+    ],
+    "comments": [
+      {
+        "user": "6a3f3cbb74359d345d5e1588",
+        "text": "Sếp review giúp em đoạn code này.",
+        "createdAt": "2026-06-26T14:20:00.640Z",
+        "_id": "6a3f3cc274359d345d5e15fd"
+      },
+      {
+        "user": "6a3f3cbd74359d345d5e158d",
+        "text": "Khách hàng yêu cầu đổi màu xanh sang đỏ.",
+        "createdAt": "2026-06-26T07:23:00.359Z",
+        "_id": "6a3f3cc274359d345d5e15fe"
+      },
+      {
+        "user": "6a3f3cbb74359d345d5e1588",
+        "text": "Khách hàng yêu cầu đổi màu xanh sang đỏ.",
+        "createdAt": "2026-06-26T06:10:19.002Z",
+        "_id": "6a3f3cc274359d345d5e15ff"
+      }
+    ],
+    "timeTracking": [
+      {
+        "user": "6a3f3cbd74359d345d5e158d",
+        "startTime": "2026-06-26T17:41:18.899Z",
+        "endTime": "2026-06-27T03:00:18.166Z",
+        "duration": 9066,
+        "_id": "6a3f3cc274359d345d5e1600"
+      }
+    ],
+    "assets": [],
+    "createdAt": "2026-06-27T03:00:18.167Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a3f3cc274359d345d5e1601",
+    "title": "Thiết kế Database Schema",
+    "role": "dev",
+    "status": "done",
+    "project": "6a3f3cc174359d345d5e159f",
+    "dueDate": "2026-07-07T23:19:08.951Z",
+    "priority": "normal",
+    "assignee": "6a3f3cbc74359d345d5e158b",
+    "checklists": [
+      {
+        "title": "Kiểm tra Responsive",
+        "isCompleted": true,
+        "_id": "6a3f3cc274359d345d5e1602"
+      },
+      {
+        "title": "Đảm bảo chuẩn SEO",
+        "isCompleted": false,
+        "_id": "6a3f3cc274359d345d5e1603"
+      },
+      {
+        "title": "Kiểm tra Responsive",
+        "isCompleted": true,
+        "_id": "6a3f3cc274359d345d5e1604"
+      },
+      {
+        "title": "Kiểm tra Responsive",
+        "isCompleted": true,
+        "_id": "6a3f3cc274359d345d5e1605"
+      }
+    ],
+    "comments": [],
+    "timeTracking": [
+      {
+        "user": "6a3f3cbc74359d345d5e158b",
+        "startTime": "2026-06-27T01:11:32.484Z",
+        "endTime": "2026-06-27T03:00:18.210Z",
+        "duration": 6634,
+        "_id": "6a3f3cc274359d345d5e1606"
+      }
+    ],
+    "assets": [],
+    "createdAt": "2026-06-27T03:00:18.211Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a3f3cc274359d345d5e1607",
+    "title": "Làm Animation cho Nút Mua hàng",
+    "role": "content",
+    "status": "done",
+    "project": "6a3f3cc074359d345d5e1599",
+    "dueDate": "2026-07-05T17:54:44.569Z",
+    "priority": "urgent",
+    "assignee": "6a3f3cbd74359d345d5e158e",
+    "checklists": [
+      {
+        "title": "Test trên Safari/Chrome",
+        "isCompleted": true,
+        "_id": "6a3f3cc274359d345d5e1608"
+      },
+      {
+        "title": "Bàn giao source code",
+        "isCompleted": true,
+        "_id": "6a3f3cc274359d345d5e1609"
+      }
+    ],
+    "comments": [
+      {
+        "user": "6a3f3cbb74359d345d5e1588",
+        "text": "Check lại responsive trên điện thoại bị vỡ layout kìa.",
+        "createdAt": "2026-06-26T20:38:49.572Z",
+        "_id": "6a3f3cc274359d345d5e160a"
+      },
+      {
+        "user": "6a3f3cbd74359d345d5e158e",
+        "text": "Check lại responsive trên điện thoại bị vỡ layout kìa.",
+        "createdAt": "2026-06-26T13:16:26.567Z",
+        "_id": "6a3f3cc274359d345d5e160b"
+      },
+      {
+        "user": "6a3f3cbb74359d345d5e1588",
+        "text": "Khách hàng yêu cầu đổi màu xanh sang đỏ.",
+        "createdAt": "2026-06-26T03:43:57.402Z",
+        "_id": "6a3f3cc274359d345d5e160c"
+      }
+    ],
+    "timeTracking": [
+      {
+        "user": "6a3f3cbd74359d345d5e158e",
+        "startTime": "2026-06-26T18:27:14.181Z",
+        "endTime": "2026-06-27T03:00:18.329Z",
+        "duration": 2802,
+        "_id": "6a3f3cc274359d345d5e160d"
+      }
+    ],
+    "assets": [],
+    "createdAt": "2026-06-27T03:00:18.329Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a3f3cc274359d345d5e160e",
+    "title": "Thiết kế Banner quảng cáo",
+    "role": "content",
+    "status": "in_progress",
+    "project": "6a3f3cc074359d345d5e1599",
+    "dueDate": "2026-07-01T03:16:03.710Z",
+    "priority": "low",
+    "assignee": "6a3f3cbd74359d345d5e158e",
+    "checklists": [
+      {
+        "title": "Bàn giao source code",
+        "isCompleted": true,
+        "_id": "6a3f3cc274359d345d5e160f"
+      },
+      {
+        "title": "Báo cáo sếp duyệt",
+        "isCompleted": false,
+        "_id": "6a3f3cc274359d345d5e1610"
+      }
+    ],
+    "comments": [
+      {
+        "user": "6a3f3cbd74359d345d5e158e",
+        "text": "Sếp review giúp em đoạn code này.",
+        "createdAt": "2026-06-26T10:45:43.970Z",
+        "_id": "6a3f3cc274359d345d5e1611"
+      },
+      {
+        "user": "6a3f3cbb74359d345d5e1588",
+        "text": "Check lại responsive trên điện thoại bị vỡ layout kìa.",
+        "createdAt": "2026-06-26T06:53:30.449Z",
+        "_id": "6a3f3cc274359d345d5e1612"
+      },
+      {
+        "user": "6a3f3cbd74359d345d5e158e",
+        "text": "Đã hoàn thành xong phần này nhé mọi người.",
+        "createdAt": "2026-06-26T10:13:11.173Z",
+        "_id": "6a3f3cc274359d345d5e1613"
+      }
+    ],
+    "timeTracking": [
+      {
+        "user": "6a3f3cbd74359d345d5e158e",
+        "startTime": "2026-06-26T19:02:45.322Z",
+        "endTime": "2026-06-27T03:00:18.372Z",
+        "duration": 9926,
+        "_id": "6a3f3cc274359d345d5e1614"
+      }
+    ],
+    "assets": [],
+    "createdAt": "2026-06-27T03:00:18.373Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a3f3cc274359d345d5e1615",
+    "title": "Tối ưu tốc độ tải trang (LCP)",
+    "role": "dev",
+    "status": "in_progress",
+    "project": "6a3f3cc174359d345d5e159f",
+    "dueDate": "2026-06-28T04:37:18.128Z",
+    "priority": "urgent",
+    "assignee": "6a3f3cbc74359d345d5e158b",
+    "checklists": [
+      {
+        "title": "Test trên Safari/Chrome",
+        "isCompleted": true,
+        "_id": "6a3f3cc274359d345d5e1616"
+      },
+      {
+        "title": "Đảm bảo chuẩn SEO",
+        "isCompleted": true,
+        "_id": "6a3f3cc274359d345d5e1617"
+      },
+      {
+        "title": "Báo cáo sếp duyệt",
+        "isCompleted": false,
+        "_id": "6a3f3cc274359d345d5e1618"
+      }
+    ],
+    "comments": [
+      {
+        "user": "6a3f3cbc74359d345d5e158b",
+        "text": "Check lại responsive trên điện thoại bị vỡ layout kìa.",
+        "createdAt": "2026-06-26T23:28:00.806Z",
+        "_id": "6a3f3cc274359d345d5e1619"
+      }
+    ],
+    "timeTracking": [
+      {
+        "user": "6a3f3cbc74359d345d5e158b",
+        "startTime": "2026-06-26T16:41:00.187Z",
+        "endTime": "2026-06-27T03:00:18.416Z",
+        "duration": 11929,
+        "_id": "6a3f3cc274359d345d5e161a"
+      }
+    ],
+    "assets": [],
+    "createdAt": "2026-06-27T03:00:18.417Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a3f3cc274359d345d5e161b",
+    "title": "Xử lý lỗi giỏ hàng",
+    "role": "intern",
+    "status": "todo",
+    "project": "6a3f3cc174359d345d5e159e",
+    "dueDate": "2026-07-04T09:21:00.801Z",
+    "priority": "urgent",
+    "assignee": "6a3f3cbd74359d345d5e158f",
+    "checklists": [
+      {
+        "title": "Báo cáo sếp duyệt",
+        "isCompleted": false,
+        "_id": "6a3f3cc274359d345d5e161c"
+      }
+    ],
+    "comments": [
+      {
+        "user": "6a3f3cbb74359d345d5e1588",
+        "text": "Đã hoàn thành xong phần này nhé mọi người.",
+        "createdAt": "2026-06-26T23:56:39.795Z",
+        "_id": "6a3f3cc274359d345d5e161d"
+      }
+    ],
+    "timeTracking": [],
+    "assets": [],
+    "createdAt": "2026-06-27T03:00:18.462Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a3f3cc274359d345d5e161e",
+    "title": "Viết API Đăng nhập",
+    "role": "dev",
+    "status": "todo",
+    "project": "6a3f3cc174359d345d5e159e",
+    "dueDate": "2026-07-10T20:56:19.570Z",
+    "priority": "urgent",
+    "assignee": "6a3f3cbc74359d345d5e158c",
+    "checklists": [
+      {
+        "title": "Báo cáo sếp duyệt",
+        "isCompleted": true,
+        "_id": "6a3f3cc274359d345d5e161f"
+      },
+      {
+        "title": "Kiểm tra Responsive",
+        "isCompleted": true,
+        "_id": "6a3f3cc274359d345d5e1620"
+      },
+      {
+        "title": "Kiểm tra Responsive",
+        "isCompleted": true,
+        "_id": "6a3f3cc274359d345d5e1621"
+      },
+      {
+        "title": "Bàn giao source code",
+        "isCompleted": true,
+        "_id": "6a3f3cc274359d345d5e1622"
+      }
+    ],
+    "comments": [],
+    "timeTracking": [],
+    "assets": [],
+    "createdAt": "2026-06-27T03:00:18.506Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a3f3cc274359d345d5e1623",
+    "title": "Tích hợp Thanh toán VNPay",
+    "role": "dev",
+    "status": "done",
+    "project": "6a3f3cc174359d345d5e159e",
+    "dueDate": "2026-07-06T16:10:13.868Z",
+    "priority": "urgent",
+    "assignee": "6a3f3cbc74359d345d5e158c",
+    "checklists": [
+      {
+        "title": "Đảm bảo chuẩn SEO",
+        "isCompleted": false,
+        "_id": "6a3f3cc274359d345d5e1624"
+      }
+    ],
+    "comments": [],
+    "timeTracking": [
+      {
+        "user": "6a3f3cbc74359d345d5e158c",
+        "startTime": "2026-06-26T06:04:49.990Z",
+        "endTime": "2026-06-27T03:00:18.554Z",
+        "duration": 14143,
+        "_id": "6a3f3cc274359d345d5e1625"
+      }
+    ],
+    "assets": [],
+    "createdAt": "2026-06-27T03:00:18.555Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a3f3cc274359d345d5e1626",
+    "title": "Thiết kế Database Schema",
+    "role": "affiliate",
+    "status": "todo",
+    "project": "6a3f3cc174359d345d5e159f",
+    "dueDate": "2026-07-01T17:47:38.254Z",
+    "priority": "low",
+    "assignee": "6a3f3cbe74359d345d5e1592",
+    "checklists": [
+      {
+        "title": "Báo cáo sếp duyệt",
+        "isCompleted": true,
+        "_id": "6a3f3cc274359d345d5e1627"
+      }
+    ],
+    "comments": [
+      {
+        "user": "6a3f3cbb74359d345d5e1588",
+        "text": "Đã update theo feedback của khách.",
+        "createdAt": "2026-06-26T07:29:22.395Z",
+        "_id": "6a3f3cc274359d345d5e1628"
+      },
+      {
+        "user": "6a3f3cbe74359d345d5e1592",
+        "text": "Khách hàng yêu cầu đổi màu xanh sang đỏ.",
+        "createdAt": "2026-06-26T21:31:55.616Z",
+        "_id": "6a3f3cc274359d345d5e1629"
+      }
+    ],
+    "timeTracking": [],
+    "assets": [],
+    "createdAt": "2026-06-27T03:00:18.599Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a3f3cc274359d345d5e162a",
+    "title": "Thiết kế Database Schema",
+    "role": "affiliate",
+    "status": "done",
+    "project": "6a3f3cc074359d345d5e1599",
+    "dueDate": "2026-07-11T23:35:32.132Z",
+    "priority": "urgent",
+    "assignee": "6a3f3cbe74359d345d5e1592",
+    "checklists": [
+      {
+        "title": "Đảm bảo chuẩn SEO",
+        "isCompleted": true,
+        "_id": "6a3f3cc274359d345d5e162b"
+      },
+      {
+        "title": "Báo cáo sếp duyệt",
+        "isCompleted": false,
+        "_id": "6a3f3cc274359d345d5e162c"
+      },
+      {
+        "title": "Kiểm tra Responsive",
+        "isCompleted": true,
+        "_id": "6a3f3cc274359d345d5e162d"
+      },
+      {
+        "title": "Test trên Safari/Chrome",
+        "isCompleted": true,
+        "_id": "6a3f3cc274359d345d5e162e"
+      }
+    ],
+    "comments": [
+      {
+        "user": "6a3f3cbe74359d345d5e1592",
+        "text": "Sếp review giúp em đoạn code này.",
+        "createdAt": "2026-06-27T01:35:08.222Z",
+        "_id": "6a3f3cc274359d345d5e162f"
+      },
+      {
+        "user": "6a3f3cbe74359d345d5e1592",
+        "text": "Cần thêm thời gian để fix bug này, khoảng 2 tiếng nữa.",
+        "createdAt": "2026-06-26T08:13:02.972Z",
+        "_id": "6a3f3cc274359d345d5e1630"
+      }
+    ],
+    "timeTracking": [
+      {
+        "user": "6a3f3cbe74359d345d5e1592",
+        "startTime": "2026-06-26T11:36:01.869Z",
+        "endTime": "2026-06-27T03:00:18.641Z",
+        "duration": 6381,
+        "_id": "6a3f3cc274359d345d5e1631"
+      }
+    ],
+    "assets": [],
+    "createdAt": "2026-06-27T03:00:18.645Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a3f3cc274359d345d5e1632",
+    "title": "Tối ưu tốc độ tải trang (LCP)",
+    "role": "intern",
+    "status": "todo",
+    "project": "6a3f3cc174359d345d5e15a0",
+    "dueDate": "2026-06-29T23:35:49.253Z",
+    "priority": "normal",
+    "assignee": "6a3f3cbe74359d345d5e1590",
+    "checklists": [
+      {
+        "title": "Kiểm tra Responsive",
+        "isCompleted": true,
+        "_id": "6a3f3cc274359d345d5e1633"
+      },
+      {
+        "title": "Kiểm tra Responsive",
+        "isCompleted": true,
+        "_id": "6a3f3cc274359d345d5e1634"
+      }
+    ],
+    "comments": [],
+    "timeTracking": [],
+    "assets": [],
+    "createdAt": "2026-06-27T03:00:18.688Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a3f3cc274359d345d5e1635",
+    "title": "Cấu hình SSL Domain",
+    "role": "intern",
+    "status": "in_progress",
+    "project": "6a3f3cc074359d345d5e1599",
+    "dueDate": "2026-07-01T08:29:59.147Z",
+    "priority": "high",
+    "assignee": "6a3f3cbe74359d345d5e1590",
+    "checklists": [
+      {
+        "title": "Báo cáo sếp duyệt",
+        "isCompleted": true,
+        "_id": "6a3f3cc274359d345d5e1636"
+      },
+      {
+        "title": "Kiểm tra Responsive",
+        "isCompleted": true,
+        "_id": "6a3f3cc274359d345d5e1637"
+      },
+      {
+        "title": "Báo cáo sếp duyệt",
+        "isCompleted": false,
+        "_id": "6a3f3cc274359d345d5e1638"
+      },
+      {
+        "title": "Test trên Safari/Chrome",
+        "isCompleted": true,
+        "_id": "6a3f3cc274359d345d5e1639"
+      }
+    ],
+    "comments": [
+      {
+        "user": "6a3f3cbb74359d345d5e1588",
+        "text": "Thiết kế đẹp quá, cứ thế triển khai nhé.",
+        "createdAt": "2026-06-26T11:21:04.772Z",
+        "_id": "6a3f3cc274359d345d5e163a"
+      },
+      {
+        "user": "6a3f3cbb74359d345d5e1588",
+        "text": "Khách hàng yêu cầu đổi màu xanh sang đỏ.",
+        "createdAt": "2026-06-26T17:24:22.473Z",
+        "_id": "6a3f3cc274359d345d5e163b"
+      },
+      {
+        "user": "6a3f3cbe74359d345d5e1590",
+        "text": "Đã hoàn thành xong phần này nhé mọi người.",
+        "createdAt": "2026-06-26T18:59:32.917Z",
+        "_id": "6a3f3cc274359d345d5e163c"
+      }
+    ],
+    "timeTracking": [
+      {
+        "user": "6a3f3cbe74359d345d5e1590",
+        "startTime": "2026-06-26T06:27:34.841Z",
+        "endTime": "2026-06-27T03:00:18.918Z",
+        "duration": 10004,
+        "_id": "6a3f3cc274359d345d5e163d"
+      }
+    ],
+    "assets": [],
+    "createdAt": "2026-06-27T03:00:18.919Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a3f3cc274359d345d5e163e",
+    "title": "Xử lý lỗi giỏ hàng",
+    "role": "affiliate",
+    "status": "done",
+    "project": "6a3f3cc174359d345d5e159a",
+    "dueDate": "2026-07-04T07:03:37.240Z",
+    "priority": "urgent",
+    "assignee": "6a3f3cbe74359d345d5e1592",
+    "checklists": [
+      {
+        "title": "Test trên Safari/Chrome",
+        "isCompleted": false,
+        "_id": "6a3f3cc274359d345d5e163f"
+      },
+      {
+        "title": "Test trên Safari/Chrome",
+        "isCompleted": true,
+        "_id": "6a3f3cc274359d345d5e1640"
+      },
+      {
+        "title": "Đảm bảo chuẩn SEO",
+        "isCompleted": false,
+        "_id": "6a3f3cc274359d345d5e1641"
+      }
+    ],
+    "comments": [
+      {
+        "user": "6a3f3cbb74359d345d5e1588",
+        "text": "Check lại responsive trên điện thoại bị vỡ layout kìa.",
+        "createdAt": "2026-06-27T01:20:38.632Z",
+        "_id": "6a3f3cc274359d345d5e1642"
+      },
+      {
+        "user": "6a3f3cbb74359d345d5e1588",
+        "text": "Thiết kế đẹp quá, cứ thế triển khai nhé.",
+        "createdAt": "2026-06-26T17:55:19.031Z",
+        "_id": "6a3f3cc274359d345d5e1643"
+      },
+      {
+        "user": "6a3f3cbe74359d345d5e1592",
+        "text": "Check lại responsive trên điện thoại bị vỡ layout kìa.",
+        "createdAt": "2026-06-26T07:10:42.200Z",
+        "_id": "6a3f3cc274359d345d5e1644"
+      }
+    ],
+    "timeTracking": [
+      {
+        "user": "6a3f3cbe74359d345d5e1592",
+        "startTime": "2026-06-26T10:53:52.858Z",
+        "endTime": "2026-06-27T03:00:18.966Z",
+        "duration": 4345,
+        "_id": "6a3f3cc274359d345d5e1645"
+      }
+    ],
+    "assets": [],
+    "createdAt": "2026-06-27T03:00:18.967Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a3f3cc374359d345d5e1646",
+    "title": "Thiết kế Database Schema",
+    "role": "dev",
+    "status": "done",
+    "project": "6a3f3cc174359d345d5e15a0",
+    "dueDate": "2026-06-28T18:32:01.180Z",
+    "priority": "high",
+    "assignee": "6a3f3cbc74359d345d5e158c",
+    "checklists": [
+      {
+        "title": "Bàn giao source code",
+        "isCompleted": true,
+        "_id": "6a3f3cc374359d345d5e1647"
+      },
+      {
+        "title": "Kiểm tra Responsive",
+        "isCompleted": false,
+        "_id": "6a3f3cc374359d345d5e1648"
+      },
+      {
+        "title": "Báo cáo sếp duyệt",
+        "isCompleted": false,
+        "_id": "6a3f3cc374359d345d5e1649"
+      },
+      {
+        "title": "Kiểm tra Responsive",
+        "isCompleted": true,
+        "_id": "6a3f3cc374359d345d5e164a"
+      }
+    ],
+    "comments": [
+      {
+        "user": "6a3f3cbc74359d345d5e158c",
+        "text": "Khách hàng yêu cầu đổi màu xanh sang đỏ.",
+        "createdAt": "2026-06-26T17:47:29.796Z",
+        "_id": "6a3f3cc374359d345d5e164b"
+      },
+      {
+        "user": "6a3f3cbc74359d345d5e158c",
+        "text": "Sếp review giúp em đoạn code này.",
+        "createdAt": "2026-06-26T19:01:22.936Z",
+        "_id": "6a3f3cc374359d345d5e164c"
+      }
+    ],
+    "timeTracking": [
+      {
+        "user": "6a3f3cbc74359d345d5e158c",
+        "startTime": "2026-06-26T12:45:06.863Z",
+        "endTime": "2026-06-27T03:00:19.024Z",
+        "duration": 3442,
+        "_id": "6a3f3cc374359d345d5e164d"
+      }
+    ],
+    "assets": [],
+    "createdAt": "2026-06-27T03:00:19.024Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a3f3cc374359d345d5e164e",
+    "title": "Thiết kế Logo Concept 1",
+    "role": "content",
+    "status": "done",
+    "project": "6a3f3cc074359d345d5e1599",
+    "dueDate": "2026-07-11T12:25:40.995Z",
+    "priority": "high",
+    "assignee": "6a3f3cbd74359d345d5e158d",
+    "checklists": [
+      {
+        "title": "Bàn giao source code",
+        "isCompleted": false,
+        "_id": "6a3f3cc374359d345d5e164f"
+      },
+      {
+        "title": "Báo cáo sếp duyệt",
+        "isCompleted": true,
+        "_id": "6a3f3cc374359d345d5e1650"
+      },
+      {
+        "title": "Kiểm tra Responsive",
+        "isCompleted": false,
+        "_id": "6a3f3cc374359d345d5e1651"
+      }
+    ],
+    "comments": [
+      {
+        "user": "6a3f3cbb74359d345d5e1588",
+        "text": "Thiết kế đẹp quá, cứ thế triển khai nhé.",
+        "createdAt": "2026-06-27T02:37:07.959Z",
+        "_id": "6a3f3cc374359d345d5e1652"
+      },
+      {
+        "user": "6a3f3cbd74359d345d5e158d",
+        "text": "Cần thêm thời gian để fix bug này, khoảng 2 tiếng nữa.",
+        "createdAt": "2026-06-26T04:54:39.408Z",
+        "_id": "6a3f3cc374359d345d5e1653"
+      },
+      {
+        "user": "6a3f3cbb74359d345d5e1588",
+        "text": "Khách hàng yêu cầu đổi màu xanh sang đỏ.",
+        "createdAt": "2026-06-26T18:14:10.825Z",
+        "_id": "6a3f3cc374359d345d5e1654"
+      }
+    ],
+    "timeTracking": [
+      {
+        "user": "6a3f3cbd74359d345d5e158d",
+        "startTime": "2026-06-26T13:40:16.184Z",
+        "endTime": "2026-06-27T03:00:19.065Z",
+        "duration": 14230,
+        "_id": "6a3f3cc374359d345d5e1655"
+      }
+    ],
+    "assets": [],
+    "createdAt": "2026-06-27T03:00:19.065Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a3f3cc374359d345d5e1656",
+    "title": "Cấu hình SSL Domain",
+    "role": "intern",
+    "status": "todo",
+    "project": "6a3f3cc174359d345d5e159e",
+    "dueDate": "2026-07-10T18:17:34.658Z",
+    "priority": "urgent",
+    "assignee": "6a3f3cbe74359d345d5e1590",
+    "checklists": [
+      {
+        "title": "Test trên Safari/Chrome",
+        "isCompleted": true,
+        "_id": "6a3f3cc374359d345d5e1657"
+      }
+    ],
+    "comments": [
+      {
+        "user": "6a3f3cbb74359d345d5e1588",
+        "text": "Thiết kế đẹp quá, cứ thế triển khai nhé.",
+        "createdAt": "2026-06-26T18:42:29.706Z",
+        "_id": "6a3f3cc374359d345d5e1658"
+      },
+      {
+        "user": "6a3f3cbe74359d345d5e1590",
+        "text": "Check lại responsive trên điện thoại bị vỡ layout kìa.",
+        "createdAt": "2026-06-26T03:59:02.402Z",
+        "_id": "6a3f3cc374359d345d5e1659"
+      }
+    ],
+    "timeTracking": [],
+    "assets": [],
+    "createdAt": "2026-06-27T03:00:19.107Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a3f3cc374359d345d5e165a",
+    "title": "Vẽ Wireframe Trang chủ",
+    "role": "manager",
+    "status": "in_progress",
+    "project": "6a3f3cc174359d345d5e159a",
+    "dueDate": "2026-07-10T11:35:18.540Z",
+    "priority": "high",
+    "assignee": "6a3f3cbc74359d345d5e158a",
+    "checklists": [
+      {
+        "title": "Bàn giao source code",
+        "isCompleted": true,
+        "_id": "6a3f3cc374359d345d5e165b"
+      },
+      {
+        "title": "Đảm bảo chuẩn SEO",
+        "isCompleted": true,
+        "_id": "6a3f3cc374359d345d5e165c"
+      }
+    ],
+    "comments": [
+      {
+        "user": "6a3f3cbc74359d345d5e158a",
+        "text": "Cần thêm thời gian để fix bug này, khoảng 2 tiếng nữa.",
+        "createdAt": "2026-06-26T15:45:38.512Z",
+        "_id": "6a3f3cc374359d345d5e165d"
+      },
+      {
+        "user": "6a3f3cbc74359d345d5e158a",
+        "text": "Cần thêm thời gian để fix bug này, khoảng 2 tiếng nữa.",
+        "createdAt": "2026-06-26T16:18:23.405Z",
+        "_id": "6a3f3cc374359d345d5e165e"
+      }
+    ],
+    "timeTracking": [
+      {
+        "user": "6a3f3cbc74359d345d5e158a",
+        "startTime": "2026-06-26T19:03:12.322Z",
+        "endTime": "2026-06-27T03:00:19.150Z",
+        "duration": 7125,
+        "_id": "6a3f3cc374359d345d5e165f"
+      }
+    ],
+    "assets": [],
+    "createdAt": "2026-06-27T03:00:19.151Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a3f3cc374359d345d5e1660",
+    "title": "Xử lý lỗi giỏ hàng",
+    "role": "dev",
+    "status": "in_progress",
+    "project": "6a3f3cc174359d345d5e159e",
+    "dueDate": "2026-07-03T14:35:00.240Z",
+    "priority": "high",
+    "assignee": "6a3f3cbc74359d345d5e158b",
+    "checklists": [
+      {
+        "title": "Báo cáo sếp duyệt",
+        "isCompleted": false,
+        "_id": "6a3f3cc374359d345d5e1661"
+      },
+      {
+        "title": "Báo cáo sếp duyệt",
+        "isCompleted": false,
+        "_id": "6a3f3cc374359d345d5e1662"
+      }
+    ],
+    "comments": [
+      {
+        "user": "6a3f3cbb74359d345d5e1588",
+        "text": "Đã hoàn thành xong phần này nhé mọi người.",
+        "createdAt": "2026-06-26T11:51:39.863Z",
+        "_id": "6a3f3cc374359d345d5e1663"
+      },
+      {
+        "user": "6a3f3cbc74359d345d5e158b",
+        "text": "Sếp review giúp em đoạn code này.",
+        "createdAt": "2026-06-26T20:49:51.817Z",
+        "_id": "6a3f3cc374359d345d5e1664"
+      },
+      {
+        "user": "6a3f3cbc74359d345d5e158b",
+        "text": "Cần thêm thời gian để fix bug này, khoảng 2 tiếng nữa.",
+        "createdAt": "2026-06-27T00:24:20.081Z",
+        "_id": "6a3f3cc374359d345d5e1665"
+      }
+    ],
+    "timeTracking": [
+      {
+        "user": "6a3f3cbc74359d345d5e158b",
+        "startTime": "2026-06-26T22:15:17.801Z",
+        "endTime": "2026-06-27T03:00:19.200Z",
+        "duration": 3479,
+        "_id": "6a3f3cc374359d345d5e1666"
+      }
+    ],
+    "assets": [],
+    "createdAt": "2026-06-27T03:00:19.201Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a3f3cc374359d345d5e1667",
+    "title": "Thiết kế Database Schema",
+    "role": "dev",
+    "status": "done",
+    "project": "6a3f3cc174359d345d5e159e",
+    "dueDate": "2026-07-08T13:43:14.723Z",
+    "priority": "urgent",
+    "assignee": "6a3f3cbc74359d345d5e158b",
+    "checklists": [
+      {
+        "title": "Test trên Safari/Chrome",
+        "isCompleted": true,
+        "_id": "6a3f3cc374359d345d5e1668"
+      },
+      {
+        "title": "Đảm bảo chuẩn SEO",
+        "isCompleted": false,
+        "_id": "6a3f3cc374359d345d5e1669"
+      },
+      {
+        "title": "Đảm bảo chuẩn SEO",
+        "isCompleted": false,
+        "_id": "6a3f3cc374359d345d5e166a"
+      },
+      {
+        "title": "Bàn giao source code",
+        "isCompleted": false,
+        "_id": "6a3f3cc374359d345d5e166b"
+      }
+    ],
+    "comments": [],
+    "timeTracking": [
+      {
+        "user": "6a3f3cbc74359d345d5e158b",
+        "startTime": "2026-06-26T10:33:23.558Z",
+        "endTime": "2026-06-27T03:00:19.253Z",
+        "duration": 8491,
+        "_id": "6a3f3cc374359d345d5e166c"
+      }
+    ],
+    "assets": [],
+    "createdAt": "2026-06-27T03:00:19.253Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a3f3cc374359d345d5e166d",
+    "title": "Chọn Typography và Bảng màu",
+    "role": "manager",
+    "status": "done",
+    "project": "6a3f3cc174359d345d5e159d",
+    "dueDate": "2026-07-08T05:10:12.065Z",
+    "priority": "urgent",
+    "assignee": "6a3f3cbb74359d345d5e1589",
+    "checklists": [
+      {
+        "title": "Báo cáo sếp duyệt",
+        "isCompleted": true,
+        "_id": "6a3f3cc374359d345d5e166e"
+      }
+    ],
+    "comments": [
+      {
+        "user": "6a3f3cbb74359d345d5e1588",
+        "text": "Cần thêm thời gian để fix bug này, khoảng 2 tiếng nữa.",
+        "createdAt": "2026-06-26T17:02:30.094Z",
+        "_id": "6a3f3cc374359d345d5e166f"
+      },
+      {
+        "user": "6a3f3cbb74359d345d5e1589",
+        "text": "Thiết kế đẹp quá, cứ thế triển khai nhé.",
+        "createdAt": "2026-06-26T12:42:21.114Z",
+        "_id": "6a3f3cc374359d345d5e1670"
+      },
+      {
+        "user": "6a3f3cbb74359d345d5e1588",
+        "text": "Check lại responsive trên điện thoại bị vỡ layout kìa.",
+        "createdAt": "2026-06-26T06:57:51.470Z",
+        "_id": "6a3f3cc374359d345d5e1671"
+      }
+    ],
+    "timeTracking": [
+      {
+        "user": "6a3f3cbb74359d345d5e1589",
+        "startTime": "2026-06-26T07:30:08.436Z",
+        "endTime": "2026-06-27T03:00:19.379Z",
+        "duration": 2593,
+        "_id": "6a3f3cc374359d345d5e1672"
+      }
+    ],
+    "assets": [],
+    "createdAt": "2026-06-27T03:00:19.380Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a3f3cc374359d345d5e1673",
+    "title": "Thiết kế Logo Concept 1",
+    "role": "manager",
+    "status": "in_progress",
+    "project": "6a3f3cc174359d345d5e15a0",
+    "dueDate": "2026-07-10T23:41:45.204Z",
+    "priority": "normal",
+    "assignee": "6a3f3cbb74359d345d5e1589",
+    "checklists": [
+      {
+        "title": "Test trên Safari/Chrome",
+        "isCompleted": true,
+        "_id": "6a3f3cc374359d345d5e1674"
+      },
+      {
+        "title": "Test trên Safari/Chrome",
+        "isCompleted": false,
+        "_id": "6a3f3cc374359d345d5e1675"
+      }
+    ],
+    "comments": [],
+    "timeTracking": [
+      {
+        "user": "6a3f3cbb74359d345d5e1589",
+        "startTime": "2026-06-26T23:27:13.241Z",
+        "endTime": "2026-06-27T03:00:19.424Z",
+        "duration": 5686,
+        "_id": "6a3f3cc374359d345d5e1676"
+      }
+    ],
+    "assets": [],
+    "createdAt": "2026-06-27T03:00:19.424Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a3f3cc374359d345d5e1677",
+    "title": "Viết API Đăng nhập",
+    "role": "affiliate",
+    "status": "done",
+    "project": "6a3f3cc174359d345d5e15a0",
+    "dueDate": "2026-06-29T18:43:37.904Z",
+    "priority": "normal",
+    "assignee": "6a3f3cbe74359d345d5e1592",
+    "checklists": [
+      {
+        "title": "Báo cáo sếp duyệt",
+        "isCompleted": true,
+        "_id": "6a3f3cc374359d345d5e1678"
+      },
+      {
+        "title": "Bàn giao source code",
+        "isCompleted": false,
+        "_id": "6a3f3cc374359d345d5e1679"
+      }
+    ],
+    "comments": [
+      {
+        "user": "6a3f3cbb74359d345d5e1588",
+        "text": "Check lại responsive trên điện thoại bị vỡ layout kìa.",
+        "createdAt": "2026-06-27T01:49:45.227Z",
+        "_id": "6a3f3cc374359d345d5e167a"
+      },
+      {
+        "user": "6a3f3cbe74359d345d5e1592",
+        "text": "Đã hoàn thành xong phần này nhé mọi người.",
+        "createdAt": "2026-06-26T10:47:26.617Z",
+        "_id": "6a3f3cc374359d345d5e167b"
+      },
+      {
+        "user": "6a3f3cbb74359d345d5e1588",
+        "text": "Khách hàng yêu cầu đổi màu xanh sang đỏ.",
+        "createdAt": "2026-06-27T02:14:16.284Z",
+        "_id": "6a3f3cc374359d345d5e167c"
+      }
+    ],
+    "timeTracking": [
+      {
+        "user": "6a3f3cbe74359d345d5e1592",
+        "startTime": "2026-06-26T12:31:00.316Z",
+        "endTime": "2026-06-27T03:00:19.469Z",
+        "duration": 9802,
+        "_id": "6a3f3cc374359d345d5e167d"
+      }
+    ],
+    "assets": [],
+    "createdAt": "2026-06-27T03:00:19.471Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a3f3cc374359d345d5e167e",
+    "title": "Viết Unit Test cho Module Cart",
+    "role": "intern",
+    "status": "done",
+    "project": "6a3f3cc174359d345d5e159f",
+    "dueDate": "2026-06-30T23:39:39.404Z",
+    "priority": "urgent",
+    "assignee": "6a3f3cbe74359d345d5e1590",
+    "checklists": [
+      {
+        "title": "Đảm bảo chuẩn SEO",
+        "isCompleted": true,
+        "_id": "6a3f3cc374359d345d5e167f"
+      }
+    ],
+    "comments": [],
+    "timeTracking": [
+      {
+        "user": "6a3f3cbe74359d345d5e1590",
+        "startTime": "2026-06-26T17:28:57.142Z",
+        "endTime": "2026-06-27T03:00:19.516Z",
+        "duration": 1912,
+        "_id": "6a3f3cc374359d345d5e1680"
+      }
+    ],
+    "assets": [],
+    "createdAt": "2026-06-27T03:00:19.517Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a3f3cc374359d345d5e1681",
+    "title": "Cắt HTML/CSS Landing Page",
+    "role": "manager",
+    "status": "in_progress",
+    "project": "6a3f3cc174359d345d5e159d",
+    "dueDate": "2026-07-08T05:02:03.795Z",
+    "priority": "normal",
+    "assignee": "6a3f3cbb74359d345d5e1589",
+    "checklists": [
+      {
+        "title": "Bàn giao source code",
+        "isCompleted": true,
+        "_id": "6a3f3cc374359d345d5e1682"
+      },
+      {
+        "title": "Đảm bảo chuẩn SEO",
+        "isCompleted": true,
+        "_id": "6a3f3cc374359d345d5e1683"
+      },
+      {
+        "title": "Test trên Safari/Chrome",
+        "isCompleted": true,
+        "_id": "6a3f3cc374359d345d5e1684"
+      },
+      {
+        "title": "Bàn giao source code",
+        "isCompleted": true,
+        "_id": "6a3f3cc374359d345d5e1685"
+      }
+    ],
+    "comments": [
+      {
+        "user": "6a3f3cbb74359d345d5e1589",
+        "text": "Cần thêm thời gian để fix bug này, khoảng 2 tiếng nữa.",
+        "createdAt": "2026-06-26T14:29:35.574Z",
+        "_id": "6a3f3cc374359d345d5e1686"
+      }
+    ],
+    "timeTracking": [
+      {
+        "user": "6a3f3cbb74359d345d5e1589",
+        "startTime": "2026-06-26T07:17:26.585Z",
+        "endTime": "2026-06-27T03:00:19.562Z",
+        "duration": 8714,
+        "_id": "6a3f3cc374359d345d5e1687"
+      }
+    ],
+    "assets": [],
+    "createdAt": "2026-06-27T03:00:19.563Z",
+    "__v": 0
+  }
+]
