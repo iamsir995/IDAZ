@@ -19,6 +19,10 @@ jobs:
 
       - name: Install and Build Frontend
         working-directory: ./frontend
+        env:
+          NEXT_PUBLIC_API_BASE_URL: https://idaz.com.vn
+          NEXT_PUBLIC_API_URL: https://idaz.com.vn/api
+          NEXT_PUBLIC_SOCKET_URL: https://idaz.com.vn
         run: |
           npm install
           npm run build
