@@ -236,7 +236,16 @@ export default function AnalyticsDashboard() {
   }`}>{i + 1}</div>
   <div className="flex-1 min-w-0">
   <div className="text-idaz-black font-semibold text-subheadline truncate">{p.title}</div>
- <div className="h-1.5 bg-gray-100 rounded-full mt-1">
- <div className="h-full bg-gradient-to-r from-rose-500 to-indigo-500 rounded-full"
- style={{ width: `${Math.min(100, (p.revenue / (data.topProjects[0]?.revenue || 1)) * 100)}%` }} />
+  <div className="h-1.5 bg-gray-100 rounded-full mt-1">
+    <div className="h-full bg-gradient-to-r from-rose-500 to-indigo-500 rounded-full"
+      style={{ width: `${Math.min(100, (p.revenue / (data.topProjects[0]?.revenue || 1)) * 100)}%` }} />
+  </div>
+  </div>
+  </div>
+  ))}
+  </div>
+  </motion.div>
+  )}
+  </div>
+  );
 }
