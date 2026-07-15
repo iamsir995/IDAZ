@@ -436,7 +436,12 @@ app.use(cookieParser()); // Đọc HTTP-Only Cookies
 // 2. CORS: Chỉ cho phép Frontend của bạn (localhost:3000 hoặc domain thật sau này) truy cập API
 const corsOptions = {
   origin: function (origin, callback) {
-    const allowedOrigins = ['http://localhost:3000', 'http://localhost:3001', 'http://127.0.0.1:3000', 'http://127.0.0.1:3001', process.env.FRONTEND_URL];
+    const allowedOrigins = [
+      'http://localhost:3000', 'http://localhost:3001',
+      'http://127.0.0.1:3000', 'http://127.0.0.1:3001',
+      'https://idaz.com.vn', 'https://www.idaz.com.vn',
+      process.env.FRONTEND_URL
+    ];
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
