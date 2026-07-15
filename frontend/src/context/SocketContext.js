@@ -88,7 +88,7 @@ export const SocketProvider = ({ children }) => {
     }
 
     // Chỉ tạo 1 socket connection duy nhất cho toàn app
-    const socket = io(process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000", {
+    const socket = io(process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:5000", {
       reconnection: true,
       reconnectionAttempts: 5,
       reconnectionDelay: 1000,

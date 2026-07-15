@@ -114,7 +114,7 @@ export default function ImageUpload({
             className="relative w-full h-48 rounded-3xl overflow-hidden glass-panel border border-white/60 group"
           >
             <img 
-              src={preview.startsWith('http') ? preview : `http://localhost:5000${preview}`} 
+              src={preview.startsWith('http') ? preview : `${process.env.NEXT_PUBLIC_API_BASE_URL || ''}${preview}`} 
               alt="Preview" 
               className="w-full h-full object-cover"
             />

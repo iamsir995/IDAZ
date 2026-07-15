@@ -94,10 +94,10 @@ export default function AdminRecordings() {
  </div>
 
  <div className="col-span-2 flex justify-end gap-2">
- <a href={`http://localhost:5000${rec.fileUrl}`} target="_blank" rel="noreferrer" className="p-2 bg-indigo-600 hover:bg-indigo-700 text-idaz-black rounded-xl transition-colors shadow-lg shadow-indigo-600/20" title="Phát">
+ <a href={`${process.env.NEXT_PUBLIC_API_BASE_URL || ''}${rec.fileUrl}`} target="_blank" rel="noreferrer" className="p-2 bg-indigo-600 hover:bg-indigo-700 text-idaz-black rounded-xl transition-colors shadow-lg shadow-indigo-600/20" title="Phát">
  <Play size={16} />
  </a>
- <a href={`http://localhost:5000${rec.fileUrl}`} download className="p-2 bg-gray-100 hover:bg-gray-700 text-idaz-black rounded-xl transition-colors" title="Tải xuống">
+ <a href={`${process.env.NEXT_PUBLIC_API_BASE_URL || ''}${rec.fileUrl}`} download className="p-2 bg-gray-100 hover:bg-gray-700 text-idaz-black rounded-xl transition-colors" title="Tải xuống">
  <Download size={16} />
  </a>
  </div>

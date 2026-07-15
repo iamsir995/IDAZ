@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Tạo một instance của axios với cấu hình mặc định
 const api = axios.create({
-  baseURL: 'http://localhost:5000/api', // Cổng backend đang chạy
+  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api', // Dùng biến môi trường
   withCredentials: true, // BẮT BUỘC để trình duyệt tự động đính kèm HTTP-Only Cookie (Refresh Token) vào mỗi request
   headers: {
     'Content-Type': 'application/json',
@@ -27,7 +27,8 @@ api.interceptors.response.use(
         if (error.response?.data?.code === 'TOKEN_EXPIRED' && !originalRequest._retry) {
           originalRequest._retry = true;
           try {
-            const { data } = await axios.post('http://localhost:5000/api/auth/refresh', {}, { withCredentials: true });
+            const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+            const { data } = await axios.post(`${backendUrl}/auth/refresh`, {}, { withCredentials: true });
             if (data.success && data.accessToken) {
               api.defaults.headers.common['Authorization'] = `Bearer ${data.accessToken}`;
               originalRequest.headers['Authorization'] = `Bearer ${data.accessToken}`;

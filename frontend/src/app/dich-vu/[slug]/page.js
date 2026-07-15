@@ -9,7 +9,8 @@ import { notFound } from "next/navigation";
 // Tắt cache để luôn lấy dữ liệu mới nhất khi develop, hoặc set revalidate hợp lý
 async function getServiceData(slug) {
   try {
-    const res = await fetch(`http://localhost:5000/api/services/public/${slug}`, { next: { revalidate: 60 } });
+    const backendUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000';
+    const res = await fetch(`${backendUrl}/api/services/public/${slug}`, { next: { revalidate: 60 } });
     if (!res.ok) return null;
     const data = await res.json();
     return data.data;
