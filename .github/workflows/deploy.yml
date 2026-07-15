@@ -1,0 +1,69 @@
+name: Deploy to Hostinger
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install and Build Frontend
+        working-directory: ./frontend
+        run: |
+          npm install
+          npm run build
+          # Chuẩn bị thư mục standalone (chứa trọn gói Next.js không cần cài thêm node_modules trên server)
+          cp -r .next/static .next/standalone/.next/
+          cp -r public .next/standalone/
+          # Nén lại để upload cho nhanh
+          cd .next/standalone
+          zip -r ../../frontend-build.zip .
+
+      - name: Upload Build to Hostinger
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOSTINGER_HOST }}
+          port: 65002
+          username: u191058878
+          password: ${{ secrets.HOSTINGER_PASSWORD }}
+          source: "frontend/frontend-build.zip"
+          target: "idaz_temp"
+          strip_components: 1
+
+      - name: Deploy and Restart Services
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOSTINGER_HOST }}
+          port: 65002
+          username: u191058878
+          password: ${{ secrets.HOSTINGER_PASSWORD }}
+          script: |
+            # 1. Kéo code mới nhất từ GitHub
+            cd ~/idaz
+            git pull origin main
+            
+            # 2. Cài đặt lại thư viện Backend (nếu có cập nhật)
+            cd ~/idaz/backend
+            npm install --production
+            mkdir -p tmp && touch tmp/restart.txt # Khởi động lại Backend
+            
+            # 3. Giải nén bản Build của Frontend
+            cd ~/idaz/frontend
+            mkdir -p standalone
+            unzip -o ~/idaz_temp/frontend-build.zip -d standalone/
+            
+            # 4. Khởi động lại Frontend
+            mkdir -p standalone/tmp && touch standalone/tmp/restart.txt
+            
+            # Dọn dẹp file tạm
+            rm ~/idaz_temp/frontend-build.zip
