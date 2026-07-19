@@ -35,3 +35,11 @@ backend/public/uploads/
 
 # App Data
 .agents/
+
+# Log & Debug files
+*.log
+logs.zip
+frontend/error.html
+frontend/fix-*.js
+frontend/clean_fonts.js
+backend.log
