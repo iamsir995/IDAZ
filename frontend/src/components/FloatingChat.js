@@ -199,7 +199,7 @@ export default function FloatingChat() {
             <div className="h-16 bg-gradient-to-r from-indigo-600 to-violet-600 px-4 flex items-center justify-between shrink-0">
               <div className="flex flex-col text-idaz-black">
                 <span className="font-bold">Hỗ trợ &amp; Thảo luận</span>
-                <span className="text-xs text-indigo-200 flex items-center gap-1">
+                <span className="text-xs text-indigo-700 flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse inline-block" />
                   {activeChannel?.name || 'Chọn dự án'}
                 </span>
@@ -251,7 +251,7 @@ export default function FloatingChat() {
                       isMe ? 'bg-idaz-orange text-idaz-black rounded-br-none' : 'glass-card border border-white/60 text-gray-700 rounded-bl-none'
                     }`}>
                       <p>{msg.text}</p>
-                      <div className={`flex items-center justify-end gap-1 mt-1 text-[9px] ${isMe ? 'text-indigo-200' : 'text-gray-400'}`}>
+                      <div className={`flex items-center justify-end gap-1 mt-1 text-[9px] ${isMe ? 'text-indigo-700' : 'text-gray-400'}`}>
                         <span>{new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                         {isMe && (msg.readBy?.length > 1 ? <CheckCheck size={12} className="text-blue-300"/> : <Check size={12} />)}
                       </div>

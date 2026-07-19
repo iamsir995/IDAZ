@@ -22,7 +22,7 @@ export default function Footer() {
         <div>
           <h4 className="text-idaz-black font-bold mb-4">Liên hệ</h4>
           <ul className="space-y-2 text-gray-400">
-            <li>hello@agency.com</li>
+            <li>contact@idaz.com.vn</li>
             <li>+84 123 456 789</li>
             <li>Tòa nhà ABC, Quận 1, TP.HCM</li>
           </ul>

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from 'react';
-import { UploadCloud, X, Loader2, Image as ImageIcon } from 'lucide-react';
+import { UploadCloud, X, Loader2, Image as ImageIcon, FileText } from 'lucide-react';
 import api from '../../services/api';
 import toast from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -25,9 +25,15 @@ export default function ImageUpload({
 
   const validateFile = (file) => {
     if (!file) return false;
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    const allowedTypes = [
+      'image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml', 'image/heic', 'image/heif',
+      'application/pdf', 
+      'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+    ];
     if (!allowedTypes.includes(file.type)) {
-      toast.error('Chỉ hỗ trợ định dạng JPG, PNG, GIF, WEBP');
+      toast.error('Chỉ hỗ trợ Ảnh (JPG, PNG, GIF, SVG, HEIC) và Văn phòng (PDF, DOC, XLS, PPT)');
       return false;
     }
     if (file.size > maxSizeMB * 1024 * 1024) {
@@ -111,13 +117,22 @@ export default function ImageUpload({
             initial={{ opacity: 0, scale: 0.95 }} 
             animate={{ opacity: 1, scale: 1 }} 
             exit={{ opacity: 0, scale: 0.95 }}
-            className="relative w-full h-48 rounded-3xl overflow-hidden glass-panel border border-white/60 group"
+            className="relative w-full h-48 rounded-3xl overflow-hidden glass-panel border border-white/60 group bg-gray-50 flex items-center justify-center"
           >
-            <img 
-              src={preview.startsWith('http') ? preview : `${process.env.NEXT_PUBLIC_API_BASE_URL || ''}${preview}`} 
-              alt="Preview" 
-              className="w-full h-full object-cover"
-            />
+            {preview.match(/\.(pdf|doc|docx|xls|xlsx|ppt|pptx)$/i) ? (
+              <div className="flex flex-col items-center text-indigo-500">
+                <FileText size={48} className="mb-2" />
+                <span className="text-xs font-bold bg-white px-3 py-1 rounded-full shadow-sm text-gray-600 truncate max-w-[80%]">
+                  {preview.split('/').pop()}
+                </span>
+              </div>
+            ) : (
+              <img 
+                src={preview.startsWith('http') ? preview : `${process.env.NEXT_PUBLIC_API_BASE_URL || ''}${preview}`} 
+                alt="Preview" 
+                className="w-full h-full object-cover"
+              />
+            )}
             <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
               <button 
                 type="button" 
