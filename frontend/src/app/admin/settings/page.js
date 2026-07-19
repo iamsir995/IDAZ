@@ -41,6 +41,7 @@ export default function AdminSettings() {
           agencyName: res.data.data.agencyName || 'Agency',
           logoUrl: res.data.data.logoUrl || '',
           primaryColor: res.data.data.primaryColor || '#4f46e5',
+          googleClientId: res.data.data.googleClientId || '',
           paymentGateways: {
             ...prev.paymentGateways,
             ...res.data.data.paymentGateways
@@ -162,6 +163,20 @@ export default function AdminSettings() {
                   onChange={(e) => setSettings({...settings, logoUrl: e.target.value})}
                   className="w-full glass-panel border border-white/60 rounded-3xl px-4 py-3 text-idaz-black focus:border-indigo-500 transition-colors"
                   placeholder="https://example.com/logo.png"
+                />
+              </div>
+
+              {/* Google Client ID */}
+              <div>
+                <label className="flex items-center gap-2 text-sm font-medium text-idaz-black mb-3">
+                  <Building2 size={18} className="text-indigo-500" /> Google Login Client ID (Tùy chọn)
+                </label>
+                <input 
+                  type="text" 
+                  value={settings.googleClientId || ''}
+                  onChange={(e) => setSettings({...settings, googleClientId: e.target.value})}
+                  className="w-full glass-panel border border-white/60 rounded-3xl px-4 py-3 text-idaz-black focus:border-indigo-500 transition-colors"
+                  placeholder="Mã Client ID từ Google Cloud Console (dành cho Đăng nhập bằng Google)"
                 />
               </div>
 

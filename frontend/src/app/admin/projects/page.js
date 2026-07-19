@@ -10,6 +10,7 @@ import {
 import api from "../../../services/api";
 import toast from "react-hot-toast";
 import ImageUpload from "../../../components/admin/ImageUpload";
+import { useAuth } from "../../../context/AuthContext";
 
 const STATUS_MAP = {
  pending: { label: "Chờ xử lý", color: "bg-amber-500/20 text-amber-400 border-amber-500/20" },
@@ -81,7 +82,7 @@ const ProjectForm = ({ data, setData, onSubmit, title, submitLabel, onClose, cli
  <option value="Marketing">Marketing</option>
  </select>
  </div>
- <div className="grid grid-cols-2 gap-4">
+ <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
  <div>
  <label className="block text-sm font-medium text-gray-400 mb-1">Trạng thái</label>
  <select value={data.status} onChange={e => setData({ ...data, status: e.target.value })}
@@ -131,6 +132,9 @@ const ProjectForm = ({ data, setData, onSubmit, title, submitLabel, onClose, cli
 );
 
 export default function ProjectsBoard() {
+ const { user } = useAuth();
+ const canManageProjects = ['superadmin', 'admin', 'manager', 'account', 'sales'].includes(user?.role);
+
  const [projects, setProjects] = useState([]);
  const [clients, setClients] = useState([]);
  const [isLoading, setIsLoading] = useState(true);
@@ -154,6 +158,7 @@ export default function ProjectsBoard() {
  const [selectedBrief, setSelectedBrief] = useState(null);
  const [isAiLoading, setIsAiLoading] = useState(false);
  const [aiSummary, setAiSummary] = useState(null);
+ const [showAiModal, setShowAiModal] = useState(false);
 
  const fetchProjects = async () => {
  try {
@@ -261,20 +266,23 @@ export default function ProjectsBoard() {
  return (
  <div className="max-w-7xl mx-auto h-full flex flex-col relative">
  {/* Header */}
- <div className="flex items-center justify-between mb-6 shrink-0">
-  <div>
-  <h1 className="text-title-1 font-bold text-idaz-black mb-1">Dự án & Tiến độ</h1>
-  <p className="text-gray-400 text-footnote">Theo dõi toàn bộ dự án — Click vào thẻ để xem chi tiết, Tasks và Hóa đơn.</p>
-  </div>
-  <button onClick={() => setIsAddModalOpen(true)}
-  className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-idaz-black rounded-3xl text-footnote font-bold transition-all shadow-[0_0_15px_rgba(225,29,72,0.3)] flex items-center gap-2">
- <Plus size={18} /> Tạo dự án mới
+ <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-10">
+ <div>
+ <h1 className="text-3xl md:text-4xl font-black font-montserrat text-idaz-black tracking-tight flex items-center gap-3">
+ Quản lý Dự án
+ </h1>
+ <p className="text-gray-500 mt-2 text-sm font-medium">Theo dõi tiến độ, thanh toán và task của toàn bộ dự án.</p>
+ </div>
+ {canManageProjects && (
+ <button onClick={() => setIsAddModalOpen(true)} className="flex items-center gap-2 bg-idaz-black text-white hover:bg-gray-800 px-6 py-3 rounded-full font-bold shadow-lg shadow-black/20 transition-all hover:-translate-y-1">
+ <Plus size={20} /> Tạo dự án mới
  </button>
+ )}
  </div>
 
- <div className="grid md:grid-cols-3 gap-6 flex-1 overflow-hidden">
+ <div className="flex-1 overflow-hidden">
  {/* Cột 1: Danh sách Dự án */}
- <div className="md:col-span-2 space-y-4 overflow-y-auto pr-2 custom-scrollbar pb-10">
+ <div className="space-y-4 overflow-y-auto pr-2 custom-scrollbar pb-10 h-full">
   {isLoading ? (
   <div className="glass-panel border border-white/60 rounded-3xl p-10 flex flex-col items-center justify-center text-center opacity-70">
   <Loader2 size={40} className="text-rose-500 animate-spin mb-4" />
@@ -297,15 +305,15 @@ export default function ProjectsBoard() {
  const alert = getDeadlineAlert(project.deadline);
  const status = STATUS_MAP[project.status] || STATUS_MAP.pending;
  return (
- <motion.div
- key={project._id}
- initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
- className={`glass-panel border p-5 rounded-3xl transition-all cursor-pointer group ${
- alert?.color || 'border-white/40 hover:border-white/15'
- } ${drawerProject?._id === project._id ? 'border-rose-500/50 shadow-[0_0_20px_rgba(225,29,72,0.1)]' : ''}`}
- onClick={() => openDrawer(project)}
- >
- <div className="flex items-start justify-between gap-4">
+  <motion.div
+  key={project._id}
+  initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+  className={`glass-panel border p-6 md:p-8 rounded-[32px] transition-all cursor-pointer group hover:shadow-xl ${
+  alert?.color || 'border-white/40 hover:border-white/60'
+  } ${drawerProject?._id === project._id ? 'border-rose-500/50 shadow-[0_0_30px_rgba(225,29,72,0.15)] ring-2 ring-rose-500/20' : ''}`}
+  onClick={() => openDrawer(project)}
+  >
+  <div className="flex items-start justify-between gap-4">
  <div className="flex-1 min-w-0">
  <div className="flex items-center gap-2 mb-2 flex-wrap">
  <span className="text-xs text-zinc-600 font-mono">{project._id?.slice(-5).toUpperCase()}</span>
@@ -328,69 +336,27 @@ export default function ProjectsBoard() {
  </div>
  </div>
 
- {/* Progress slider */}
- <div className="mt-4 flex items-center gap-3" onClick={e => e.stopPropagation()}>
- <input type="range" min="0" max="100"
- value={project.progress || 0}
- onChange={e => handleUpdateProgress(project._id, e.target.value, project.status)}
- className="flex-1 h-2 glass-panel rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:bg-rose-500 [&::-webkit-slider-thumb]:rounded-full"
- style={{ background: `linear-gradient(to right, #e11d48 ${project.progress || 0}%, #ffffff ${project.progress || 0}%)` }}
- />
-  <span className="text-caption-1 text-gray-400 font-medium w-8 text-right">{project.progress || 0}%</span>
-  <div className="flex items-center gap-1 text-caption-1 text-gray-500">
-  <Calendar size={12} />
-  <span>{project.deadline ? new Date(project.deadline).toLocaleDateString('vi-VN') : '—'}</span>
- </div>
- <ChevronRight size={16} className="text-zinc-600 group-hover:text-gray-400 transition-colors" />
- </div>
- </motion.div>
+  {/* Progress slider */}
+  <div className="mt-6 flex items-center gap-4" onClick={e => e.stopPropagation()}>
+  <div className="flex-1 relative group/slider">
+    <input type="range" min="0" max="100"
+    value={project.progress || 0}
+    onChange={e => handleUpdateProgress(project._id, e.target.value, project.status)}
+    className="w-full h-3 glass-panel rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:bg-rose-500 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:shadow-lg [&::-webkit-slider-thumb]:hover:scale-125 [&::-webkit-slider-thumb]:transition-transform"
+    style={{ background: `linear-gradient(to right, #e11d48 ${project.progress || 0}%, rgba(255,255,255,0.5) ${project.progress || 0}%)` }}
+    />
+  </div>
+   <span className="text-sm font-bold text-gray-700 w-10 text-right">{project.progress || 0}%</span>
+   <div className="flex items-center gap-1.5 text-xs font-medium text-gray-500 px-3 py-1.5 bg-white/40 rounded-full border border-white/60">
+   <Calendar size={14} />
+   <span>{project.deadline ? new Date(project.deadline).toLocaleDateString('vi-VN') : '—'}</span>
+  </div>
+  <ChevronRight size={18} className="text-zinc-400 group-hover:text-idaz-orange transition-colors ml-2" />
+  </div>
+  </motion.div>
  );
  })}
  </div>
-
- {/* Cột 2: AI Panel / Drawer Placeholder */}
- {!drawerProject ? (
-  <div className="glass-panel border border-white/60 rounded-3xl p-6 h-[70vh] flex flex-col relative overflow-hidden">
-  <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 blur-3xl rounded-full" />
-  <h2 className="text-title-3 font-bold text-idaz-black mb-4 flex items-center gap-2">
-  <Sparkles className="text-indigo-400" size={20} /> Trợ lý AI
-  </h2>
-  {!selectedBrief ? (
-  <div className="flex-1 flex flex-col items-center justify-center text-center opacity-50">
-  <Target size={40} className="text-zinc-600 mb-4" />
-  <p className="text-footnote text-gray-400">Click vào dự án bên trái để xem chi tiết hoặc nhờ AI phân tích Brief.</p>
-  </div>
- ) : (
- <div className="flex-1 overflow-y-auto custom-scrollbar pr-1">
- <div className="mb-4 p-4 glass-panel rounded-3xl border border-white/40 text-sm text-gray-600 whitespace-pre-wrap">
- {selectedBrief.brief || "Chưa có Brief chi tiết."}
- </div>
- {!aiSummary ? (
- <button onClick={handleAiSummarize} disabled={isAiLoading}
- className="w-full bg-indigo-600 hover:bg-indigo-700 text-idaz-black px-6 py-3 rounded-3xl font-bold text-sm transition-all flex items-center justify-center gap-2">
- {isAiLoading ? <Loader2 size={18} className="animate-spin" /> : <Sparkles size={18} />}
- {isAiLoading ? "AI đang phân tích..." : "Nhờ AI phân tích Brief"}
- </button>
- ) : (
- <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
- <div className="bg-indigo-500/10 border border-indigo-500/20 p-4 rounded-3xl">
- <h4 className="text-xs font-bold text-indigo-400 uppercase mb-2">Tóm tắt Cốt lõi</h4>
- <p className="text-sm text-gray-600 leading-relaxed">{aiSummary.summary}</p>
- </div>
- <ul className="space-y-2">
- {aiSummary.actionItems.map((item, i) => (
- <li key={i} className="flex items-start gap-2 glass-panel p-3 rounded-3xl border border-white/40">
- <CheckCircle2 size={15} className="text-emerald-500 mt-0.5 shrink-0" />
- <span className="text-sm text-gray-600">{item}</span>
- </li>
- ))}
- </ul>
- </motion.div>
- )}
- </div>
- )}
- </div>
- ) : null}
  </div>
 
  {/* ═══ PROJECT DRAWER ═══ */}
@@ -405,26 +371,26 @@ export default function ProjectsBoard() {
  className="fixed top-0 right-0 h-full w-full max-w-lg bg-idaz-gray border-l border-white/60 z-50 flex flex-col shadow-2xl"
  >
  {/* Drawer Header */}
- <div className="p-6 border-b border-white/60 shrink-0">
- <div className="flex items-start justify-between mb-4">
+ <div className="p-8 border-b border-white/60 shrink-0">
+ <div className="flex items-start justify-between mb-5">
  <div className="flex-1 min-w-0 pr-4">
- <div className="flex items-center gap-2 mb-2">
- <span className={`px-2 py-0.5 rounded text-xs font-bold border ${STATUS_MAP[drawerProject.status]?.color || ''}`}>
+ <div className="flex items-center gap-3 mb-3">
+ <span className={`px-3 py-1 rounded-md text-xs font-black uppercase tracking-wider border ${STATUS_MAP[drawerProject.status]?.color || ''}`}>
  {STATUS_MAP[drawerProject.status]?.label}
  </span>
  {getDeadlineAlert(drawerProject.deadline) && (
- <span className={`px-2 py-0.5 rounded text-xs font-bold flex items-center gap-1 ${getDeadlineAlert(drawerProject.deadline).badge}`}>
- <AlertTriangle size={10} /> {getDeadlineAlert(drawerProject.deadline).label}
+ <span className={`px-3 py-1 rounded-md text-xs font-black uppercase tracking-wider flex items-center gap-1.5 ${getDeadlineAlert(drawerProject.deadline).badge}`}>
+ <AlertTriangle size={12} /> {getDeadlineAlert(drawerProject.deadline).label}
  </span>
  )}
  </div>
- <h2 className="text-xl font-bold text-idaz-black truncate">{drawerProject.title}</h2>
- <p className="text-sm text-gray-400 mt-1">KH: {drawerProject.clientName || drawerProject.clientId?.name || 'N/A'}</p>
+ <h2 className="text-2xl font-black font-montserrat text-idaz-black truncate">{drawerProject.title}</h2>
+ <p className="text-sm font-medium text-gray-500 mt-2">KH: {drawerProject.clientName || drawerProject.clientId?.name || 'N/A'}</p>
  </div>
  <div className="flex items-center gap-2 shrink-0">
  <button onClick={() => { setEditProject({ ...drawerProject, progress: drawerProject.progress || 0 }); setIsEditModalOpen(true); }}
- className="p-2 bg-white/5 hover:bg-indigo-500/20 hover:text-indigo-400 text-gray-400 rounded-xl transition-colors"><Edit2 size={16} /></button>
- <button onClick={() => setDrawerProject(null)} className="p-2 hover:bg-white/10 text-gray-400 hover:text-idaz-black rounded-xl transition-colors"><X size={18} /></button>
+ className="p-2.5 bg-white/50 hover:bg-indigo-500/10 hover:text-indigo-600 text-gray-500 rounded-xl transition-all shadow-sm"><Edit2 size={18} /></button>
+ <button onClick={() => setDrawerProject(null)} className="p-2.5 hover:bg-white/50 text-gray-500 hover:text-red-500 rounded-xl transition-all shadow-sm"><X size={20} /></button>
  </div>
  </div>
 
@@ -438,15 +404,15 @@ export default function ProjectsBoard() {
  </div>
 
  {/* Tab nav */}
- <div className="flex gap-1 mt-4">
+ <div className="flex gap-2 mt-6">
  {[
- { id: "overview", label: "Tổng quan", icon: <TrendingUp size={14} /> },
- { id: "tasks", label: `Tasks (${drawerTasks.length})`, icon: <ListTodo size={14} /> },
- { id: "invoices", label: `Hóa đơn (${drawerInvoices.length})`, icon: <Receipt size={14} /> },
+ { id: "overview", label: "Tổng quan", icon: <TrendingUp size={16} /> },
+ { id: "tasks", label: `Tasks (${drawerTasks.length})`, icon: <ListTodo size={16} /> },
+ { id: "invoices", label: `Hóa đơn (${drawerInvoices.length})`, icon: <Receipt size={16} /> },
  ].map(tab => (
  <button key={tab.id} onClick={() => setDrawerTab(tab.id)}
- className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium transition-all ${
- drawerTab === tab.id ? 'bg-rose-600 text-idaz-black' : 'text-gray-400 hover:text-idaz-black hover:bg-white/5'
+ className={`flex items-center gap-2 px-4 py-2.5 rounded-[16px] text-sm font-bold transition-all shadow-sm ${
+ drawerTab === tab.id ? 'bg-rose-600 text-white hover:bg-rose-700' : 'bg-white/40 text-gray-500 hover:text-idaz-black hover:bg-white/70 border border-white/60'
  }`}>
  {tab.icon} {tab.label}
  </button>
@@ -455,7 +421,7 @@ export default function ProjectsBoard() {
  </div>
 
  {/* Drawer Content */}
- <div className="flex-1 overflow-y-auto custom-scrollbar p-6">
+ <div className="flex-1 overflow-y-auto custom-scrollbar p-8">
  {drawerLoading ? (
  <div className="flex items-center justify-center h-32 text-gray-500"><Loader2 size={24} className="animate-spin" /></div>
  ) : (
@@ -463,7 +429,7 @@ export default function ProjectsBoard() {
  {/* Tab: Tổng quan */}
  {drawerTab === "overview" && (
  <div className="space-y-5">
- <div className="grid grid-cols-2 gap-3">
+ <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
  <div className="glass-panel rounded-3xl p-4">
  <div className="text-xs text-gray-500 mb-1 flex items-center gap-1"><Calendar size={12} /> Deadline</div>
  <div className="font-bold text-idaz-black text-sm">{drawerProject.deadline ? new Date(drawerProject.deadline).toLocaleDateString('vi-VN') : 'Chưa có'}</div>
@@ -565,13 +531,62 @@ export default function ProjectsBoard() {
 
  {/* Drawer Footer - AI brief */}
  <div className="p-4 border-t border-white/60 shrink-0">
- <button onClick={() => { setSelectedBrief(drawerProject); setAiSummary(null); setDrawerProject(null); }}
+ <button onClick={() => { setSelectedBrief(drawerProject); setAiSummary(null); setShowAiModal(true); }}
  className="w-full flex items-center justify-center gap-2 py-2.5 bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-400 border border-indigo-500/20 rounded-3xl text-sm font-bold transition-all">
  <Sparkles size={16} /> Nhờ AI phân tích Brief
  </button>
  </div>
  </motion.div>
  </>
+ )}
+ </AnimatePresence>
+
+ {/* ═══ MODAL AI BRIEF ANALYZER ═══ */}
+ <AnimatePresence>
+ {showAiModal && selectedBrief && (
+ <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+ className="fixed inset-0 bg-idaz-black/60 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
+ <motion.div initial={{ scale: 0.95, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.95, opacity: 0, y: 20 }}
+ className="bg-idaz-gray border border-white/60 rounded-3xl p-6 md:p-8 w-full max-w-2xl shadow-2xl relative max-h-[90vh] overflow-hidden flex flex-col">
+ <button onClick={() => setShowAiModal(false)} className="absolute top-6 right-6 p-2 text-gray-400 hover:text-rose-500 bg-white/10 rounded-full transition-colors z-10">
+ <X size={20} />
+ </button>
+ <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 blur-3xl rounded-full" />
+ <h2 className="text-title-3 font-bold text-idaz-black mb-6 flex items-center gap-2">
+ <Sparkles className="text-indigo-500" size={24} /> Trợ lý AI Phân tích
+ </h2>
+ 
+ <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 space-y-6">
+ <div className="p-4 glass-panel rounded-3xl border border-white/40 text-sm text-gray-600 whitespace-pre-wrap leading-relaxed shadow-sm">
+ <div className="font-bold text-idaz-black mb-2 flex items-center gap-2"><Target size={16}/> Nội dung Brief gốc:</div>
+ {selectedBrief.brief || "Chưa có Brief chi tiết."}
+ </div>
+ 
+ {!aiSummary ? (
+ <button onClick={handleAiSummarize} disabled={isAiLoading}
+ className="w-full bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white shadow-lg shadow-indigo-500/25 px-6 py-4 rounded-3xl font-bold text-base transition-all flex items-center justify-center gap-2 mt-4">
+ {isAiLoading ? <Loader2 size={20} className="animate-spin" /> : <Sparkles size={20} />}
+ {isAiLoading ? "AI đang tiến hành phân tích..." : "Nhờ AI phân tích Brief ngay"}
+ </button>
+ ) : (
+ <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
+ <div className="bg-indigo-500/10 border border-indigo-500/20 p-5 rounded-3xl">
+ <h4 className="text-sm font-bold text-indigo-500 uppercase mb-2 flex items-center gap-2"><Sparkles size={16}/> Tóm tắt Cốt lõi</h4>
+ <p className="text-base text-idaz-black leading-relaxed">{aiSummary.summary}</p>
+ </div>
+ <ul className="space-y-3">
+ {aiSummary.actionItems.map((item, i) => (
+ <li key={i} className="flex items-start gap-3 glass-panel p-4 rounded-3xl border border-white/40 shadow-sm">
+ <CheckCircle2 size={20} className="text-emerald-500 mt-0.5 shrink-0" />
+ <span className="text-base text-gray-700">{item}</span>
+ </li>
+ ))}
+ </ul>
+ </motion.div>
+ )}
+ </div>
+ </motion.div>
+ </motion.div>
  )}
  </AnimatePresence>
 

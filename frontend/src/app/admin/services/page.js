@@ -166,8 +166,8 @@ export default function AdminServicesPage() {
       </div>
 
       <div className="glass-card rounded-3xl border border-white/60 overflow-hidden shadow-sm">
-        <div className="overflow-x-auto">
-          <table className="w-full">
+        <div className="overflow-x-auto min-w-0">
+          <table className="w-full min-w-[800px]">
             <thead>
               <tr className="bg-gray-50 border-b border-gray-100 text-left text-sm font-semibold text-gray-500">
                 <th className="px-6 py-4">Tên Dịch vụ</th>

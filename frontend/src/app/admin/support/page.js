@@ -112,8 +112,8 @@ export default function AdminSupport() {
           </div>
         </div>
         
-        <div className="flex-1 overflow-auto custom-scrollbar">
-          <table className="w-full text-left border-collapse">
+        <div className="flex-1 overflow-auto custom-scrollbar min-w-0">
+          <table className="w-full text-left border-collapse min-w-[800px]">
             <thead>
               <tr className="border-b border-white/40 glass-panel/[0.02] text-sm font-medium text-gray-400">
                 <th className="p-4 pl-6 font-medium">Khách hàng</th>
@@ -199,8 +199,12 @@ export default function AdminSupport() {
                 
                 {/* Tin nhắn gốc */}
                 <div className="flex gap-4">
-                  <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold shrink-0">
-                    {selectedTicket.userId?.name?.charAt(0) || 'U'}
+                  <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold shrink-0 overflow-hidden">
+                    {selectedTicket.userId?.avatar ? (
+                      <img src={selectedTicket.userId.avatar} alt="User" className="w-full h-full object-cover" />
+                    ) : (
+                      selectedTicket.userId?.name?.charAt(0) || 'U'
+                    )}
                   </div>
                   <div className="bg-white p-4 rounded-2xl rounded-tl-none shadow-sm border border-gray-100 max-w-[85%]">
                     <p className="text-sm font-bold text-idaz-black mb-1">{selectedTicket.userId?.name}</p>
@@ -214,8 +218,12 @@ export default function AdminSupport() {
                   const isAdmin = reply.senderRole === 'admin' || reply.senderRole === 'manager' || reply.senderRole === 'dev' || reply.senderRole === 'content' || reply.senderRole === 'intern' || reply.senderRole === 'affiliate';
                   return (
                     <div key={index} className={`flex gap-4 ${isAdmin ? 'flex-row-reverse' : ''}`}>
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold shrink-0 text-xs ${isAdmin ? 'bg-rose-100 text-rose-600' : 'bg-indigo-100 text-indigo-600'}`}>
-                        {reply.senderName?.charAt(0) || 'U'}
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold shrink-0 text-xs overflow-hidden ${isAdmin ? 'bg-rose-100 text-rose-600' : 'bg-indigo-100 text-indigo-600'}`}>
+                        {reply.senderAvatar ? (
+                          <img src={reply.senderAvatar} alt="Avatar" className="w-full h-full object-cover" />
+                        ) : (
+                          reply.senderName?.charAt(0) || 'U'
+                        )}
                       </div>
                       <div className={`p-4 rounded-2xl shadow-sm max-w-[85%] ${
                         isAdmin 

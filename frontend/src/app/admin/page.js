@@ -53,7 +53,6 @@ export default function AnalyticsDashboard() {
  const { stats, revenueData, taskStatusData, recentActivities } = data;
 
  const cards = [
- { title: "Tổng Doanh Thu", value: `${stats.totalRevenue.toLocaleString('vi-VN')} ₫`, icon: <DollarSign size={24} />, color: "text-rose-500", bg: "bg-rose-500/10", border: "border-rose-500/20" },
  { title: "Dự án đang chạy", value: stats.activeProjects, icon: <FolderKanban size={24} />, color: "text-indigo-500", bg: "bg-indigo-500/10", border: "border-indigo-500/20" },
  { title: "Task chờ xử lý", value: stats.pendingTasks, icon: <CheckCircle size={24} />, color: "text-amber-500", bg: "bg-amber-500/10", border: "border-amber-500/20" },
  { title: "Tỉ lệ chuyển đổi", value: `${stats.conversionRate}%`, icon: <UsersIcon size={24} />, color: "text-emerald-500", bg: "bg-emerald-500/10", border: "border-emerald-500/20" },
@@ -85,11 +84,26 @@ export default function AnalyticsDashboard() {
   </div>
  </div>
 
+ {/* Featured Revenue Banner */}
+ {(user?.role === 'admin' || user?.role === 'manager') && (
+ <motion.div 
+ initial={{ opacity: 0, y: 20 }}
+ animate={{ opacity: 1, y: 0 }}
+ className="bg-gradient-to-r from-orange-400 to-orange-600 rounded-3xl p-8 md:p-10 shadow-2xl relative overflow-hidden"
+ >
+ <div className="absolute -right-10 -top-10 text-white/10">
+ <DollarSign size={200} />
+ </div>
+ <div className="relative z-10">
+ <h3 className="text-white/80 font-medium mb-2 flex items-center gap-2 text-lg"><DollarSign size={20} /> Tổng Doanh Thu</h3>
+ <p className="text-4xl md:text-5xl font-extrabold text-white tracking-tight">{stats.totalRevenue.toLocaleString('vi-VN')} ₫</p>
+ </div>
+ </motion.div>
+ )}
+
  {/* Stats Cards */}
- <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+ <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
  {cards.map((card, i) => {
- // Chỉ Admin / Manager mới thấy Doanh thu
- if (card.title === "Tổng Doanh Thu" && user?.role !== 'admin' && user?.role !== 'manager') return null;
  // Chỉ Admin / Manager mới thấy Hóa đơn chờ thu
  if (card.title === "Hóa đơn chờ thu" && user?.role !== 'admin' && user?.role !== 'manager') return null;
  

@@ -40,7 +40,7 @@ export default function AdminTeam() {
 
   // Modals
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [newMember, setNewMember] = useState({ name: "", email: "", password: "", phone: "", role: "manager" });
+  const [newMember, setNewMember] = useState({ name: "", email: "", password: "", phone: "", role: "manager", jobTitle: "" });
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editMember, setEditMember] = useState(null);
@@ -81,7 +81,7 @@ export default function AdminTeam() {
       if (data.success) {
         toast.success("Thêm nhân sự thành công!");
         setIsAddModalOpen(false);
-        setNewMember({ name: "", email: "", password: "", phone: "", role: "manager" });
+        setNewMember({ name: "", email: "", password: "", phone: "", role: "manager", jobTitle: "" });
         fetchTeam();
       }
     } catch (error) {
@@ -96,6 +96,7 @@ export default function AdminTeam() {
         name: editMember.name,
         phone: editMember.phone,
         role: editMember.role,
+        jobTitle: editMember.jobTitle,
       });
       if (data.success) {
         toast.success("Cập nhật thành công!");
@@ -154,8 +155,8 @@ export default function AdminTeam() {
       </div>
 
       <div className="glass-card border border-white/60 rounded-3xl overflow-hidden flex-1 flex flex-col shadow-[0_8px_32px_rgba(0,0,0,0.04)]">
-        <div className="overflow-y-auto flex-1 custom-scrollbar">
-          <table className="w-full text-left border-collapse">
+        <div className="overflow-auto flex-1 custom-scrollbar min-w-0">
+          <table className="w-full text-left border-collapse min-w-[800px]">
             <thead className="sticky top-0 z-10 bg-white/40 backdrop-blur-md">
               <tr className="border-b border-white/60">
                 <th className="p-4 pl-6 text-xs font-bold text-gray-500 uppercase tracking-wider">Thành viên</th>
@@ -179,7 +180,10 @@ export default function AdminTeam() {
                       </div>
                       <div>
                         <div className="font-bold text-idaz-black">{member.name} {member._id === currentUser?._id && <span className="text-xs text-indigo-500 font-medium ml-1">(Bạn)</span>}</div>
-                        <div className="text-xs text-gray-500">ID: {member._id.substring(18)}</div>
+                        <div className="text-xs text-gray-500">
+                          {member.jobTitle ? <span className="font-semibold text-idaz-orange mr-2">{member.jobTitle}</span> : ''}
+                          ID: {member._id.substring(18)}
+                        </div>
                       </div>
                     </div>
                   </td>
@@ -260,6 +264,12 @@ export default function AdminTeam() {
                     placeholder="VD: Trần Văn B" />
                 </div>
                 <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-1 ml-1">Chức danh / Tag</label>
+                  <input type="text" value={newMember.jobTitle} onChange={e => setNewMember({ ...newMember, jobTitle: e.target.value })}
+                    className="w-full glass-panel border border-white/60 rounded-2xl px-4 py-3 text-idaz-black text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all shadow-inner"
+                    placeholder="VD: CEO, Co-Founder, Trưởng phòng..." />
+                </div>
+                <div>
                   <label className="block text-sm font-bold text-gray-700 mb-1 ml-1">Email</label>
                   <input required type="email" value={newMember.email} onChange={e => setNewMember({ ...newMember, email: e.target.value })}
                     className="w-full glass-panel border border-white/60 rounded-2xl px-4 py-3 text-idaz-black text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all shadow-inner"
@@ -336,6 +346,12 @@ export default function AdminTeam() {
                   <label className="block text-sm font-bold text-gray-700 mb-1 ml-1">Họ tên</label>
                   <input type="text" value={editMember.name || ''} onChange={e => setEditMember({ ...editMember, name: e.target.value })}
                     className="w-full glass-panel border border-white/60 rounded-2xl px-4 py-3 text-idaz-black text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all shadow-inner" />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-1 ml-1">Chức danh / Tag</label>
+                  <input type="text" value={editMember.jobTitle || ''} onChange={e => setEditMember({ ...editMember, jobTitle: e.target.value })}
+                    className="w-full glass-panel border border-white/60 rounded-2xl px-4 py-3 text-idaz-black text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all shadow-inner"
+                    placeholder="VD: CEO, Co-Founder, Trưởng phòng..." />
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-1 ml-1">Số điện thoại</label>

@@ -190,7 +190,7 @@ export default function AdminBriefs() {
  <div className="glass-panel rounded-3xl p-8 max-w-2xl w-full shadow-2xl max-h-[90vh] overflow-y-auto">
  <h3 className="text-2xl font-bold text-idaz-black mb-6">Chỉnh sửa Brief: {editingBrief.companyName}</h3>
  <form onSubmit={handleUpdateBrief} className="space-y-4">
- <div className="grid grid-cols-2 gap-4">
+ <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
  <div>
  <label className="block text-sm font-bold text-gray-700 mb-1">Tên doanh nghiệp</label>
  <input type="text" value={editFormData.companyName} onChange={e => setEditFormData({...editFormData, companyName: e.target.value})} className="w-full bg-white border border-gray-200 rounded-2xl px-4 py-2 text-idaz-black focus:border-indigo-500 focus:outline-none" />

@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Receipt, DollarSign, ArrowUpRight, ArrowDownRight, CreditCard, CheckCircle2, Clock, Plus, X, Trash2, Ban, Search, Edit2 } from "lucide-react";
 import toast from "react-hot-toast";
 import api from "../../../services/api";
+import { jsPDF } from "jspdf";
 
 export default function BillingDashboard() {
  const [invoices, setInvoices] = useState([]);
@@ -17,6 +18,7 @@ export default function BillingDashboard() {
  const [newInvoice, setNewInvoice] = useState({
  userId: '', projectId: '', title: '', amount: '', dueDate: '', status: 'pending', invoiceNumber: `INV-${Date.now().toString().slice(-6)}`
  });
+ const [printInvoice, setPrintInvoice] = useState(null);
 
  useEffect(() => {
  fetchInvoices();
@@ -72,7 +74,7 @@ export default function BillingDashboard() {
  toast.success(editingId ? 'Cập nhật hóa đơn thành công' : 'Tạo hóa đơn thành công');
  setIsModalOpen(false);
  setEditingId(null);
- setNewInvoice({ userId: '', projectId: '', title: '', amount: '', dueDate: '', invoiceNumber: `INV-${Date.now().toString().slice(-6)}` });
+ setNewInvoice({ userId: '', projectId: '', title: '', amount: '', dueDate: '', status: 'pending', invoiceNumber: `INV-${Date.now().toString().slice(-6)}` });
  fetchInvoices();
  }
  } catch (error) {
@@ -134,42 +136,96 @@ export default function BillingDashboard() {
  } catch { toast.error('Lỗi huỷ hóa đơn'); }
  };
 
-  const handleExportPDF = async (inv) => {
+  const handleExportPDF = (inv) => {
+    setPrintInvoice(inv);
+    
+    // Đợi render xong rồi capture
+    setTimeout(async () => {
+      try {
+        const toastId = toast.loading("Đang tạo PDF...");
+        
+        const element = document.getElementById("invoice-print-area");
+        if (!element) throw new Error("Không tìm thấy mẫu in");
+        
+        const htmlToImage = await import("html-to-image");
+        const imgData = await htmlToImage.toPng(element, { pixelRatio: 2, backgroundColor: "#ffffff" });
+        
+        const pdf = new jsPDF("p", "mm", "a4");
+        
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const imgProps = pdf.getImageProperties(imgData);
+        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+        
+        pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+        pdf.save(`HoaDon_${inv.invoiceNumber}.pdf`);
+        
+        toast.success("Đã xuất hóa đơn PDF thành công!", { id: toastId });
+      } catch (error) {
+        console.error("Lỗi xuất PDF:", error);
+        toast.error(`Lỗi: ${error.message}`, { id: toastId });
+      } finally {
+        setPrintInvoice(null);
+      }
+    }, 500);
+  };
+
+  const handleExportXML = (inv) => {
     try {
-      const { jsPDF } = await import("jspdf");
+      const xmlData = `<?xml version="1.0" encoding="UTF-8"?>
+<HDon>
+  <DLHDon>
+    <TTChung>
+      <KHMSHDon>1C26TMC</KHMSHDon>
+      <KHHDon>TMC</KHHDon>
+      <SHDon>${inv.invoiceNumber}</SHDon>
+      <TDLap>${new Date(inv.createdAt || Date.now()).toISOString().split('T')[0]}</TDLap>
+      <TTHDon>01</TTHDon>
+      <DVTTe>VND</DVTTe>
+      <TGia>1.0</TGia>
+    </TTChung>
+    <NDHDon>
+      <NMua>
+        <Ten>${inv.userId?.name || 'Khach hang'}</Ten>
+        <DCTDTu>${inv.userId?.email || ''}</DCTDTu>
+        <SDThoai>${inv.userId?.phone || ''}</SDThoai>
+      </NMua>
+      <DSHHDVu>
+        <HHDVu>
+          <THHDVu>${inv.title}</THHDVu>
+          <DVTinh>Goi</DVTinh>
+          <SLuong>1</SLuong>
+          <DGia>${inv.amount}</DGia>
+          <TTCKhau>0</TTCKhau>
+          <ThTien>${inv.amount}</ThTien>
+          <TSuat>0</TSuat>
+        </HHDVu>
+      </DSHHDVu>
+      <TToan>
+        <TgTCThue>${inv.amount}</TgTCThue>
+        <TgTThue>0</TgTThue>
+        <TgTTTBSo>${inv.amount}</TgTTTBSo>
+      </TToan>
+    </NDHDon>
+  </DLHDon>
+</HDon>`;
       
-      const doc = new jsPDF();
-      doc.setFontSize(22);
-      doc.text("IDAZ AGENCY", 105, 20, { align: "center" });
+      const blob = new Blob([xmlData], { type: 'application/xml' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `E_Invoice_${inv.invoiceNumber}.xml`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
       
-      doc.setFontSize(14);
-      doc.text("HOA DON THANH TOAN", 105, 30, { align: "center" });
-      
-      doc.setFontSize(11);
-      doc.text(`Ma hoa don: ${inv.invoiceNumber}`, 20, 50);
-      doc.text(`Ngay tao: ${new Date().toLocaleDateString('vi-VN')}`, 20, 60);
-      doc.text(`Han thanh toan: ${new Date(inv.dueDate).toLocaleDateString('vi-VN')}`, 20, 70);
-      
-      doc.text(`Khach hang: ${inv.userId?.name || 'N/A'}`, 20, 90);
-      doc.text(`Email: ${inv.userId?.email || 'N/A'}`, 20, 100);
-      if (inv.projectId) doc.text(`Du an: ${inv.projectId.title}`, 20, 110);
-      
-      doc.text(`Dich vu: ${inv.title}`, 20, 130);
-      doc.setFontSize(14);
-      doc.text(`TONG TIEN: ${inv.amount.toLocaleString('vi-VN')} VND`, 20, 150);
-      
-      doc.setFontSize(11);
-      doc.text(`Trang thai: ${inv.status === 'paid' ? 'Da Thu' : inv.status === 'cancelled' ? 'Da Huy' : 'Cho Thu'}`, 20, 160);
-      
-      doc.save(`HoaDon_${inv.invoiceNumber}.pdf`);
-      toast.success("Đã tải xuống hóa đơn PDF");
+      toast.success("Đã xuất Hóa đơn điện tử (XML) thành công");
     } catch (error) {
-      console.error(error);
-      toast.error("Lỗi khi tạo PDF");
+      toast.error("Lỗi xuất Hóa đơn điện tử");
     }
   };
 
- // Tính toán thống kê
+  // Tính toán thống kê
  const totalRevenue = invoices.filter(i => i.status === 'paid').reduce((sum, i) => sum + i.amount, 0);
  const totalPending = invoices.filter(i => i.status === 'pending').reduce((sum, i) => sum + i.amount, 0);
 
@@ -245,51 +301,65 @@ export default function BillingDashboard() {
  </div>
  </div>
  
- <div className="flex-1 overflow-auto custom-scrollbar">
- <table className="w-full text-left border-collapse">
- <thead>
- <tr className="border-b border-white/40 glass-panel/[0.02] text-sm font-medium text-gray-400">
- <th className="p-4 pl-6 font-medium">Mã Hóa đơn</th>
- <th className="p-4 font-medium">Khách hàng</th>
- <th className="p-4 font-medium">Hạn thanh toán</th>
- <th className="p-4 font-medium">Số tiền</th>
- <th className="p-4 font-medium">Trạng thái</th>
- <th className="p-4 pr-6 text-right font-medium">Hành động</th>
- </tr>
- </thead>
- <tbody>
- {filteredInvoices.length === 0 && (
- <tr><td colSpan="6" className="text-center p-8 text-gray-500">Không có hóa đơn nào</td></tr>
- )}
- {filteredInvoices.map((inv, idx) => (
- <motion.tr
- initial={{ opacity: 0, x: -10 }}
- animate={{ opacity: 1, x: 0 }}
- transition={{ delay: idx * 0.04 }}
- key={inv._id}
- className="border-b border-white/40 hover:glass-panel/[0.02] transition-colors group text-sm"
- >
- <td className="p-4 pl-6 font-bold text-gray-600">{inv.invoiceNumber}</td>
- <td className="p-4">
- <h3 className="text-idaz-black font-bold mb-1">{inv.title}</h3>
- <p className="text-sm text-gray-400">
- Cho: <span className="text-gray-600 font-medium">{inv.userId?.name || 'N/A'}</span>
- {inv.projectId && <span className="ml-2 text-rose-400">({inv.projectId.title})</span>}
- </p>
- </td>
- <td className="p-4 text-gray-400">{new Date(inv.dueDate).toLocaleDateString('vi-VN')}</td>
- <td className="p-4 text-idaz-black font-bold">{inv.amount.toLocaleString('vi-VN')} ₫</td>
- <td className="p-4">
- <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border ${
- inv.status === 'paid' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' :
- inv.status === 'cancelled' ? 'bg-zinc-500/10 text-gray-400 border-zinc-500/20' :
- 'bg-amber-500/10 text-amber-400 border-amber-500/20'
- }`}>
- {inv.status === 'paid' ? <CheckCircle2 size={12} /> : null}
- {inv.status === 'paid' ? 'Đã thu' : inv.status === 'cancelled' ? 'Đã huỷ' : 'Chờ thu'}
- </span>
- </td>
-  <td className="p-4 pr-6">
+ <div className="flex-1 overflow-auto custom-scrollbar min-w-0 px-2">
+  <table className="w-full text-left border-collapse min-w-[800px]">
+  <thead>
+  <tr className="border-b border-gray-200 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+  <th className="p-5 pl-6">Mã Hóa đơn</th>
+  <th className="p-5">Khách hàng</th>
+  <th className="p-5">Hạn thanh toán</th>
+  <th className="p-5 text-right">Số tiền</th>
+  <th className="p-5 text-center">Trạng thái</th>
+  <th className="p-5 pr-6 text-right">Hành động</th>
+  </tr>
+  </thead>
+  <tbody>
+  {filteredInvoices.length === 0 && (
+  <tr><td colSpan="6" className="text-center p-12 text-gray-400 text-sm">Chưa có hóa đơn nào phù hợp.</td></tr>
+  )}
+  {filteredInvoices.map((inv, idx) => (
+  <motion.tr
+  initial={{ opacity: 0, y: 5 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ delay: idx * 0.03 }}
+  key={inv._id}
+  className="border-b border-gray-100 hover:bg-white/80 transition-all group text-sm even:bg-gray-50/50"
+  >
+  <td className="p-5 pl-6">
+    <span className="font-mono font-semibold text-indigo-600 bg-indigo-50 px-2 py-1 rounded-md text-xs">{inv.invoiceNumber}</span>
+  </td>
+  <td className="p-5">
+  <div className="flex flex-col">
+    <span className="text-idaz-black font-semibold">{inv.title}</span>
+    <span className="text-xs text-gray-500 mt-0.5">
+      KH: <span className="text-gray-700 font-medium">{inv.userId?.name || 'N/A'}</span>
+      {inv.projectId && <span className="ml-2 text-indigo-500">({inv.projectId.title})</span>}
+    </span>
+  </div>
+  </td>
+  <td className="p-5 text-gray-500">{new Date(inv.dueDate).toLocaleDateString('vi-VN')}</td>
+  <td className="p-5 text-right text-idaz-black font-bold text-base">{inv.amount.toLocaleString('vi-VN')} ₫</td>
+  <td className="p-5 text-center">
+  <span className={`inline-flex items-center justify-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border ${
+  inv.status === 'paid' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+  inv.status === 'cancelled' ? 'bg-gray-100 text-gray-600 border-gray-200' :
+  'bg-amber-50 text-amber-700 border-amber-200'
+  }`}>
+  {inv.status === 'paid' ? <CheckCircle2 size={12} className="text-emerald-600" /> : null}
+  {inv.status === 'paid' ? 'Đã thu' : inv.status === 'cancelled' ? 'Đã huỷ' : 'Chờ thu'}
+  </span>
+  </td>
+  <td className="p-5 pr-6">
+    <div className="flex items-center justify-end gap-2 mt-2">
+      <button onClick={() => handleExportPDF(inv)}
+        className="text-xs bg-indigo-50 hover:bg-indigo-100 text-indigo-600 px-3 py-1.5 rounded-lg transition-colors font-bold border border-indigo-100">
+        Xuất PDF
+      </button>
+      <button onClick={() => handleExportXML(inv)}
+        className="text-xs bg-emerald-50 hover:bg-emerald-100 text-emerald-600 px-3 py-1.5 rounded-lg transition-colors font-bold border border-emerald-100">
+        Xuất HĐĐT (XML)
+      </button>
+    </div>
     <div className="flex items-center justify-end gap-2">
       {inv.status === 'pending' && (
         <>
@@ -304,11 +374,6 @@ export default function BillingDashboard() {
           </button>
         </>
       )}
-      <button onClick={() => handleExportPDF(inv)}
-        className="opacity-0 group-hover:opacity-100 text-xs text-gray-500 hover:text-indigo-400 bg-white/5 hover:bg-indigo-500/10 p-1.5 rounded-xl transition-all border border-white/60"
-        title="Xuất PDF">
-        <Receipt size={13} />
-      </button>
       <button onClick={() => openEditModal(inv)}
         className="opacity-0 group-hover:opacity-100 text-xs text-gray-500 hover:text-blue-400 bg-white/5 hover:bg-blue-500/10 p-1.5 rounded-xl transition-all border border-white/60"
         title="Chỉnh sửa">
@@ -393,7 +458,7 @@ export default function BillingDashboard() {
  />
  </div>
 
- <div className="grid grid-cols-2 gap-4">
+ <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
  <div>
  <label className="block text-sm font-medium text-gray-400 mb-1">Hạn thanh toán</label>
  <input 
@@ -429,6 +494,120 @@ export default function BillingDashboard() {
  )}
  </AnimatePresence>
 
+      {/* Hidden Invoice Template for PDF Export */}
+      {printInvoice && (
+        <div style={{ position: 'absolute', left: '-9999px', top: 0, zIndex: -100 }}>
+          <div id="invoice-print-area" className="w-[800px] bg-[#ffffff] p-12 font-sans text-[#1f2937]" style={{ minHeight: '1131px' }}>
+            {/* Brand Header */}
+            <div className="flex justify-between items-start border-b-2 border-[#f3f4f6] pb-8 mb-8">
+              <div>
+                <h1 className="text-4xl font-black text-[#4f46e5] tracking-tighter mb-2">IDAZ AGENCY</h1>
+                <p className="text-sm text-[#6b7280]">Tầng 12, Tòa nhà Bitexco, Q1, TP.HCM</p>
+                <p className="text-sm text-[#6b7280]">contact@idazagency.com | 0987.654.321</p>
+              </div>
+              <div className="text-right">
+                <h2 className="text-3xl font-bold text-[#1f2937] uppercase tracking-widest mb-2">HÓA ĐƠN</h2>
+                <p className="text-sm text-[#6b7280] font-bold">Số: {printInvoice.invoiceNumber}</p>
+                <p className="text-sm text-[#6b7280]">Ngày lập: {new Date(printInvoice.createdAt || Date.now()).toLocaleDateString('vi-VN')}</p>
+                <p className="text-sm text-gray-500">Hạn thanh toán: {new Date(printInvoice.dueDate).toLocaleDateString('vi-VN')}</p>
+              </div>
+            </div>
+            
+            {/* Client Info */}
+            <div className="flex justify-between items-start mb-10 bg-gray-50 p-6 rounded-2xl border border-gray-100">
+              <div>
+                <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-2">Thông tin khách hàng</h3>
+                <p className="text-lg font-bold text-gray-800">{printInvoice.userId?.name || 'Khách hàng'}</p>
+                <p className="text-sm text-gray-600">{printInvoice.userId?.company || 'Cá nhân / Doanh nghiệp'}</p>
+                <p className="text-sm text-gray-600">{printInvoice.userId?.email || ''}</p>
+                <p className="text-sm text-gray-600">{printInvoice.userId?.phone || ''}</p>
+              </div>
+              <div className="text-right">
+                <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-2">Dự án liên kết</h3>
+                <p className="text-base font-bold text-gray-800">{printInvoice.projectId?.title || 'Dịch vụ rời'}</p>
+                {printInvoice.projectId && (
+                  <p className="text-sm text-gray-600">ID: {printInvoice.projectId?._id?.substring(18) || 'N/A'}</p>
+                )}
+              </div>
+            </div>
+
+            {/* Invoice Items */}
+            <table className="w-full mb-10 text-left border-collapse">
+              <thead>
+                <tr className="border-b-2 border-gray-800">
+                  <th className="py-4 text-sm font-bold text-gray-800 uppercase tracking-wider">Mô tả dịch vụ</th>
+                  <th className="py-4 text-sm font-bold text-gray-800 uppercase tracking-wider text-right">Thành tiền</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr className="border-b border-gray-100">
+                  <td className="py-6">
+                    <p className="font-bold text-gray-800 text-lg">{printInvoice.title}</p>
+                    <p className="text-sm text-gray-500 mt-1">Hạng mục thanh toán theo thỏa thuận hoặc hợp đồng.</p>
+                  </td>
+                  <td className="py-6 text-right font-bold text-gray-800 text-lg">
+                    {printInvoice.amount.toLocaleString('vi-VN')} VNĐ
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            {/* Summary */}
+            <div className="flex justify-end mb-12">
+              <div className="w-1/2">
+                <div className="flex justify-between py-3 border-b border-gray-100">
+                  <span className="text-gray-500 font-medium">Tạm tính:</span>
+                  <span className="font-bold text-gray-800">{printInvoice.amount.toLocaleString('vi-VN')} VNĐ</span>
+                </div>
+                <div className="flex justify-between py-3 border-b border-gray-100">
+                  <span className="text-gray-500 font-medium">VAT (0%):</span>
+                  <span className="font-bold text-gray-800">0 VNĐ</span>
+                </div>
+                <div className="flex justify-between py-4 border-b-2 border-gray-800">
+                  <span className="text-xl font-black text-gray-900">TỔNG CỘNG:</span>
+                  <span className="text-2xl font-black text-indigo-600">{printInvoice.amount.toLocaleString('vi-VN')} VNĐ</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Footer / Payment Info */}
+            <div className="bg-indigo-50/50 p-6 rounded-2xl border border-indigo-100">
+              <h3 className="text-sm font-bold text-indigo-800 uppercase tracking-wider mb-3 flex items-center gap-2">
+                <CreditCard size={16} /> Thông tin thanh toán
+              </h3>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm text-gray-500 mb-1">Ngân hàng</p>
+                  <p className="text-sm font-bold text-indigo-900">Vietcombank</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500 mb-1">Chi nhánh</p>
+                  <p className="text-sm font-bold text-indigo-900">TP. Hồ Chí Minh</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500 mb-1">Số tài khoản</p>
+                  <p className="text-base font-black text-indigo-600">0123456789</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500 mb-1">Chủ tài khoản</p>
+                  <p className="text-sm font-bold text-indigo-900">IDAZ AGENCY VN</p>
+                </div>
+              </div>
+              <div className="mt-4 pt-4 border-t border-indigo-100">
+                <p className="text-sm text-gray-500 mb-1">Nội dung chuyển khoản (Bắt buộc)</p>
+                <p className="text-sm font-bold text-indigo-900 tracking-wider bg-white px-3 py-1.5 rounded-lg inline-block border border-indigo-100 shadow-sm">
+                  {printInvoice.invoiceNumber} THANH TOAN
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-12 pt-8 border-t border-gray-100 text-center">
+              <p className="text-xs text-gray-400 font-medium">Cảm ơn quý khách đã tin tưởng và sử dụng dịch vụ của IDAZ Agency.</p>
+              <p className="text-xs text-gray-400 mt-1">Hóa đơn này được xuất tự động từ hệ thống quản lý IDAZ CRM.</p>
+            </div>
+          </div>
+        </div>
+      )}
  </div>
  );
 }

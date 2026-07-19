@@ -4,13 +4,15 @@ import { LayoutDashboard, Users, FolderKanban, Receipt, Link as LinkIcon, CheckS
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "../../context/AuthContext";
-import NotificationCenter from "../../components/NotificationCenter";
-import { useEffect } from "react";
+import dynamic from 'next/dynamic';
+const NotificationCenter = dynamic(() => import('../../components/NotificationCenter'), { ssr: false });
+import { useEffect, useState } from "react";
 
 export default function AdminLayout({ children }) {
  const pathname = usePathname();
  const router = useRouter();
  const { user, loading, logout } = useAuth();
+ const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
  
  useEffect(() => {
  if (!loading) {
@@ -21,6 +23,11 @@ export default function AdminLayout({ children }) {
  }
  }
  }, [user, loading, router]);
+
+ // Close mobile menu on route change
+ useEffect(() => {
+   setIsMobileMenuOpen(false);
+ }, [pathname]);
 
  if (loading) return <div className="h-screen w-full bg-white flex items-center justify-center text-idaz-black">Loading...</div>;
  if (!user || ['client'].includes(user.role)) return null; // Tránh flash content
@@ -76,13 +83,28 @@ export default function AdminLayout({ children }) {
  ];
 
  return (
- <div className="min-h-screen bg-mesh-light flex font-sans selection:bg-idaz-orange/30 text-idaz-black">
+ <div className="min-h-screen bg-apple-light flex font-sans selection:bg-idaz-orange/30 text-idaz-black">
+ 
+ {/* Mobile Overlay */}
+ {isMobileMenuOpen && (
+   <div 
+     className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 md:hidden"
+     onClick={() => setIsMobileMenuOpen(false)}
+   />
+ )}
+
  {/* Sidebar Admin (Glassmorphism & IDAZ Style) */}
- <aside className="w-72 hidden md:flex flex-col m-4 h-[calc(100vh-2rem)] rounded-3xl glass-panel z-20 overflow-hidden">
- <div className="h-24 flex items-center justify-center px-8 border-b border-gray-100/50">
+ <aside className={`fixed md:relative inset-y-0 left-0 w-72 m-4 h-[calc(100vh-2rem)] rounded-3xl glass-panel z-50 flex flex-col overflow-hidden transition-transform duration-300 md:translate-x-0 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-[120%]'}`}>
+ <div className="h-24 flex items-center justify-between px-8 border-b border-gray-100/50">
  <Link href="/admin" className="font-black font-montserrat text-title-2 tracking-tighter text-idaz-black">
  IDAZ<span className="text-idaz-orange">.</span> Admin
  </Link>
+ <button 
+   className="md:hidden text-gray-500 hover:text-idaz-orange"
+   onClick={() => setIsMobileMenuOpen(false)}
+ >
+   <X size={24} />
+ </button>
  </div>
  
  <nav className="flex-1 py-6 px-4 space-y-6 overflow-y-auto custom-scrollbar">
@@ -128,13 +150,26 @@ export default function AdminLayout({ children }) {
  {/* Main Content */}
  <main className="flex-1 flex flex-col h-screen overflow-hidden">
  {/* Top Header */}
- <header className="h-20 mx-4 mt-4 mb-2 rounded-3xl glass-panel flex items-center justify-between px-8 shrink-0 z-10 sticky top-4">
- <div className="font-semibold text-gray-500 flex items-center gap-2 text-footnote">
- <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
- Hệ thống IDAZ đang trực tuyến
+ <header className="h-20 mx-4 mt-4 mb-2 rounded-3xl glass-panel flex items-center justify-between px-4 md:px-8 shrink-0 z-10 sticky top-4">
+ <div className="flex items-center gap-3">
+   {/* Mobile Menu Toggle */}
+   <button 
+     className="md:hidden p-2 text-gray-500 hover:text-idaz-orange hover:bg-orange-50 rounded-xl transition-all"
+     onClick={() => setIsMobileMenuOpen(true)}
+   >
+     <Menu size={24} />
+   </button>
+   
+   <div className="hidden md:flex font-semibold text-gray-500 items-center gap-2 text-footnote">
+     <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+     Hệ thống IDAZ đang trực tuyến
+   </div>
+   <div className="md:hidden font-black font-montserrat text-headline tracking-tighter text-idaz-black">
+     IDAZ<span className="text-idaz-orange">.</span>
+   </div>
  </div>
  
- <div className="flex items-center gap-5">
+ <div className="flex items-center gap-3 md:gap-5">
  <NotificationCenter />
  <div className="w-px h-8 bg-gray-200 hidden sm:block"></div>
  <div className="text-right hidden sm:block">
@@ -154,7 +189,7 @@ export default function AdminLayout({ children }) {
  </header>
 
  {/* Page Content */}
- <div className="flex-1 overflow-y-auto p-6 md:p-10 custom-scrollbar">
+ <div className="flex-1 overflow-y-auto p-4 md:p-10 custom-scrollbar">
  {children}
  </div>
  </main>

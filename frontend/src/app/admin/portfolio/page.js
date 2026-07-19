@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, Edit2, Trash2, X, Star, Briefcase, Link as LinkIcon, Image as ImageIcon } from "lucide-react";
+import { Plus, Edit2, Trash2, X, Star, Briefcase, Link as LinkIcon, Image as ImageIcon, FileText } from "lucide-react";
 import api from "../../../services/api";
 import toast from "react-hot-toast";
 import ImageUpload from "../../../components/admin/ImageUpload";
@@ -15,7 +15,7 @@ export default function AdminPortfolioPage() {
   const [currentItem, setCurrentItem] = useState(null);
   
   const [formData, setFormData] = useState({
-    title: "", slug: "", description: "", category: "Thiết kế Web", clientName: "", projectUrl: "", coverImage: "", isFeatured: false, tags: ""
+    title: "", slug: "", description: "", category: "Thiết kế Web", clientName: "", projectUrl: "", coverImage: "", images: [], isFeatured: false, tags: ""
   });
 
   const categories = ["Thiết kế Web", "Mobile App", "Branding", "UI/UX Design", "Marketing"];
@@ -49,13 +49,14 @@ export default function AdminPortfolioPage() {
         clientName: item.clientName,
         projectUrl: item.projectUrl,
         coverImage: item.coverImage,
+        images: item.images || [],
         isFeatured: item.isFeatured,
         tags: item.tags ? item.tags.join(", ") : ""
       });
     } else {
       setCurrentItem(null);
       setFormData({
-        title: "", slug: "", description: "", category: "Thiết kế Web", clientName: "", projectUrl: "", coverImage: "", isFeatured: false, tags: ""
+        title: "", slug: "", description: "", category: "Thiết kế Web", clientName: "", projectUrl: "", coverImage: "", images: [], isFeatured: false, tags: ""
       });
     }
     setIsModalOpen(true);
@@ -118,9 +119,18 @@ export default function AdminPortfolioPage() {
           <div className="col-span-full py-20 text-center text-gray-500 font-medium">Chưa có dự án nào được thêm vào Portfolio.</div>
         ) : portfolios.map(item => (
           <div key={item._id} className="glass-card border border-white/60 rounded-3xl overflow-hidden flex flex-col shadow-xl group hover:-translate-y-2 transition-all duration-300">
-            <div className="h-48 relative overflow-hidden bg-gray-100">
+            <div className="h-48 relative overflow-hidden bg-gray-100 flex items-center justify-center">
               {item.coverImage ? (
-                <img src={item.coverImage} alt={item.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                item.coverImage.match(/\.(pdf|doc|docx|xls|xlsx|ppt|pptx)$/i) ? (
+                  <div className="flex flex-col items-center text-indigo-500 bg-gray-50 w-full h-full justify-center">
+                    <FileText size={48} className="mb-2" />
+                    <span className="text-xs font-bold bg-white px-3 py-1 rounded-full shadow-sm text-gray-600 truncate max-w-[80%]">
+                      {item.coverImage.split('/').pop()}
+                    </span>
+                  </div>
+                ) : (
+                  <img src={item.coverImage.startsWith('/') ? `${process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:5000'}${item.coverImage}` : item.coverImage} alt={item.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                )
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-gray-400"><ImageIcon size={40} /></div>
               )}
@@ -224,7 +234,57 @@ export default function AdminPortfolioPage() {
                   </div>
                 </div>
 
-                <div className="glass-panel border border-white/60 rounded-2xl p-4 flex items-center justify-between">
+                {/* ALBUM SECTION */}
+                <div className="space-y-4 pt-6 border-t border-gray-100">
+                  <div className="flex justify-between items-center mb-2">
+                    <label className="block text-sm font-bold text-gray-700 ml-1">Album Ảnh Dự án</label>
+                    <button 
+                      type="button" 
+                      onClick={() => setFormData({ ...formData, images: [...formData.images, ""] })}
+                      className="text-xs bg-indigo-50 text-indigo-600 px-3 py-1.5 rounded-lg flex items-center gap-1 font-bold hover:bg-indigo-100 transition-colors"
+                    >
+                      <Plus size={14} /> Thêm ảnh
+                    </button>
+                  </div>
+                  
+                  {formData.images.length === 0 && (
+                    <div className="text-center p-8 bg-gray-50 rounded-2xl border border-dashed border-gray-200">
+                      <ImageIcon className="mx-auto text-gray-300 mb-2" size={32} />
+                      <p className="text-sm text-gray-400">Chưa có ảnh nào trong Album.</p>
+                    </div>
+                  )}
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {formData.images.map((img, index) => (
+                      <div key={index} className="relative group">
+                        <ImageUpload 
+                          label={`Ảnh ${index + 1}`} 
+                          folder="portfolios" 
+                          value={img} 
+                          onChange={(url) => {
+                            const newImages = [...formData.images];
+                            newImages[index] = url;
+                            setFormData({ ...formData, images: newImages });
+                          }} 
+                        />
+                        <button 
+                          type="button"
+                          onClick={() => {
+                            const newImages = [...formData.images];
+                            newImages.splice(index, 1);
+                            setFormData({ ...formData, images: newImages });
+                          }}
+                          className="absolute -top-3 -right-3 bg-white text-rose-500 rounded-full p-2 shadow-md border border-rose-100 hover:bg-rose-50 transition-colors z-10 opacity-0 group-hover:opacity-100"
+                          title="Xóa ảnh này"
+                        >
+                          <X size={14} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="glass-panel border border-white/60 rounded-2xl p-4 flex items-center justify-between mt-6">
                   <div>
                     <h4 className="font-bold text-idaz-black">Dự án Nổi bật (Featured)</h4>
                     <p className="text-xs text-gray-500">Hiển thị lớn hơn hoặc ưu tiên xuất hiện trên trang chủ</p>

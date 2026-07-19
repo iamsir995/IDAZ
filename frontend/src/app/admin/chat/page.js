@@ -7,7 +7,9 @@ import { useSocket } from "../../../context/SocketContext";
 import { Send, Search, Phone, Video, Info, Hash, Users, Paperclip, Check, CheckCheck, X, Reply, Download, FileText, Pin, Edit, Trash2, Lock, Eye, Sparkles, Volume2, VolumeX } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
-import VideoCallModal from "../../../components/VideoCallModal";
+import dynamic from 'next/dynamic';
+const VideoCallModal = dynamic(() => import('../../../components/VideoCallModal'), { ssr: false });
+import FilePreviewModal from "../../../components/FilePreviewModal";
 
 export default function AdminChat() {
  const { user } = useAuth();
@@ -24,6 +26,7 @@ export default function AdminChat() {
  const [attachments, setAttachments] = useState([]);
  const [replyToMsg, setReplyToMsg] = useState(null);
  const fileInputRef = useRef(null);
+ const [previewAttachment, setPreviewAttachment] = useState(null);
 
  const [editingMsgId, setEditingMsgId] = useState(null);
  const [editingMsgText, setEditingMsgText] = useState("");
@@ -79,12 +82,12 @@ export default function AdminChat() {
  };
 
  const validateFile = (file) => {
- const maxSizeBytes = 25 * 1024 * 1024; // 25MB
+ const maxSizeBytes = 10 * 1024 * 1024; // 10MB
  const blockedExtensions = ['.exe', '.bat', '.sh', '.cmd', '.msi', '.dmg', '.com', '.bin'];
  const ext = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
  
  if (file.size > maxSizeBytes) {
- toast.error(`Tệp ${file.name} quá lớn! Giới hạn tối đa là 25MB.`);
+ toast.error(`Tệp ${file.name} quá lớn! Giới hạn tối đa là 10MB để đảm bảo ổn định.`);
  return false;
  }
  if (blockedExtensions.includes(ext)) {
@@ -589,7 +592,7 @@ export default function AdminChat() {
  placeholder="Tìm kiếm..." 
  value={searchQuery}
  onChange={e => setSearchQuery(e.target.value)}
- className="w-full bg-white/5 border border-white/60 rounded-3xl pl-10 pr-4 py-2 text-idaz-black text-sm focus:border-indigo-500 transition-colors"
+ className="w-full bg-white/50 border border-white/60 rounded-3xl pl-10 pr-4 py-2 text-idaz-black text-sm focus:border-indigo-500 transition-colors"
  />
  </div>
  </div>
@@ -606,7 +609,7 @@ export default function AdminChat() {
  key={channel._id}
  onClick={() => setActiveChat({ type: 'channel', id: channel._id, data: channel })}
  className={`w-full flex items-center gap-3 p-3 rounded-3xl transition-all ${
- activeChat?.id === channel._id ? 'bg-indigo-600/20 text-idaz-black' : 'hover:bg-white/5 text-gray-400'
+ activeChat?.id === channel._id ? 'bg-indigo-600/20 text-idaz-black' : 'hover:bg-white/50 text-gray-400'
  }`}
  >
  <div className="w-10 h-10 rounded-3xl bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center border border-white/60 shrink-0">
@@ -634,7 +637,7 @@ export default function AdminChat() {
  key={channel._id}
  onClick={() => setActiveChat({ type: 'channel', id: channel._id, data: channel })}
  className={`w-full flex items-center gap-3 p-3 rounded-3xl transition-all ${
- activeChat?.id === channel._id ? 'bg-emerald-600/20 text-idaz-black' : 'hover:bg-white/5 text-gray-400'
+ activeChat?.id === channel._id ? 'bg-emerald-600/20 text-idaz-black' : 'hover:bg-white/50 text-gray-400'
  }`}
  >
  <div className="w-10 h-10 rounded-3xl bg-gradient-to-br from-emerald-800 to-emerald-900 flex items-center justify-center border border-emerald-500/20 shrink-0 relative">
@@ -665,11 +668,13 @@ export default function AdminChat() {
  key={contact._id}
  onClick={() => setActiveChat({ type: 'user', id: contact._id, data: contact })}
  className={`w-full flex items-center gap-3 p-3 rounded-3xl transition-all ${
- activeChat?.id === contact._id ? 'bg-indigo-600/20 text-idaz-black' : 'hover:bg-white/5 text-gray-400'
+ activeChat?.id === contact._id ? 'bg-indigo-600/20 text-idaz-black' : 'hover:bg-white/50 text-gray-400'
  }`}
  >
  <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center font-bold text-idaz-black shrink-0 relative">
- {contact.name.charAt(0)}
+  <div className="w-8 h-8 rounded-full bg-indigo-500/10 text-indigo-500 font-bold flex items-center justify-center shrink-0">
+  {(contact.name || 'U').charAt(0).toUpperCase()}
+  </div>
  {onlineUserIds.includes(contact._id) ? (
  <div className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 rounded-full border-2 border-black animate-pulse"></div>
  ) : (
@@ -707,7 +712,7 @@ export default function AdminChat() {
  onDrop={handleDrop}
  className="absolute inset-0 bg-white/80 backdrop-blur-md z-50 flex flex-col items-center justify-center border-4 border-dashed border-indigo-500/50 m-4 rounded-3xl transition-all duration-300"
  >
- <div className="bg-indigo-500/20 p-6 rounded-full border border-indigo-500/30 text-indigo-400 mb-4 animate-bounce">
+ <div className="bg-indigo-500/20 p-6 rounded-full border border-indigo-200 text-indigo-400 mb-4 animate-bounce">
  <Paperclip size={40} />
  </div>
  <h3 className="text-xl font-bold text-idaz-black mb-2">Thả tệp tin tại đây</h3>
@@ -782,19 +787,19 @@ export default function AdminChat() {
  setIsMuted(!isMuted);
  toast.success(!isMuted ? "Đã tắt âm thanh thông báo" : "Đã bật âm thanh thông báo");
  }} 
- className={`p-3 rounded-3xl transition-colors ${isMuted ? 'text-rose-400 bg-rose-950/20' : 'text-gray-400 hover:bg-white/5 hover:text-idaz-black'}`}
+ className={`p-3 rounded-3xl transition-colors ${isMuted ? 'text-rose-400 bg-rose-950/20' : 'text-gray-400 hover:bg-white/50 hover:text-idaz-black'}`}
  title={isMuted ? "Bật âm thanh" : "Tắt âm thanh thông báo"}
  >
  {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
  </button>
 
- <button onClick={() => handleStartCall('audio')} className="p-3 text-gray-400 hover:bg-white/5 hover:text-idaz-black rounded-3xl transition-colors">
+ <button onClick={() => handleStartCall('audio')} className="p-3 text-gray-400 hover:bg-white/50 hover:text-idaz-black rounded-3xl transition-colors">
  <Phone size={20} />
  </button>
- <button onClick={() => handleStartCall('video')} className="p-3 text-gray-400 hover:bg-white/5 hover:text-idaz-black rounded-3xl transition-colors">
+ <button onClick={() => handleStartCall('video')} className="p-3 text-gray-400 hover:bg-white/50 hover:text-idaz-black rounded-3xl transition-colors">
  <Video size={20} />
  </button>
- <button className="p-3 text-gray-400 hover:bg-white/5 hover:text-idaz-black rounded-3xl transition-colors">
+ <button className="p-3 text-gray-400 hover:bg-white/50 hover:text-idaz-black rounded-3xl transition-colors">
  <Info size={20} />
  </button>
  </div>
@@ -843,7 +848,7 @@ export default function AdminChat() {
  {isLoadingMore && <div className="text-center text-gray-500 text-xs py-2">Đang tải thêm...</div>}
  {messages.length === 0 && !isLoadingMore && (
  <div className="flex-1 flex flex-col items-center justify-center text-gray-500">
- <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mb-4">👋</div>
+ <div className="w-16 h-16 bg-white/50 rounded-full flex items-center justify-center mb-4">👋</div>
  <p>Bắt đầu cuộc trò chuyện trong {activeChat.data.name}</p>
  </div>
  )}
@@ -879,7 +884,7 @@ export default function AdminChat() {
  )}
  {/* Quote / Reply Preview */}
  {msg.replyTo && (
- <div className={`text-xs p-2 rounded-3xl mb-1 flex items-center gap-2 border border-white/40 ${isMe ? 'bg-indigo-900/40 text-indigo-200' : 'bg-slate-800/40 text-slate-300'}`}>
+ <div className={`text-xs p-2 rounded-3xl mb-1 flex items-center gap-2 border border-white/40 ${isMe ? 'bg-indigo-50 text-indigo-700' : 'bg-white/60 text-gray-700'}`}>
  <div className="w-1 bg-indigo-500 h-full rounded-full self-stretch"></div>
  <div>
  <span className="font-bold opacity-70">{msg.replyTo.senderName}:</span>
@@ -953,17 +958,17 @@ export default function AdminChat() {
  <div className="flex flex-wrap gap-2 mb-2">
  {msg.attachments.map((att, attIdx) => (
  att.type === 'image' ? (
- <img key={attIdx} src={att.url} alt="attachment" className="max-w-[200px] rounded-xl border border-white/60 object-cover cursor-pointer hover:opacity-90 transition-opacity" />
+ <img key={attIdx} src={att.url} alt="attachment" onClick={() => setPreviewAttachment(att)} className="max-w-[200px] rounded-xl border border-white/60 object-cover cursor-pointer hover:opacity-90 transition-opacity" />
  ) : (
- <div key={attIdx} className="flex items-center gap-3 p-3 bg-white/20 rounded-3xl border border-white/40 w-full">
- <FileText size={24} className={isMe ? "text-indigo-200" : "text-emerald-400"} />
+ <div key={attIdx} onClick={() => setPreviewAttachment(att)} className="flex items-center gap-3 p-3 bg-white/20 rounded-3xl border border-white/40 w-full cursor-pointer hover:bg-white/30 transition-colors">
+ <FileText size={24} className={isMe ? "text-indigo-700" : "text-emerald-400"} />
  <div className="flex-1 min-w-0">
  <div className="text-sm font-bold truncate">{att.name}</div>
  <div className="text-xs opacity-70">{(att.size / 1024 / 1024).toFixed(2)} MB</div>
  </div>
- <button className="p-2 hover:bg-white/10 rounded-full transition-colors">
+ <a href={att.url} download={att.name || 'document'} onClick={(e) => e.stopPropagation()} className="p-2 hover:bg-white/80 rounded-full transition-colors flex items-center justify-center">
  <Download size={16} />
- </button>
+ </a>
  </div>
  )
  ))}
@@ -975,7 +980,7 @@ export default function AdminChat() {
  <textarea
  value={editingMsgText}
  onChange={(e) => setEditingMsgText(e.target.value)}
- className="w-full bg-slate-900/10 border border-slate-900/20 rounded-3xl p-2 text-xs focus:outline-none focus:border-indigo-500 resize-none h-16 text-idaz-black"
+ className="w-full bg-white/40 border border-white/60 rounded-3xl p-2 text-xs focus:outline-none focus:border-indigo-500 resize-none h-16 text-idaz-black"
  />
  <div className="flex gap-1.5 justify-end">
  <button
@@ -983,7 +988,7 @@ export default function AdminChat() {
  setEditingMsgId(null);
  setEditingMsgText("");
  }}
- className="px-2.5 py-1 text-[10px] bg-slate-500/10 hover:bg-slate-500/20 rounded-xl transition-colors text-gray-600"
+ className="px-2.5 py-1 text-[10px] bg-gray-200/50 hover:bg-gray-200 rounded-xl transition-colors text-gray-600"
  >
  Hủy
  </button>
@@ -1018,7 +1023,7 @@ export default function AdminChat() {
  className={`flex items-center gap-1 px-1.5 py-0.5 rounded-full border text-[10px] transition-all hover:scale-105 ${
  hasReacted 
  ? 'bg-indigo-500/20 border-indigo-400 text-idaz-black' 
- : 'bg-white/5 border-white/60 text-gray-600 hover:bg-white/10'
+ : 'bg-white/50 border-white/60 text-gray-600 hover:bg-white/10'
  }`}
  >
  <span>{emoji}</span>
@@ -1029,7 +1034,7 @@ export default function AdminChat() {
  </div>
  )}
  
- <div className={`flex items-center justify-end gap-1 mt-1 text-[10px] ${isMe ? 'text-indigo-200' : 'text-gray-400'}`}>
+ <div className={`flex items-center justify-end gap-1 mt-1 text-[10px] ${isMe ? 'text-indigo-700' : 'text-gray-400'}`}>
  <span>{new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
  {isMe && (
  <div 
@@ -1043,7 +1048,7 @@ export default function AdminChat() {
  {msg.readBy && msg.readBy.some(r => r.user !== user?._id && r.user?._id !== user?._id) ? (
  <CheckCheck size={14} className="text-blue-400 font-bold" />
  ) : (
- <Check size={14} className="text-slate-300" />
+ <Check size={14} className="text-gray-700" />
  )}
  </div>
  )}
@@ -1057,10 +1062,12 @@ export default function AdminChat() {
  {/* Typing indicator */}
  {activeChat.type === 'channel' && Object.keys(typingUsers).length > 0 && typingUsers[activeChat.id] && (
  <div className="flex justify-start mt-6">
- <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center font-bold text-xs text-idaz-black shrink-0 mr-2 self-end mb-1">
- {typingUsers[activeChat.id].charAt(0)}
- </div>
- <div className="bg-white/10 rounded-3xl rounded-bl-none px-4 py-3 flex gap-1 items-center">
+ <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center font-bold text-xs text-idaz-black shrink-0 mr-2 self-end mb-1">
+  <div className="w-5 h-5 rounded-full bg-idaz-orange-dark flex items-center justify-center text-[10px] text-white font-bold">
+  {(typingUsers[activeChat.id] || 'U').charAt(0).toUpperCase()}
+  </div>
+  </div>
+  <div className="bg-white/10 rounded-3xl rounded-bl-none px-4 py-3 flex gap-1 items-center">
  <motion.div animate={{ y: [0, -5, 0] }} transition={{ repeat: Infinity, duration: 0.6, delay: 0 }} className="w-1.5 h-1.5 bg-gray-400 rounded-full" />
  <motion.div animate={{ y: [0, -5, 0] }} transition={{ repeat: Infinity, duration: 0.6, delay: 0.2 }} className="w-1.5 h-1.5 bg-gray-400 rounded-full" />
  <motion.div animate={{ y: [0, -5, 0] }} transition={{ repeat: Infinity, duration: 0.6, delay: 0.4 }} className="w-1.5 h-1.5 bg-gray-400 rounded-full" />
@@ -1080,7 +1087,7 @@ export default function AdminChat() {
  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, height: 0 }} className="flex flex-col gap-2 px-2">
  {/* Reply Preview */}
  {replyToMsg && (
- <div className="flex items-center justify-between bg-slate-800/50 border border-indigo-500/30 rounded-3xl p-3">
+ <div className="flex items-center justify-between bg-white/60 border border-indigo-200 rounded-3xl p-3">
  <div className="flex items-center gap-3">
  <Reply size={16} className="text-indigo-400" />
  <div className="flex flex-col">
@@ -1088,7 +1095,7 @@ export default function AdminChat() {
  <span className="text-sm text-gray-600 truncate max-w-md">{decryptText(replyToMsg.text)}</span>
  </div>
  </div>
- <button type="button" onClick={() => setReplyToMsg(null)} className="p-1 hover:bg-white/10 rounded-full text-gray-400 transition-colors">
+ <button type="button" onClick={() => setReplyToMsg(null)} className="p-1 hover:bg-white/80 rounded-full text-gray-400 transition-colors">
  <X size={16} />
  </button>
  </div>
@@ -1098,7 +1105,7 @@ export default function AdminChat() {
  {attachments.length > 0 && (
  <div className="flex gap-2 overflow-x-auto custom-scrollbar pb-2">
  {attachments.map((att, idx) => (
- <div key={idx} className="relative shrink-0 w-20 h-20 bg-slate-900 rounded-3xl border border-white/60 flex items-center justify-center group overflow-hidden">
+ <div key={idx} className="relative shrink-0 w-20 h-20 bg-gray-50 rounded-3xl border border-white/60 flex items-center justify-center group overflow-hidden">
  {att.type === 'image' ? (
  <img src={att.url} alt="preview" className="w-full h-full object-cover" />
  ) : (
@@ -1118,7 +1125,7 @@ export default function AdminChat() {
  )}
  </AnimatePresence>
 
- <form onSubmit={sendMessage} className="flex items-end gap-3 bg-white/5 border border-white/60 rounded-3xl p-2 pl-4 focus-within:border-indigo-500/50 transition-colors relative">
+ <form onSubmit={sendMessage} className="flex items-end gap-3 bg-white/50 border border-white/60 rounded-3xl p-2 pl-4 focus-within:border-indigo-500/50 transition-colors relative">
  <input 
  type="file" 
  ref={fileInputRef} 
@@ -1126,7 +1133,7 @@ export default function AdminChat() {
  multiple 
  onChange={handleFileChange}
  />
- <button type="button" onClick={() => fileInputRef.current?.click()} className="p-2 mb-0.5 text-gray-400 hover:text-idaz-black hover:bg-white/5 rounded-3xl transition-colors">
+ <button type="button" onClick={() => fileInputRef.current?.click()} className="p-2 mb-0.5 text-gray-400 hover:text-idaz-black hover:bg-white/50 rounded-3xl transition-colors">
  <Paperclip size={20} />
  </button>
  <textarea 
@@ -1154,13 +1161,14 @@ export default function AdminChat() {
  </>
  ) : (
  <div className="h-full flex flex-col items-center justify-center text-gray-500 bg-idaz-gray/30">
- <div className="w-24 h-24 bg-white/5 rounded-full flex items-center justify-center mb-6">
+ <div className="w-24 h-24 bg-white/50 rounded-full flex items-center justify-center mb-6">
  <Hash size={40} className="text-gray-300" />
  </div>
  <h3 className="text-2xl font-bold text-idaz-black mb-2">Agency Chat Hub</h3>
  <p className="text-center max-w-md">Chọn một Channel dự án hoặc liên hệ để bắt đầu thảo luận.</p>
  </div>
  )}
+ <FilePreviewModal asset={previewAttachment} onClose={() => setPreviewAttachment(null)} />
  </div>
  </div>
  );

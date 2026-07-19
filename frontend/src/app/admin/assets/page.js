@@ -9,6 +9,7 @@ import {
 import toast from "react-hot-toast";
 import api from "../../../services/api";
 import { useAuth } from "../../../context/AuthContext";
+import FilePreviewModal from "../../../components/FilePreviewModal";
 
 // --- Recursive Folder Tree Component ---
 const FolderTreeItem = ({ folder, allFolders, activeFolderId, onSelect, level = 0 }) => {
@@ -63,7 +64,7 @@ export default function AdminAssets() {
  const { user } = useAuth();
  
  const [projects, setProjects] = useState([]);
- const [activeProjectId, setActiveProjectId] = useState(null);
+ const [activeProjectId, setActiveProjectId] = useState('global');
  
  const [folders, setFolders] = useState([]);
  const [activeFolderId, setActiveFolderId] = useState(null);
@@ -102,6 +103,7 @@ export default function AdminAssets() {
  const [filterType, setFilterType] = useState("all"); // 'all' | 'image' | 'video' | 'document' | 'link'
  const [viewMode, setViewMode] = useState("grid"); // 'grid' | 'list'
  const [selectedAssets, setSelectedAssets] = useState([]);
+ const [groupBy, setGroupBy] = useState("none"); // 'none' | 'month' | 'type'
 
  useEffect(() => {
  fetchProjects();
@@ -132,8 +134,8 @@ export default function AdminAssets() {
  try {
  const res = await api.get('/projects');
  if (res.data.success) {
- setProjects(res.data.data);
- if (res.data.data.length > 0) setActiveProjectId(res.data.data[0]._id);
+ setProjects([{ _id: 'global', title: '📁 Kho lưu trữ chung (Hệ thống)' }, ...res.data.data]);
+ if (!activeProjectId) setActiveProjectId('global');
  }
  } catch (error) {}
  };
@@ -485,6 +487,16 @@ export default function AdminAssets() {
  <option value="document">Tài liệu</option>
  <option value="link">Liên kết</option>
  </select>
+
+ <select 
+ value={groupBy}
+ onChange={(e) => setGroupBy(e.target.value)}
+ className="glass-panel border border-white/60 rounded-full py-2 px-4 text-sm text-idaz-black focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors appearance-none cursor-pointer hidden md:block"
+ >
+ <option value="none">Không nhóm</option>
+ <option value="month">Nhóm theo Tháng</option>
+ <option value="type">Nhóm theo Định dạng</option>
+ </select>
  </div>
 
  <div className="flex items-center gap-3 w-1/3 justify-end">
@@ -538,85 +550,118 @@ export default function AdminAssets() {
  </div>
  </div>
 
- {viewMode === 'grid' ? (
- <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
- {assets.filter(a => a.name.toLowerCase().includes(searchQuery.toLowerCase()) && (filterType === 'all' || a.type === filterType)).length === 0 && <div className="col-span-full text-center py-12 text-gray-500">Chưa có file nào phù hợp.</div>}
- 
- {assets.filter(a => a.name.toLowerCase().includes(searchQuery.toLowerCase()) && (filterType === 'all' || a.type === filterType)).map((asset, idx) => (
- <motion.div 
- initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: idx * 0.05 }}
- key={asset._id} 
- onContextMenu={(e) => handleContextMenu(e, asset, false)}
- className={`bg-gray-50 border rounded-3xl p-1 transition-all group relative flex flex-col cursor-pointer ${selectedAssets.includes(asset._id) ? 'border-indigo-500 bg-indigo-500/10' : 'border-white/40 hover:border-gray-300'}`}
- onClick={() => toggleSelectAsset(asset._id)}
- >
- {/* Checkbox */}
- <div className="absolute top-2 left-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
- <input type="checkbox" checked={selectedAssets.includes(asset._id)} onChange={() => toggleSelectAsset(asset._id)} onClick={(e) => e.stopPropagation()} className="w-4 h-4 rounded border-zinc-700 bg-white/50 accent-indigo-500 cursor-pointer" />
- </div>
+ {(() => {
+   const filteredAssets = assets.filter(a => a.name.toLowerCase().includes(searchQuery.toLowerCase()) && (filterType === 'all' || a.type === filterType));
+   if (filteredAssets.length === 0) {
+     return <div className="text-center py-12 text-gray-500 bg-white/30 rounded-3xl border border-white/40">Chưa có file nào phù hợp.</div>;
+   }
 
- {/* Thumbnail / Icon area */}
- <div className="h-32 glass-panel rounded-3xl overflow-hidden relative flex items-center justify-center mb-2 group-hover:glass-panel transition-colors">
- {asset.type === 'image' && asset.url ? (
- <img src={asset.url} alt={asset.name} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
- ) : (
- getTypeIcon(asset.type, asset.mimeType)
- )}
- 
- {/* Hover actions overlay */}
- <div className="absolute inset-0 bg-white/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 backdrop-blur-sm">
- <button onClick={(e) => { e.stopPropagation(); setPreviewAsset(asset); }} className="p-2 bg-indigo-600 text-idaz-black rounded-full hover:bg-indigo-500 transition-colors shadow-lg" title="Xem trước">
- <Search size={16} />
- </button>
- <button onClick={(e) => { e.stopPropagation(); handleDeleteAsset(asset._id); }} className="p-2 bg-rose-500/80 text-idaz-black rounded-full hover:bg-rose-500 transition-colors shadow-lg" title="Xóa">
- <Trash2 size={16} />
- </button>
- </div>
- </div>
+   let grouped = { "Tất cả": filteredAssets };
+   if (groupBy === 'month') {
+     grouped = filteredAssets.reduce((acc, asset) => {
+       const date = new Date(asset.createdAt);
+       const key = `Tháng ${String(date.getMonth() + 1).padStart(2, '0')}, ${date.getFullYear()}`;
+       if (!acc[key]) acc[key] = [];
+       acc[key].push(asset);
+       return acc;
+     }, {});
+   } else if (groupBy === 'type') {
+     grouped = filteredAssets.reduce((acc, asset) => {
+       const types = { image: 'Hình ảnh', video: 'Video', document: 'Tài liệu', design: 'Thiết kế', link: 'Liên kết', other: 'Khác' };
+       const key = types[asset.type] || 'Khác';
+       if (!acc[key]) acc[key] = [];
+       acc[key].push(asset);
+       return acc;
+     }, {});
+   }
 
- <div className="px-3 pb-3">
- <h3 className="font-bold text-idaz-black text-sm truncate mb-1" title={asset.name}>{asset.name}</h3>
- <div className="flex items-center justify-between text-[11px] text-gray-500">
- <span>{(asset.fileSize / 1024 / 1024).toFixed(2)} MB</span>
- <span>v{asset.version}</span>
- </div>
- </div>
- </motion.div>
- ))}
- </div>
- ) : (
- <div className="flex flex-col gap-2">
- {assets.filter(a => a.name.toLowerCase().includes(searchQuery.toLowerCase()) && (filterType === 'all' || a.type === filterType)).length === 0 && <div className="text-center py-12 text-gray-500 bg-white/30 rounded-3xl border border-white/40">Chưa có file nào phù hợp.</div>}
- {assets.filter(a => a.name.toLowerCase().includes(searchQuery.toLowerCase()) && (filterType === 'all' || a.type === filterType)).map((asset, idx) => (
- <motion.div 
- initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.05 }}
- key={asset._id} 
- onContextMenu={(e) => handleContextMenu(e, asset, false)}
- className={`flex items-center justify-between p-3 rounded-3xl border transition-all cursor-pointer ${selectedAssets.includes(asset._id) ? 'border-indigo-500 bg-indigo-500/10' : 'border-white/40 bg-gray-50 hover:bg-white/5'}`}
- onClick={() => toggleSelectAsset(asset._id)}
- >
- <div className="flex items-center gap-4 flex-1 overflow-hidden">
- <input type="checkbox" checked={selectedAssets.includes(asset._id)} onChange={() => toggleSelectAsset(asset._id)} onClick={(e) => e.stopPropagation()} className="w-4 h-4 rounded border-zinc-700 bg-white/50 accent-indigo-500 cursor-pointer shrink-0" />
- <div className="w-10 h-10 rounded-xl glass-panel flex items-center justify-center shrink-0">
- {asset.type === 'image' && asset.url ? <img src={asset.url} className="w-full h-full object-cover rounded-xl" /> : getTypeIcon(asset.type, asset.mimeType)}
- </div>
- <div className="min-w-0">
- <h3 className="font-bold text-idaz-black text-sm truncate">{asset.name}</h3>
- <div className="text-xs text-gray-500 flex gap-3">
- <span>{(asset.fileSize / 1024 / 1024).toFixed(2)} MB</span>
- <span>Upload bởi: {asset.uploadedBy?.name || 'Admin'}</span>
- </div>
- </div>
- </div>
- 
- <div className="flex items-center gap-2 shrink-0">
- <button onClick={(e) => { e.stopPropagation(); setPreviewAsset(asset); }} className="p-2 text-gray-400 hover:text-idaz-black hover:bg-white/10 rounded-xl transition-colors"><Search size={16} /></button>
- <button onClick={(e) => { e.stopPropagation(); handleDeleteAsset(asset._id); }} className="p-2 text-gray-400 hover:text-rose-500 hover:bg-rose-500/10 rounded-xl transition-colors"><Trash2 size={16} /></button>
- </div>
- </motion.div>
- ))}
- </div>
- )}
+   return Object.entries(grouped).map(([groupName, groupAssets]) => (
+     <div key={groupName} className="mb-8">
+       {groupBy !== 'none' && (
+         <h4 className="text-sm font-bold text-idaz-black mb-4 flex items-center gap-2">
+           <div className="w-2 h-2 rounded-full bg-indigo-500"></div>
+           {groupName} <span className="text-gray-400 font-normal">({groupAssets.length})</span>
+         </h4>
+       )}
+       {viewMode === 'grid' ? (
+         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+           {groupAssets.map((asset, idx) => (
+             <motion.div 
+             initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: idx * 0.05 }}
+             key={asset._id} 
+             onContextMenu={(e) => handleContextMenu(e, asset, false)}
+             className={`bg-gray-50 border rounded-3xl p-1 transition-all group relative flex flex-col cursor-pointer ${selectedAssets.includes(asset._id) ? 'border-indigo-500 bg-indigo-500/10' : 'border-white/40 hover:border-gray-300'}`}
+             onClick={() => toggleSelectAsset(asset._id)}
+             >
+             {/* Checkbox */}
+             <div className="absolute top-2 left-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
+             <input type="checkbox" checked={selectedAssets.includes(asset._id)} onChange={() => toggleSelectAsset(asset._id)} onClick={(e) => e.stopPropagation()} className="w-4 h-4 rounded border-zinc-700 bg-white/50 accent-indigo-500 cursor-pointer" />
+             </div>
+            
+             {/* Thumbnail / Icon area */}
+             <div className="h-32 glass-panel rounded-3xl overflow-hidden relative flex items-center justify-center mb-2 group-hover:glass-panel transition-colors">
+             {asset.type === 'image' && asset.url ? (
+             <img src={asset.url} alt={asset.name} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
+             ) : (
+             getTypeIcon(asset.type, asset.mimeType)
+             )}
+             
+             {/* Hover actions overlay */}
+             <div className="absolute inset-0 bg-white/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 backdrop-blur-sm">
+             <button onClick={(e) => { e.stopPropagation(); setPreviewAsset(asset); }} className="p-2 bg-indigo-600 text-idaz-black rounded-full hover:bg-indigo-500 transition-colors shadow-lg" title="Xem trước">
+             <Search size={16} />
+             </button>
+             <button onClick={(e) => { e.stopPropagation(); handleDeleteAsset(asset._id); }} className="p-2 bg-rose-500/80 text-idaz-black rounded-full hover:bg-rose-500 transition-colors shadow-lg" title="Xóa">
+             <Trash2 size={16} />
+             </button>
+             </div>
+             </div>
+            
+             <div className="px-3 pb-3">
+             <h3 className="font-bold text-idaz-black text-sm truncate mb-1" title={asset.name}>{asset.name}</h3>
+             <div className="flex items-center justify-between text-[11px] text-gray-500">
+             <span>{(asset.fileSize / 1024 / 1024).toFixed(2)} MB</span>
+             <span>v{asset.version}</span>
+             </div>
+             </div>
+             </motion.div>
+           ))}
+         </div>
+       ) : (
+         <div className="flex flex-col gap-2">
+           {groupAssets.map((asset, idx) => (
+             <motion.div 
+             initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.05 }}
+             key={asset._id} 
+             onContextMenu={(e) => handleContextMenu(e, asset, false)}
+             className={`flex items-center justify-between p-3 rounded-3xl border transition-all cursor-pointer ${selectedAssets.includes(asset._id) ? 'border-indigo-500 bg-indigo-500/10' : 'border-white/40 bg-gray-50 hover:bg-white/5'}`}
+             onClick={() => toggleSelectAsset(asset._id)}
+             >
+             <div className="flex items-center gap-4 flex-1 overflow-hidden">
+             <input type="checkbox" checked={selectedAssets.includes(asset._id)} onChange={() => toggleSelectAsset(asset._id)} onClick={(e) => e.stopPropagation()} className="w-4 h-4 rounded border-zinc-700 bg-white/50 accent-indigo-500 cursor-pointer shrink-0" />
+             <div className="w-10 h-10 rounded-xl glass-panel flex items-center justify-center shrink-0">
+             {asset.type === 'image' && asset.url ? <img src={asset.url} className="w-full h-full object-cover rounded-xl" /> : getTypeIcon(asset.type, asset.mimeType)}
+             </div>
+             <div className="min-w-0">
+             <h3 className="font-bold text-idaz-black text-sm truncate">{asset.name}</h3>
+             <div className="text-xs text-gray-500 flex gap-3">
+             <span>{(asset.fileSize / 1024 / 1024).toFixed(2)} MB</span>
+             <span>Upload bởi: {asset.uploadedBy?.name || 'Admin'}</span>
+             </div>
+             </div>
+             </div>
+             
+             <div className="flex items-center gap-2 shrink-0">
+             <button onClick={(e) => { e.stopPropagation(); setPreviewAsset(asset); }} className="p-2 text-gray-400 hover:text-idaz-black hover:bg-white/10 rounded-xl transition-colors"><Search size={16} /></button>
+             <button onClick={(e) => { e.stopPropagation(); handleDeleteAsset(asset._id); }} className="p-2 text-gray-400 hover:text-rose-500 hover:bg-rose-500/10 rounded-xl transition-colors"><Trash2 size={16} /></button>
+             </div>
+             </motion.div>
+           ))}
+         </div>
+       )}
+     </div>
+   ));
+ })()}
  </div>
  </div>
  </div>
@@ -754,48 +799,10 @@ export default function AdminAssets() {
  </AnimatePresence>
 
  {/* Preview Modal */}
- <AnimatePresence>
- {previewAsset && (
- <div className="fixed inset-0 bg-white/90 backdrop-blur-md flex items-center justify-center z-[60] p-4">
- <button onClick={() => setPreviewAsset(null)} className="absolute top-6 right-6 text-gray-400 hover:text-idaz-black bg-white/50 p-2 rounded-full backdrop-blur-sm"><X size={24} /></button>
- <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="w-full max-w-5xl max-h-[90vh] flex flex-col relative">
- <div className="flex-1 overflow-hidden rounded-3xl border border-white/60 glass-panel flex items-center justify-center min-h-[500px]">
- {previewAsset.type === 'image' ? (
- <img src={previewAsset.url} alt={previewAsset.name} className="max-w-full max-h-[80vh] object-contain" />
- ) : previewAsset.type === 'video' ? (
- <video src={previewAsset.url} controls className="max-w-full max-h-[80vh]"></video>
- ) : previewAsset.type === 'document' && previewAsset.url.endsWith('.pdf') ? (
- <iframe src={previewAsset.url} className="w-full h-[80vh] glass-panel"></iframe>
- ) : (
- <div className="text-center text-gray-500 flex flex-col items-center">
- {getTypeIcon(previewAsset.type, previewAsset.mimeType)}
- <p className="mt-4 font-bold text-idaz-black">Không có bản xem trước cho định dạng này.</p>
- <a href={previewAsset.url} download target="_blank" rel="noreferrer" className="mt-4 px-6 py-2 bg-indigo-600 text-idaz-black rounded-full font-bold inline-block hover:bg-indigo-700">Tải xuống ngay</a>
- </div>
- )}
- </div>
- <div className="mt-4 bg-white/80 backdrop-blur-md border border-white/60 rounded-3xl p-4 flex items-center justify-between">
- <div>
- <h3 className="text-idaz-black font-bold text-lg">{previewAsset.name}</h3>
- <div className="flex items-center gap-4 text-xs text-gray-400 mt-1">
- <span>Kích thước: {(previewAsset.fileSize / 1024 / 1024).toFixed(2)} MB</span>
- <span>Upload bởi: {previewAsset.uploadedBy?.name || 'Admin'}</span>
- <span>Phiên bản: {previewAsset.version}</span>
- </div>
- </div>
- <div className="flex gap-2">
- <a href={previewAsset.url} target="_blank" rel="noreferrer" className="px-4 py-2 bg-white/10 hover:bg-white/20 text-idaz-black rounded-3xl text-sm font-bold transition-all">
- Mở Link Mới
- </a>
- <a href={previewAsset.url} download className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-idaz-black rounded-3xl text-sm font-bold transition-all">
- Tải Xuống
- </a>
- </div>
- </div>
- </motion.div>
- </div>
- )}
- </AnimatePresence>
+ <FilePreviewModal 
+    asset={previewAsset} 
+    onClose={() => setPreviewAsset(null)} 
+  />
 
  {/* Context Menu */}
  <AnimatePresence>

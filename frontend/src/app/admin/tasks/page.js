@@ -186,7 +186,7 @@ export default function TaskManagement() {
  placeholder="VD: Thiết kế banner trang chủ" />
  </div>
 
- <div className="grid grid-cols-2 gap-4">
+ <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
  <div>
  <label className="block text-sm font-medium text-gray-400 mb-1">Dự án</label>
  <select value={data.projectId || ''} onChange={e => setData({ ...data, projectId: e.target.value })}
@@ -248,7 +248,7 @@ export default function TaskManagement() {
  const renderTaskColumn = (status, title, icon) => {
  const colTasks = filteredTasks.filter(t => t.status === status);
  return (
- <div className="bg-gray-50 rounded-3xl p-5 border border-white/40 flex flex-col h-[calc(100vh-300px)]">
+ <div className="bg-gray-50 rounded-3xl p-5 border border-white/40 flex flex-col h-auto max-h-[60vh] md:h-[calc(100vh-300px)] w-full shrink-0 snap-center">
  <div className="flex items-center justify-between mb-4 pb-4 border-b border-white/40 shrink-0">
  <h3 className="font-bold text-idaz-black text-subheadline flex items-center gap-2">{icon} {title}</h3>
  <span className="bg-white/10 text-idaz-black text-caption-1 px-2 py-1 rounded-md">{colTasks.length}</span>
@@ -397,7 +397,7 @@ export default function TaskManagement() {
  </div>
 
  {/* Kanban Board */}
- <div className="grid grid-cols-1 md:grid-cols-3 gap-6 flex-1 min-h-0">
+ <div className="flex flex-col md:grid md:grid-cols-3 gap-6 flex-1 min-h-0 pb-4 custom-scrollbar">
  {renderTaskColumn("todo", "Cần làm", <Circle size={18} className="text-gray-400" />)}
  {renderTaskColumn("in_progress", "Đang xử lý", <Clock size={18} className="text-amber-400" />)}
  {renderTaskColumn("done", "Hoàn thành", <CheckCircle2 size={18} className="text-emerald-400" />)}

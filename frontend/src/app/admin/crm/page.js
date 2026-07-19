@@ -17,9 +17,9 @@ const STATUS_TABS = [
 ];
 
 const STATUS_STYLES = {
- vip: "bg-amber-500/10 text-amber-400 border border-amber-500/20",
- active: "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20",
- lead: "bg-blue-500/10 text-blue-400 border border-blue-500/20",
+ vip: "bg-amber-100 text-amber-700 border border-amber-200",
+ active: "bg-emerald-100 text-emerald-700 border border-emerald-200",
+ lead: "bg-blue-100 text-blue-700 border border-blue-200",
 };
 
 export default function CRMDashboard() {
@@ -172,17 +172,17 @@ export default function CRMDashboard() {
  placeholder="Tìm kiếm..."
  value={searchQuery}
  onChange={e => setSearchQuery(e.target.value)}
- className="glass-panel border border-white/60 rounded-3xl py-2 pl-9 pr-4 text-idaz-black text-sm focus:outline-none focus:border-rose-500 w-52 transition-colors"
+ className="glass-panel border border-white/60 rounded-3xl py-2 pl-9 pr-4 text-idaz-black text-sm focus:outline-none focus:border-orange-500 w-52 transition-colors"
  />
  </div>
- <button onClick={() => setIsAddModalOpen(true)} className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-idaz-black rounded-3xl text-sm font-bold transition-all shadow-[0_0_15px_rgba(225,29,72,0.3)] flex items-center gap-2">
+ <button onClick={() => setIsAddModalOpen(true)} className="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-idaz-black rounded-3xl text-sm font-bold transition-all shadow-[0_0_15px_rgba(245,166,35,0.3)] flex items-center gap-2">
  + Thêm Khách Hàng
  </button>
  </div>
  </div>
 
  {/* Stats */}
- <div className="grid grid-cols-4 gap-4 mb-6 shrink-0">
+ <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6 shrink-0">
  <div className="glass-panel border border-white/40 rounded-3xl p-5">
  <div className="flex items-center gap-2 text-gray-400 mb-2 text-sm"><Users size={16} /> Tổng KH</div>
  <div className="text-3xl font-bold text-idaz-black">{clients.length}</div>
@@ -191,21 +191,21 @@ export default function CRMDashboard() {
  <div className="flex items-center gap-2 text-gray-400 mb-2 text-sm"><TrendingUp size={16} /> Khách VIP</div>
  <div className="text-3xl font-bold text-amber-400">{vipCount}</div>
  </div>
- <div className="bg-gradient-to-br from-rose-600 to-rose-900 border border-rose-500/30 rounded-3xl p-5 col-span-2 shadow-[0_0_30px_rgba(225,29,72,0.15)]">
- <div className="text-rose-200 mb-2 text-sm font-medium">Tổng Doanh thu (tích lũy)</div>
+ <div className="bg-gradient-to-br from-orange-400 to-orange-600 border border-orange-500/30 rounded-3xl p-5 md:col-span-2 shadow-[0_0_30px_rgba(245,166,35,0.15)]">
+ <div className="text-white/80 mb-2 text-sm font-medium">Tổng Doanh thu (tích lũy)</div>
  <div className="text-3xl font-extrabold text-idaz-black">{totalRevenue.toLocaleString('vi-VN')} ₫</div>
  </div>
  </div>
 
  {/* Tab Filter */}
- <div className="flex gap-2 mb-4 shrink-0">
+ <div className="flex gap-2 mb-4 shrink-0 overflow-x-auto custom-scrollbar pb-2">
  {STATUS_TABS.map(tab => (
  <button
  key={tab.id}
  onClick={() => setActiveTab(tab.id)}
  className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
  activeTab === tab.id
- ? 'bg-rose-600 text-idaz-black shadow-[0_0_10px_rgba(225,29,72,0.4)]'
+ ? 'bg-orange-500 text-white shadow-[0_0_10px_rgba(245,166,35,0.4)]'
  : 'glass-panel text-gray-400 hover:text-idaz-black border border-white/40'
  }`}
  >
@@ -218,19 +218,19 @@ export default function CRMDashboard() {
  </div>
 
  {/* Table */}
- <div className="glass-panel border border-white/40 rounded-3xl overflow-hidden flex-1 flex flex-col">
- <div className="overflow-y-auto flex-1 custom-scrollbar">
- <table className="w-full text-left border-collapse">
- <thead className="sticky top-0 z-10 bg-idaz-gray/80 backdrop-blur-md">
- <tr className="border-b border-white/40">
- <th className="p-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Khách hàng</th>
- <th className="p-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Liên hệ</th>
- <th className="p-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Trạng thái</th>
- <th className="p-4 text-xs font-semibold text-gray-400 uppercase tracking-wider text-right">Doanh thu</th>
- <th className="p-4 text-xs font-semibold text-gray-400 uppercase tracking-wider text-center">Hành động</th>
+ <div className="glass-panel border border-white/80 rounded-3xl overflow-hidden flex-1 flex flex-col bg-white/40">
+ <div className="overflow-auto flex-1 custom-scrollbar">
+ <table className="w-full text-left border-collapse min-w-[800px]">
+ <thead className="sticky top-0 z-10 bg-gray-50/90 backdrop-blur-md">
+ <tr className="border-b border-gray-200">
+ <th className="p-5 text-xs font-semibold text-gray-500 uppercase tracking-wider">Khách hàng</th>
+ <th className="p-5 text-xs font-semibold text-gray-500 uppercase tracking-wider">Liên hệ</th>
+ <th className="p-5 text-xs font-semibold text-gray-500 uppercase tracking-wider">Trạng thái</th>
+ <th className="p-5 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">Doanh thu</th>
+ <th className="p-5 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">Hành động</th>
  </tr>
  </thead>
- <tbody className="divide-y divide-white/5">
+ <tbody className="divide-y divide-gray-100">
  {isLoading ? (
  <tr><td colSpan="5" className="p-10 text-center text-gray-500">Đang tải...</td></tr>
  ) : filteredClients.length === 0 ? (
@@ -238,14 +238,18 @@ export default function CRMDashboard() {
  ) : filteredClients.map(client => (
  <tr
  key={client.id}
- className="hover:glass-panel/[0.02] transition-colors group cursor-pointer"
+ className="hover:bg-white/80 transition-colors group cursor-pointer even:bg-gray-50/30"
  onClick={() => openDrawer(client)}
  >
  <td className="p-4">
  <div className="flex items-center gap-3">
  <div className="relative">
- <div className="w-10 h-10 rounded-full bg-gradient-to-br from-rose-500 to-purple-600 flex items-center justify-center text-idaz-black font-bold text-sm border border-white/60 uppercase shrink-0">
- {client.name.charAt(0)}
+ <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-orange-500 flex items-center justify-center text-idaz-black font-bold text-sm border border-white/60 uppercase shrink-0 overflow-hidden">
+ {client.avatar ? (
+   <img src={client.avatar} alt={client.name} className="w-full h-full object-cover" />
+ ) : (
+   client.name.charAt(0)
+ )}
  </div>
  {onlineUsers.includes(client.id) && (
  <span className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-zinc-950 rounded-full"></span>
@@ -280,7 +284,7 @@ export default function CRMDashboard() {
  </button>
  <button
  onClick={e => handleDeleteClient(client.id, e)}
- className="p-1.5 bg-white/10 hover:bg-rose-500/20 hover:text-rose-400 text-gray-400 rounded-xl transition-colors"
+ className="p-1.5 bg-white/10 hover:bg-orange-500/20 hover:text-orange-500 text-gray-400 rounded-xl transition-colors"
  title="Vô hiệu hóa"
  >
  <Trash2 size={14} />
@@ -312,8 +316,12 @@ export default function CRMDashboard() {
  {/* Drawer Header */}
  <div className="p-6 border-b border-white/60 flex items-start justify-between shrink-0">
  <div className="flex items-center gap-4">
- <div className="w-14 h-14 rounded-3xl bg-gradient-to-br from-rose-500 to-purple-600 flex items-center justify-center text-idaz-black font-bold text-xl uppercase">
- {selectedClient.name.charAt(0)}
+ <div className="w-14 h-14 rounded-3xl bg-gradient-to-br from-orange-400 to-orange-500 flex items-center justify-center text-idaz-black font-bold text-xl uppercase overflow-hidden">
+ {selectedClient.avatar ? (
+   <img src={selectedClient.avatar} alt={selectedClient.name} className="w-full h-full object-cover" />
+ ) : (
+   selectedClient.name.charAt(0)
+ )}
  </div>
  <div>
  <h3 className="text-xl font-bold text-idaz-black">{selectedClient.name}</h3>
@@ -333,14 +341,14 @@ export default function CRMDashboard() {
  <div className="space-y-2">
  <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Thông tin liên hệ</h4>
  <div className="glass-panel rounded-3xl p-4 space-y-3">
- <div className="flex items-center gap-3 text-sm"><Mail size={14} className="text-rose-400" /><span className="text-gray-600">{selectedClient.email}</span></div>
- <div className="flex items-center gap-3 text-sm"><Phone size={14} className="text-rose-400" /><span className="text-gray-600">{selectedClient.phone}</span></div>
+ <div className="flex items-center gap-3 text-sm"><Mail size={14} className="text-orange-500" /><span className="text-gray-600">{selectedClient.email}</span></div>
+ <div className="flex items-center gap-3 text-sm"><Phone size={14} className="text-orange-500" /><span className="text-gray-600">{selectedClient.phone}</span></div>
  </div>
  </div>
 
  {/* Doanh thu */}
- <div className="bg-gradient-to-br from-rose-600/20 to-purple-600/10 border border-rose-500/20 rounded-3xl p-4">
- <div className="text-xs text-rose-300 font-semibold uppercase tracking-wider mb-1">Tổng Doanh Thu</div>
+ <div className="bg-gradient-to-br from-rose-600/20 to-purple-600/10 border border-orange-500/20 rounded-3xl p-4">
+ <div className="text-xs text-orange-600 font-semibold uppercase tracking-wider mb-1">Tổng Doanh Thu</div>
  <div className="text-2xl font-extrabold text-idaz-black">{selectedClient.revenue.toLocaleString('vi-VN')} ₫</div>
  </div>
 
@@ -360,7 +368,7 @@ export default function CRMDashboard() {
  <div className="text-xs text-gray-500 mt-0.5">{p.progress || 0}% hoàn thành</div>
  </div>
  <div className="w-16 h-1.5 bg-gray-100 rounded-full overflow-hidden">
- <div className="h-full bg-rose-500 rounded-full" style={{ width: `${p.progress || 0}%` }} />
+ <div className="h-full bg-orange-500 rounded-full" style={{ width: `${p.progress || 0}%` }} />
  </div>
  </div>
  ))}
@@ -430,21 +438,21 @@ export default function CRMDashboard() {
  <div key={f.key}>
  <label className="block text-sm font-medium text-gray-400 mb-1">{f.label}</label>
  <input required type={f.type} value={newClient[f.key]} onChange={e => setNewClient({ ...newClient, [f.key]: e.target.value })}
- className="w-full glass-panel border border-white/60 rounded-3xl px-4 py-3 text-idaz-black text-sm focus:outline-none focus:border-rose-500 transition-colors"
+ className="w-full glass-panel border border-white/60 rounded-3xl px-4 py-3 text-idaz-black text-sm focus:outline-none focus:border-orange-500 transition-colors"
  placeholder={f.placeholder} />
  </div>
  ))}
  <div>
  <label className="block text-sm font-medium text-gray-400 mb-1">Phân loại</label>
  <select value={newClient.customerStatus} onChange={e => setNewClient({ ...newClient, customerStatus: e.target.value })}
- className="w-full glass-panel border border-white/60 rounded-3xl px-4 py-3 text-idaz-black text-sm focus:outline-none focus:border-rose-500 transition-colors">
+ className="w-full glass-panel border border-white/60 rounded-3xl px-4 py-3 text-idaz-black text-sm focus:outline-none focus:border-orange-500 transition-colors">
  <option value="lead">Tiềm năng (Lead)</option>
  <option value="active">Đang triển khai (Active)</option>
  <option value="vip">Khách hàng VIP</option>
  </select>
  </div>
  <div className="pt-4">
- <button type="submit" className="w-full bg-rose-600 hover:bg-rose-700 text-idaz-black rounded-3xl py-3 font-bold transition-all shadow-[0_0_15px_rgba(225,29,72,0.3)]">
+ <button type="submit" className="w-full bg-orange-500 hover:bg-orange-600 text-idaz-black rounded-3xl py-3 font-bold transition-all shadow-[0_0_15px_rgba(245,166,35,0.3)]">
  Tạo Tài Khoản
  </button>
  </div>
@@ -466,7 +474,7 @@ export default function CRMDashboard() {
  className="bg-idaz-gray border border-white/60 rounded-3xl p-6 w-full max-w-md shadow-2xl"
  >
  <div className="flex items-center justify-between mb-6">
- <h3 className="text-xl font-bold text-idaz-black">Chỉnh sửa: <span className="text-rose-400">{editClient.name}</span></h3>
+ <h3 className="text-xl font-bold text-idaz-black">Chỉnh sửa: <span className="text-orange-500">{editClient.name}</span></h3>
  <button onClick={() => { setIsEditModalOpen(false); setEditClient(null); }} className="text-gray-500 hover:text-idaz-black transition-colors"><X size={20} /></button>
  </div>
  <form onSubmit={handleEditClient} className="space-y-4">
