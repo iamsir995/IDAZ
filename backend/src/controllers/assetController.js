@@ -35,14 +35,22 @@ exports.getProjectAssets = async (req, res) => {
     const { projectId } = req.params;
     const folderId = req.query.folderId || null;
 
-    const queryProjectId = projectId === 'global' ? null : projectId;
+    const isGlobal = projectId === 'global';
+    const queryProjectId = isGlobal ? null : projectId;
     const filter = { projectId: queryProjectId, folderId };
     
-    // Nếu Client, chỉ lấy asset của Client đó (hoặc public)
+    // Nếu Client, chỉ lấy asset của Client đó (hoặc global)
     if (req.user && req.user.role === 'client') {
-      const project = await Project.findById(projectId);
-      if (!project || project.clientId.toString() !== req.user._id.toString()) {
-        return res.status(403).json({ success: false, message: 'Không có quyền truy cập.' });
+      // Kho global = tất cả client đều có thể thấy
+      if (!isGlobal) {
+        const mongoose = require('mongoose');
+        if (!mongoose.Types.ObjectId.isValid(projectId)) {
+          return res.status(400).json({ success: false, message: 'Project ID không hợp lệ.' });
+        }
+        const project = await Project.findById(projectId);
+        if (!project || !project.clientId || project.clientId.toString() !== req.user._id.toString()) {
+          return res.status(403).json({ success: false, message: 'Không có quyền truy cập.' });
+        }
       }
       filter.$or = [{ userId: req.user._id }, { userId: null }];
     }
@@ -54,7 +62,8 @@ exports.getProjectAssets = async (req, res) => {
 
     res.status(200).json({ success: true, data: assets });
   } catch (error) {
-    res.status(500).json({ success: false, message: 'Lỗi tải danh sách file.' });
+    console.error('[getProjectAssets] Lỗi:', error.message);
+    res.status(500).json({ success: false, message: 'Lỗi tải danh sách file.', error: error.message });
   }
 };
 
@@ -64,7 +73,7 @@ exports.getProjectAssets = async (req, res) => {
 exports.uploadAssets = async (req, res) => {
   try {
     const { folderId, userId } = req.body;
-    const projectId = req.body.projectId === 'global' ? null : req.body.projectId;
+    const projectId = (!req.body.projectId || req.body.projectId === 'global') ? null : req.body.projectId;
     const files = req.files;
 
     if (!files || files.length === 0) {
@@ -76,10 +85,26 @@ exports.uploadAssets = async (req, res) => {
     for (let file of files) {
       // Xác định loại file dựa vào mimetype
       let type = 'other';
-      if (file.mimetype.startsWith('image/')) type = 'image';
-      else if (file.mimetype.startsWith('video/')) type = 'video';
-      else if (file.mimetype.includes('pdf') || file.mimetype.includes('word') || file.mimetype.includes('excel')) type = 'document';
-      else if (file.mimetype.includes('zip') || file.mimetype.includes('rar')) type = 'other';
+      const mime = file.mimetype || '';
+      if (mime.startsWith('image/')) type = 'image';
+      else if (mime.startsWith('video/')) type = 'video';
+      else if (
+        mime.includes('pdf') ||
+        mime.includes('word') ||
+        mime.includes('excel') ||
+        mime.includes('powerpoint') ||
+        mime.includes('spreadsheet') ||
+        mime.includes('presentation') ||
+        mime.includes('opendocument')
+      ) type = 'document';
+      else if (mime.includes('zip') || mime.includes('rar') || mime.includes('7z')) type = 'archive';
+
+      // Xử lý URL: lấy từ destination để có đường dẫn đầy đủ (kể cả subfolder như 2026/)
+      let relativePath = (file.destination || '').split('public/')[1] || 'uploads';
+      if (relativePath.startsWith('/')) relativePath = relativePath.substring(1);
+      if (relativePath.endsWith('/')) relativePath = relativePath.slice(0, -1);
+      const fileUrl = `/${relativePath}/${file.filename}`;
+      const filePath = `public/${relativePath}/${file.filename}`;
 
       // Xử lý trùng lặp tên
       const finalName = await getUniqueFilename(file.originalname, projectId, folderId);
@@ -87,14 +112,14 @@ exports.uploadAssets = async (req, res) => {
       const asset = await Asset.create({
         name: finalName,
         originalName: file.originalname,
-        url: `/uploads/${file.filename}`,
-        filePath: `public/uploads/${file.filename}`,
+        url: fileUrl,
+        filePath,
         type,
-        mimeType: file.mimetype,
+        mimeType: mime,
         fileSize: file.size,
         projectId,
         folderId: folderId || null,
-        userId: userId || null, // Nhan vien co the gán quyen cho Client nao do thay, hoac null de public
+        userId: userId || null,
         uploadedBy: req.user._id,
         version: 1
       });
@@ -111,22 +136,26 @@ exports.uploadAssets = async (req, res) => {
       });
     }
 
-    // Bot Notification
+    // Bot Notification chỉ khi có project thật
     if (projectId && req.user.role !== 'client') {
-      const project = await Project.findById(projectId);
-      if (project) {
-        await Message.create({
-          projectId: projectId,
-          senderId: '6a3e3798a84fb09a50dcb800', // Giả lập ID của BOT
-          senderName: 'System Bot',
-          senderRole: 'system',
-          text: `[Cập nhật Tài sản] **${req.user.name}** vừa tải lên ${uploadedAssets.length} file mới vào dự án. Hãy vào tab Tài Nguyên để xem.`
-        });
+      const mongoose = require('mongoose');
+      if (mongoose.Types.ObjectId.isValid(projectId)) {
+        const project = await Project.findById(projectId);
+        if (project) {
+          await Message.create({
+            projectId,
+            senderId: '6a3e3798a84fb09a50dcb800',
+            senderName: 'System Bot',
+            senderRole: 'system',
+            text: `[Cập nhật Tài sản] **${req.user.name}** vừa tải lên ${uploadedAssets.length} file mới vào dự án.`
+          });
+        }
       }
     }
 
     res.status(201).json({ success: true, data: uploadedAssets });
   } catch (error) {
+    console.error('[uploadAssets] Lỗi:', error.message);
     res.status(500).json({ success: false, message: 'Lỗi khi upload file.', error: error.message });
   }
 };
@@ -235,7 +264,8 @@ exports.uploadSingle = async (req, res) => {
 // @access  Private
 exports.createLinkAsset = async (req, res) => {
   try {
-    const { name, url, type, projectId, folderId, userId } = req.body;
+    const { name, url, type, folderId, userId } = req.body;
+    const projectId = (!req.body.projectId || req.body.projectId === 'global') ? null : req.body.projectId;
     
     const finalName = await getUniqueFilename(name, projectId, folderId);
 
@@ -252,7 +282,8 @@ exports.createLinkAsset = async (req, res) => {
     
     res.status(201).json({ success: true, data: asset });
   } catch (error) {
-    res.status(500).json({ success: false, message: 'Lỗi tạo liên kết.' });
+    console.error('[createLinkAsset] Lỗi:', error.message);
+    res.status(500).json({ success: false, message: 'Lỗi tạo liên kết.', error: error.message });
   }
 };
 
