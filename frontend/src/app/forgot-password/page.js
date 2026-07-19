@@ -20,7 +20,16 @@ export default function ForgotPassword() {
  const res = await api.post('/auth/forgotpassword', { email });
  if (res.data.success) {
  setIsSent(true);
- toast.success("Đã gửi link khôi phục mật khẩu. Vui lòng kiểm tra Email.");
+ toast.success("Đã gửi yêu cầu khôi phục mật khẩu.");
+ if (res.data.devNote) {
+   toast.custom((t) => (
+     <div className="bg-slate-800 text-white p-4 rounded-xl shadow-2xl border border-rose-500/50 max-w-sm">
+       <h4 className="font-bold text-rose-400 mb-1">Link Khôi phục (Dev Mode)</h4>
+       <p className="text-xs break-all">{res.data.devNote.replace('Link reset (Vì chưa cấu hình SMTP): ', '')}</p>
+       <a href={res.data.devNote.replace('Link reset (Vì chưa cấu hình SMTP): ', '')} className="mt-2 inline-block bg-rose-500 text-white px-3 py-1 text-xs rounded-lg font-bold">Bấm vào đây để khôi phục</a>
+     </div>
+   ), { duration: 20000 });
+ }
  }
  } catch (error) {
  toast.error(error.response?.data?.message || "Lỗi gửi email");

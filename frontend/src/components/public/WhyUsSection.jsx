@@ -44,7 +44,7 @@ const highlights = [
 
 export default function WhyUsSection() {
   return (
-    <section id="why-us" className="py-20 md:py-28 bg-[#F5F5F7] relative overflow-hidden">
+    <section id="why-us" className="py-20 md:py-28 relative overflow-hidden">
       {/* Subtle decoration */}
       <div className="absolute bottom-0 left-0 w-[300px] h-[300px] rounded-full opacity-20 pointer-events-none"
         style={{ background: "radial-gradient(circle, rgba(245,166,35,0.15) 0%, transparent 70%)" }}

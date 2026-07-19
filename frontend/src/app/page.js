@@ -1,15 +1,17 @@
 import PublicNavbar from "../components/public/PublicNavbar";
 import HeroSection from "../components/public/HeroSection";
 import ServicesSection from "../components/public/ServicesSection";
-import WhyUsSection from "../components/public/WhyUsSection";
-import ProcessSection from "../components/public/ProcessSection";
-import PortfolioSection from "../components/public/PortfolioSection";
-import TestimonialsSection from "../components/public/TestimonialsSection";
-import BlogSection from "../components/public/BlogSection";
-import ContactSection from "../components/public/ContactSection";
-import PublicFooter from "../components/public/PublicFooter";
-import api from "../services/api";
+import dynamic from 'next/dynamic';
 
+const WhyUsSection = dynamic(() => import('../components/public/WhyUsSection'), { ssr: true });
+const ProcessSection = dynamic(() => import('../components/public/ProcessSection'), { ssr: true });
+const PortfolioSection = dynamic(() => import('../components/public/PortfolioSection'), { ssr: true });
+const TestimonialsSection = dynamic(() => import('../components/public/TestimonialsSection'), { ssr: true });
+const BlogSection = dynamic(() => import('../components/public/BlogSection'), { ssr: true });
+const ContactSection = dynamic(() => import('../components/public/ContactSection'), { ssr: true });
+const PublicFooter = dynamic(() => import('../components/public/PublicFooter'), { ssr: true });
+
+import api from "../services/api";
 // Cấu hình revalidate nếu muốn cache data (tuỳ chọn)
 export const revalidate = 60; // revalidate every 60 seconds
 
@@ -22,7 +24,7 @@ export default async function Home() {
     const [servicesRes, portfoliosRes, postsRes] = await Promise.all([
       api.get('/services/public'),
       api.get('/portfolios/public?limit=6'),
-      api.get('/posts/public?limit=3')
+      api.get('/posts/public?limit=5')
     ]);
     
     if (servicesRes.data.success) services = servicesRes.data.data;
@@ -34,7 +36,7 @@ export default async function Home() {
 
 
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen bg-apple-light text-[#1D1D1F] font-sans overflow-x-hidden selection:bg-[#F5A623]/30">
       <PublicNavbar />
       
       {/* 

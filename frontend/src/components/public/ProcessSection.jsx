@@ -36,7 +36,7 @@ const steps = [
 
 export default function ProcessSection() {
  return (
- <section id="process" className="py-20 md:py-32" style={{ background: "var(--color-idaz-black)" }}>
+ <section id="process" className="py-20 md:py-32 relative overflow-hidden">
  <div className="max-w-7xl mx-auto px-6 md:px-12 w-full">
  {/* Header */}
  <div className="text-center mb-16">
@@ -49,7 +49,7 @@ export default function ProcessSection() {
  <span className="w-8 h-px" style={{ background: "var(--color-idaz-orange)" }} />
  </div>
  <h2
- className="text-idaz-black mb-4"
+ className="text-[#1D1D1F] mb-4"
  style={{
  
  fontWeight: 800,
@@ -61,7 +61,7 @@ export default function ProcessSection() {
  Quy trình{" "}
  <span style={{ color: "var(--color-idaz-orange)" }}>5 bước</span> chuẩn mực
  </h2>
- <p className="text-gray-400 max-w-xl mx-auto text-callout" >
+ <p className="text-[#6E6E73] max-w-xl mx-auto text-callout" >
  Minh bạch, có hệ thống và luôn hướng đến kết quả kinh doanh thực tế.
  </p>
  </div>
@@ -89,10 +89,10 @@ export default function ProcessSection() {
  <div
  className="w-14 h-14 rounded-full flex items-center justify-center font-black text-lg flex-shrink-0 relative z-10"
  style={{
- background: i === 0 ? "var(--color-idaz-orange)" : "rgba(245,166,35,0.12)",
+ background: i === 0 ? "var(--color-idaz-orange)" : "white",
  color: i === 0 ? "white" : "var(--color-idaz-orange)",
  border: "2px solid rgba(245,166,35,0.3)",
- 
+ boxShadow: i === 0 ? "0 4px 12px rgba(245,166,35,0.3)" : "none",
  }}
  >
  {step.number}
@@ -107,16 +107,10 @@ export default function ProcessSection() {
  )}
  </div>
 
- <h4
- className="text-idaz-black font-bold text-callout mb-3"
- 
- >
+ <h4 className="text-[#1D1D1F] font-bold text-callout mb-3">
  {step.title}
  </h4>
- <p
- className="text-idaz-black/45 text-subheadline leading-relaxed flex-1 mb-4"
- 
- >
+ <p className="text-[#6E6E73] text-subheadline leading-relaxed flex-1 mb-4">
  {step.desc}
  </p>
  <div

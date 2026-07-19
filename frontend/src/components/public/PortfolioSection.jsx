@@ -12,7 +12,7 @@ export default function PortfolioSection({ initialPortfolios = [] }) {
 
   if (!initialPortfolios || initialPortfolios.length === 0) {
     return (
-      <section id="portfolio" className="py-20 md:py-28 bg-white relative">
+      <section id="portfolio" className="py-20 md:py-28 relative">
         <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[rgba(0,0,0,0.07)] to-transparent" />
         <div className="max-w-7xl mx-auto px-5 md:px-8 w-full">
           <div className="glass-panel bg-[#F5F5F7]/50 rounded-[24px] p-10 md:p-16 text-center border border-black/5 flex flex-col items-center justify-center">
@@ -37,7 +37,7 @@ export default function PortfolioSection({ initialPortfolios = [] }) {
       : initialPortfolios.filter((p) => p.category === active);
 
   return (
-    <section id="portfolio" className="py-20 md:py-28 bg-white relative">
+    <section id="portfolio" className="py-20 md:py-28 relative">
       {/* Top border */}
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[rgba(0,0,0,0.07)] to-transparent" />
 
@@ -108,7 +108,7 @@ export default function PortfolioSection({ initialPortfolios = [] }) {
                       <div className="relative h-[200px] bg-[#F5F5F7] overflow-hidden">
                         {project.coverImage ? (
                           <img
-                            src={project.coverImage}
+                            src={project.coverImage.startsWith('/') ? (process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000') + project.coverImage : project.coverImage}
                             alt={project.title}
                             className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-700"
                             loading="lazy"

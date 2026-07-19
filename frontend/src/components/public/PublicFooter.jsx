@@ -241,7 +241,7 @@ export default function PublicFooter() {
           {/* Quick contact */}
           <div className="flex flex-col sm:flex-row gap-4 md:justify-end">
             {[
-              { icon: Mail, value: "hello@idaz.vn", href: "mailto:hello@idaz.vn" },
+              { icon: Mail, value: "contact@idaz.com.vn", href: "mailto:contact@idaz.com.vn" },
               { icon: Phone, value: "031 884 5312", href: "tel:0318845312" },
             ].map(({ icon: Icon, value, href }) => (
               <a

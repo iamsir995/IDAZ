@@ -56,10 +56,10 @@ export default function ServicesSection({ services = [] }) {
 
   const [featured, ...rest] = services.slice(0, 3);
   const featuredTheme = SERVICE_THEMES[0];
-  const featuredIcon = iconMap[featured?.icon] || PenTool;
+  const FeaturedIcon = iconMap[featured?.icon] || PenTool;
 
   return (
-    <section id="services" className="py-20 md:py-28 bg-[#F5F5F7] relative overflow-hidden">
+    <section id="services" className="py-20 md:py-28 relative overflow-hidden">
       {/* Subtle background decoration */}
       <div className="absolute top-0 right-0 w-[400px] h-[400px] rounded-full opacity-30 pointer-events-none"
         style={{ background: "radial-gradient(circle, rgba(245,166,35,0.1) 0%, transparent 70%)" }}
@@ -120,7 +120,7 @@ export default function ServicesSection({ services = [] }) {
                       className="w-14 h-14 rounded-[16px] flex items-center justify-center transition-transform duration-300 group-hover:scale-110"
                       style={{ background: featuredTheme.accentLight, border: `1px solid ${featuredTheme.accentBorder}` }}
                     >
-                      <featuredIcon size={28} style={{ color: featuredTheme.accent }} strokeWidth={1.5} />
+                      <FeaturedIcon size={28} style={{ color: featuredTheme.accent }} strokeWidth={1.5} />
                     </div>
                   </div>
 

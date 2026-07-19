@@ -16,8 +16,18 @@ export default function Login() {
   const [otp, setOtp] = useState("");
   const [step, setStep] = useState(1); // 1: Email/Pass, 2: OTP
   const [isLoading, setIsLoading] = useState(false);
+  const [googleClientId, setGoogleClientId] = useState("");
   const { user, loading, login, verify2FA } = useAuth();
   const router = useRouter();
+
+  useEffect(() => {
+    // Fetch public settings for Google Client ID
+    api.get('/settings').then(res => {
+      if (res.data?.success && res.data?.data?.googleClientId) {
+        setGoogleClientId(res.data.data.googleClientId);
+      }
+    }).catch(console.error);
+  }, []);
 
   // Tự động chuyển hướng nếu đã đăng nhập
   useEffect(() => {
@@ -164,24 +174,28 @@ export default function Login() {
                 </button>
               </div>
 
-              <div className="relative mt-6">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-gray-200"></div>
-                </div>
-                <div className="relative flex justify-center text-sm">
-                  <span className="px-3 glass-panel rounded-full text-gray-500 font-medium">Hoặc tiếp tục với</span>
-                </div>
-              </div>
+              {process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID && process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID !== 'mock_client_id' && (
+                <>
+                  <div className="relative mt-6">
+                    <div className="absolute inset-0 flex items-center">
+                      <div className="w-full border-t border-gray-200"></div>
+                    </div>
+                    <div className="relative flex justify-center text-sm">
+                      <span className="px-3 glass-panel rounded-full text-gray-500 font-medium">Hoặc tiếp tục với</span>
+                    </div>
+                  </div>
 
-              <div className="mt-6 flex justify-center">
-                <GoogleLogin
-                  onSuccess={handleGoogleSuccess}
-                  onError={() => toast.error('Google Login Failed')}
-                  theme="outline"
-                  shape="pill"
-                  text="continue_with"
-                />
-              </div>
+                  <div className="mt-6 flex justify-center">
+                    <GoogleLogin
+                      onSuccess={handleGoogleSuccess}
+                      onError={() => toast.error('Google Login Failed')}
+                      theme="outline"
+                      shape="pill"
+                      text="continue_with"
+                    />
+                  </div>
+                </>
+              )}
             </form>
           ) : (
             <form className="space-y-6" onSubmit={handleVerifyOTP}>

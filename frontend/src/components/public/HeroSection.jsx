@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { ArrowRight, ChevronDown, Award, Clock, Users, Star } from "lucide-react";
+import { ArrowRight, ChevronDown, Award, Clock, Users, Star, ArrowUpRight } from "lucide-react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 
@@ -37,15 +37,15 @@ function CountUp({ target, suffix = "", duration = 1800 }) {
 const stats = [
   { icon: Award, value: 200, suffix: "+", label: "Dự án hoàn thành" },
   { icon: Clock, value: 5, suffix: "+", label: "Năm kinh nghiệm" },
-  { icon: Users, value: 150, suffix: "+", label: "Khách hàng tin tưởng" },
-  { icon: Star, value: 98, suffix: "%", label: "Tỷ lệ hài lòng" },
+  { icon: Users, value: 150, suffix: "+", label: "Khách hàng" },
+  { icon: Star, value: 98, suffix: "%", label: "Hài lòng" },
 ];
 
 export default function HeroSection() {
   return (
     <section
       id="home"
-      className="relative min-h-[calc(100vh-60px)] flex flex-col overflow-hidden bg-apple-light"
+      className="relative min-h-screen flex flex-col justify-center overflow-hidden bg-apple-light text-[#1D1D1F] pt-20"
     >
       {/* Subtle warm blobs — light tones only */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
@@ -73,203 +73,117 @@ export default function HeroSection() {
         aria-hidden="true"
       />
 
-      {/* Hero Content */}
-      <div className="relative z-10 flex-1 flex flex-col justify-center">
-        <div className="max-w-7xl mx-auto px-5 md:px-8 w-full py-16 md:py-20">
-          <div className="grid lg:grid-cols-[1fr_420px] xl:grid-cols-[1fr_480px] gap-12 lg:gap-16 items-center">
-
-            {/* Left — Text content */}
-            <div>
-              {/* Badge */}
-              <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
-                className="mb-6"
-              >
-                <span className="badge-pill">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#F5A623] animate-pulse" />
-                  Thương hiệu chuyên nghiệp tại Việt Nam
-                </span>
-              </motion.div>
-
-              {/* Heading */}
-              <motion.h1
-                initial={{ opacity: 0, y: 24 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.1, ease: [0.4, 0, 0.2, 1] }}
-                className="font-display font-black text-[#1D1D1F] mb-6 tracking-[-0.03em] leading-[1.0]"
-                style={{ fontSize: "clamp(2.8rem, 6vw, 5rem)" }}
-              >
-                Nâng Tầm{" "}
-                <span style={{ color: "var(--color-idaz-orange)" }}>
-                  Thương Hiệu
-                </span>
-                <br />
-                <span className="text-[#424245]">Doanh Nghiệp Việt</span>
-              </motion.h1>
-
-              {/* Subtitle */}
-              <motion.p
-                initial={{ opacity: 0, y: 24 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2, ease: [0.4, 0, 0.2, 1] }}
-                className="text-title-3 text-[#6E6E73] mb-10 max-w-xl"
-                
-              >
-                Từ logo đến chiến lược marketing — IDAZ đồng hành cùng doanh nghiệp xây dựng hình ảnh chuyên nghiệp, nhất quán trên mọi nền tảng.
-              </motion.p>
-
-              {/* CTAs */}
-              <motion.div
-                initial={{ opacity: 0, y: 24 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.3, ease: [0.4, 0, 0.2, 1] }}
-                className="flex flex-wrap gap-4"
-              >
-                <Link href="/lien-he" className="btn-primary mobile-full-btn">
-                  Nhận tư vấn miễn phí
-                  <ArrowRight size={18} strokeWidth={2.5} />
-                </Link>
-                <Link href="/portfolio" className="btn-secondary mobile-full-btn">
-                  Xem dự án thực tế
-                </Link>
-              </motion.div>
-
-              {/* Trust indicators */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.6, delay: 0.5 }}
-                className="flex flex-wrap items-center gap-6 mt-10 pt-10 border-t border-[rgba(0,0,0,0.07)]"
-              >
-                <div className="flex -space-x-2">
-                  {["#F5A623", "#3B82F6", "#10B981", "#8B5CF6"].map((color, i) => (
-                    <div
-                      key={i}
-                      className="w-8 h-8 rounded-full border-2 border-white flex items-center justify-center text-white text-[10px] font-bold"
-                      style={{ background: color }}
-                    >
-                      {String.fromCharCode(65 + i)}
-                    </div>
-                  ))}
-                </div>
-                <div>
-                  <div className="flex items-center gap-1 mb-0.5">
-                    {[...Array(5)].map((_, i) => (
-                      <svg key={i} width="14" height="14" viewBox="0 0 24 24" fill="#F5A623">
-                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                      </svg>
-                    ))}
-                  </div>
-                  <p className="text-footnote font-medium text-[#86868B]" >
-                    <strong className="text-[#1D1D1F]">150+ khách hàng</strong> tin tưởng
-                  </p>
-                </div>
-              </motion.div>
-            </div>
-
-            {/* Right — Floating showcase card */}
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-5 md:px-8 py-16">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
+          
+          {/* Left: Text Content */}
+          <div>
             <motion.div
-              initial={{ opacity: 0, x: 40, y: 20 }}
-              animate={{ opacity: 1, x: 0, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.3, ease: [0.4, 0, 0.2, 1] }}
-              className="hidden lg:block"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+              className="mb-6 inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#F5A623]/30 bg-[#F5A623]/10 backdrop-blur-md"
             >
-              <div className="glass-panel rounded-[28px] p-6 shadow-[0_24px_80px_rgba(0,0,0,0.1)]">
-                {/* Card header */}
-                <div className="flex items-center justify-between mb-5">
-                  <div>
-                    <div className="text-footnote font-semibold text-[#86868B] uppercase tracking-wider mb-1">Dự án nổi bật</div>
-                    <div className="text-headline font-extrabold text-[#1D1D1F]" >IDAZ Portfolio 2024</div>
-                  </div>
-                  <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ background: "rgba(245,166,35,0.12)" }}>
-                    <Award size={20} style={{ color: "var(--color-idaz-orange)" }} />
-                  </div>
-                </div>
+              <span className="w-2 h-2 rounded-full bg-[#F5A623] animate-pulse" />
+              <span className="text-sm font-semibold text-[#D4891A]">Marketing Agency Top 1 Việt Nam</span>
+            </motion.div>
 
-                {/* Preview placeholder — gradient visual */}
-                <div className="rounded-[18px] h-[200px] mb-5 overflow-hidden relative"
-                  style={{ background: "linear-gradient(135deg, #FEF3E2 0%, #FDE8B4 50%, #F5A623 100%)" }}
-                >
-                  {/* Decorative elements */}
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="text-center">
-                      <div className="w-16 h-16 rounded-2xl mx-auto mb-3 flex items-center justify-center" style={{ background: "rgba(255,255,255,0.5)", backdropFilter: "blur(10px)" }}>
-                        <span className="font-black text-2xl text-[#1D1D1F]" >I</span>
-                      </div>
-                      <span className="text-[13px] font-[700] text-[#1D1D1F]/60 uppercase tracking-wider">IDAZ Branding</span>
-                    </div>
-                  </div>
-                  {/* Floating glass badge */}
-                  <div className="absolute top-3 right-3 glass-panel rounded-full px-3 py-1.5 flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
-                    <span className="text-[11px] font-[600] text-[#1D1D1F]">Hoàn thành</span>
-                  </div>
-                </div>
+            <motion.h1
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1, ease: [0.4, 0, 0.2, 1] }}
+              className="font-display font-black mb-6 tracking-tight leading-[1.1]"
+              style={{ fontSize: "clamp(3rem, 6vw, 5rem)" }}
+            >
+              Thiết kế <span style={{ color: "var(--color-idaz-orange)" }}>Trải nghiệm.</span>
+              <br />
+              Chốt sale <span className="text-[#1D1D1F]">Tự động.</span>
+            </motion.h1>
 
-                {/* Stats mini */}
-                <div className="grid grid-cols-3 gap-3">
-                  {[
-                    { value: "200+", label: "Dự án" },
-                    { value: "5+", label: "Năm" },
-                    { value: "98%", label: "Hài lòng" },
-                  ].map(({ value, label }) => (
-                    <div key={label} className="glass-frosted rounded-[12px] p-3 text-center">
-                      <div className="text-title-3 font-black text-[#1D1D1F]" >{value}</div>
-                      <div className="text-caption-2 font-medium text-[#86868B] mt-0.5">{label}</div>
-                    </div>
-                  ))}
-                </div>
+            <motion.p
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2, ease: [0.4, 0, 0.2, 1] }}
+              className="text-lg md:text-xl text-[#6E6E73] mb-10 max-w-xl"
+            >
+              Chúng tôi không chỉ làm marketing, chúng tôi xây dựng cỗ máy bán hàng vô hình giúp doanh nghiệp bạn tăng trưởng gấp 3 lần doanh thu.
+            </motion.p>
 
-                {/* CTA in card */}
-                <Link
-                  href="/portfolio"
-                  className="flex items-center justify-center gap-2 mt-4 py-3.5 rounded-full text-[14px] font-[700] transition-all duration-300 hover:scale-[1.02]"
-                  style={{ background: "var(--color-idaz-orange)", color: "#1D1D1F", }}
-                >
-                  Khám phá portfolio
-                  <ArrowRight size={15} />
-                </Link>
-              </div>
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3, ease: [0.4, 0, 0.2, 1] }}
+              className="flex flex-wrap gap-4"
+            >
+              <Link href="/lien-he" className="flex items-center gap-2 text-[#1D1D1F] font-bold py-4 px-8 rounded-full transition-all hover:scale-105 hover:shadow-[0_4px_20px_rgba(245,166,35,0.35)]" style={{ background: "var(--color-idaz-orange)" }}>
+                Nhận chiến lược ngay
+                <ArrowRight size={20} />
+              </Link>
+              <Link href="/portfolio" className="flex items-center gap-2 glass-panel hover:bg-white/90 text-[#1D1D1F] font-bold py-4 px-8 rounded-full transition-all shadow-sm">
+                Xem Case Study
+                <ArrowUpRight size={20} />
+              </Link>
             </motion.div>
           </div>
-        </div>
-      </div>
 
-      {/* Stats bar — bottom of hero */}
-      <div className="relative z-10 max-w-7xl mx-auto px-5 md:px-8 w-full pb-10 md:pb-14">
-        <div className="glass-panel rounded-[20px] px-6 py-5 border border-white/80">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-5 md:gap-6 divide-y md:divide-y-0 md:divide-x divide-[rgba(0,0,0,0.06)]">
-            {stats.map(({ icon: Icon, value, suffix, label }, i) => (
-              <div key={label} className={`flex items-center gap-4 ${i > 0 && i < 2 ? "pt-5 md:pt-0" : ""} ${i >= 2 ? "pt-5 md:pt-0" : ""} md:px-6 first:pl-0 last:pr-0`}>
-                <div
-                  className="w-10 h-10 rounded-[10px] flex items-center justify-center flex-shrink-0"
-                  style={{ background: "rgba(245,166,35,0.1)" }}
-                >
-                  <Icon size={20} style={{ color: "var(--color-idaz-orange)" }} strokeWidth={1.8} />
-                </div>
-                <div>
-                  <div className="text-title-2 font-black text-[#1D1D1F] leading-none" >
-                    <CountUp target={value} suffix={suffix} />
-                  </div>
-                  <div className="text-caption-1 font-medium text-[#86868B] mt-1">{label}</div>
+          {/* Right: Bento Box Preview */}
+          <motion.div
+            initial={{ opacity: 0, x: 40, y: 20 }}
+            animate={{ opacity: 1, x: 0, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.3, ease: [0.4, 0, 0.2, 1] }}
+            className="grid grid-cols-2 gap-4 lg:gap-6"
+          >
+            {/* Box 1: Growth */}
+            <div className="glass-card rounded-3xl p-6 flex flex-col justify-between col-span-2 sm:col-span-1 h-48 hover:border-[#F5A623]/50 transition-colors group cursor-pointer shadow-md">
+              <div className="w-12 h-12 rounded-full bg-[#F5A623]/20 flex items-center justify-center text-[#D4891A] mb-4 group-hover:scale-110 transition-transform">
+                <ArrowUpRight size={24} />
+              </div>
+              <div>
+                <div className="text-3xl font-black text-[#1D1D1F] mb-1"><CountUp target={300} suffix="%" /></div>
+                <div className="text-sm font-medium text-[#6E6E73]">Tăng trưởng Traffic</div>
+              </div>
+            </div>
+
+            {/* Box 2: Conversion */}
+            <div className="glass-card rounded-3xl p-6 flex flex-col justify-between col-span-2 sm:col-span-1 h-48 hover:border-[#F5A623]/50 transition-colors group cursor-pointer shadow-md" style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(245,166,35,0.1) 100%)" }}>
+              <div className="w-12 h-12 rounded-full bg-[#F5A623]/20 flex items-center justify-center text-[#D4891A] mb-4 group-hover:scale-110 transition-transform">
+                <Star size={24} />
+              </div>
+              <div>
+                <div className="text-3xl font-black text-[#1D1D1F] mb-1"><CountUp target={98} suffix="%" /></div>
+                <div className="text-sm font-medium text-[#6E6E73]">Tỷ lệ hài lòng</div>
+              </div>
+            </div>
+
+            {/* Box 3: Realtime Dashboard */}
+            <div className="glass-panel rounded-3xl p-6 col-span-2 hover:border-[#1D1D1F]/10 transition-colors group shadow-lg">
+              <div className="flex justify-between items-center mb-4">
+                <div className="text-sm font-medium text-[#6E6E73] uppercase tracking-wider">Hệ thống Monitoring</div>
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                  <span className="text-xs text-green-600 font-bold">Real-time</span>
                 </div>
               </div>
-            ))}
-          </div>
+              
+              {/* Fake UI bars */}
+              <div className="space-y-3">
+                {[70, 45, 90].map((w, i) => (
+                  <div key={i} className="h-3 w-full bg-[#1D1D1F]/5 rounded-full overflow-hidden">
+                    <motion.div 
+                      initial={{ width: 0 }} 
+                      animate={{ width: `${w}%` }} 
+                      transition={{ duration: 1.5, delay: 0.5 + (i * 0.2) }}
+                      className={`h-full rounded-full ${i === 0 ? 'bg-[#F5A623]' : i === 1 ? 'bg-[#1D1D1F]' : 'bg-green-500'}`}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+
         </div>
       </div>
 
-      {/* Scroll indicator */}
-      <button
-        className="hidden md:flex absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex-col items-center gap-1.5 text-[#86868B] hover:text-[#F5A623] transition-colors duration-300 group"
-        onClick={() => document.querySelector("#services")?.scrollIntoView({ behavior: "smooth" })}
-        aria-label="Cuộn xuống xem dịch vụ"
-      >
-        <span className="text-[10px] tracking-[0.15em] uppercase font-[600]">Khám phá</span>
-        <ChevronDown size={18} className="animate-bounce" strokeWidth={2.5} />
-      </button>
     </section>
   );
 }

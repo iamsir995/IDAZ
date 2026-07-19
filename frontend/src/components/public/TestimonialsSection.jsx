@@ -78,7 +78,7 @@ export default function TestimonialsSection() {
  const t = testimonials[current];
 
  return (
- <section className="py-20 md:py-32 overflow-hidden" style={{ background: "var(--color-idaz-gray)" }}>
+ <section className="py-20 md:py-32 overflow-hidden relative">
  <div className="max-w-7xl mx-auto px-6 md:px-12 w-full">
  {/* Header */}
  <div className="text-center mb-14">

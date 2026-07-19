@@ -38,13 +38,14 @@ function PostImage({ src, alt, className }) {
       </div>
     );
   }
-  return <img src={src} alt={alt} className={`${className} object-cover`} loading="lazy" />;
+  const finalSrc = src.startsWith('/') ? (process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000') + src : src;
+  return <img src={finalSrc} alt={alt} className={`${className} object-cover`} loading="lazy" />;
 }
 
 export default function BlogSection({ posts = [] }) {
   if (!posts || posts.length === 0) {
     return (
-      <section className="py-20 md:py-28 bg-white relative">
+      <section className="py-20 md:py-28 relative">
         <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[rgba(0,0,0,0.08)] to-transparent" />
         <div className="max-w-7xl mx-auto px-5 md:px-8 w-full">
           <div className="glass-panel bg-[#F5F5F7]/50 rounded-[24px] p-10 md:p-16 text-center border border-black/5 flex flex-col items-center justify-center">
@@ -68,7 +69,7 @@ export default function BlogSection({ posts = [] }) {
   const secondary = secondaryPosts.slice(0, 4);
 
   return (
-    <section className="py-20 md:py-28 bg-white relative">
+    <section className="py-20 md:py-28 relative">
       {/* Top border accent */}
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[rgba(0,0,0,0.08)] to-transparent" />
 
@@ -190,9 +191,9 @@ export default function BlogSection({ posts = [] }) {
             </motion.div>
           )}
 
-          {/* Right column — 2 secondary posts stacked */}
+          {/* Right column — 4 secondary posts stacked */}
           <div className="flex flex-col gap-6">
-            {secondary.slice(0, 2).map((post, i) => (
+            {secondary.map((post, i) => (
               <motion.div
                 key={post.slug}
                 initial={{ opacity: 0, x: 24 }}
@@ -245,56 +246,12 @@ export default function BlogSection({ posts = [] }) {
               className="flex items-center justify-between p-4 rounded-[14px] border border-[rgba(0,0,0,0.08)] hover:border-[#F5A623] hover:bg-[rgba(245,166,35,0.04)] transition-all duration-300 group"
             >
               <span className="text-footnote font-semibold text-[#424245] group-hover:text-[#D4891A] transition-colors" >
-                Xem thêm {Math.max(0, posts.length - 3)} bài viết khác
+                Xem thêm {Math.max(0, posts.length - 5)} bài viết khác
               </span>
               <ArrowRight size={16} className="text-[#86868B] group-hover:text-[#D4891A] transition-colors" />
             </Link>
           </div>
         </div>
-
-        {/* Bottom row — smaller articles grid */}
-        {secondary.slice(2, 4).length > 0 && (
-          <>
-            <div className="apple-divider mb-10" />
-            <div className="grid sm:grid-cols-2 lg:grid-cols-2 gap-6">
-              {secondary.slice(2, 4).map((post, i) => (
-                <motion.div
-                  key={post.slug}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: i * 0.1 }}
-                >
-                  <Link href={`/blog/${post.slug}`} className="block group">
-                    <article className="flex gap-4 items-start">
-                      <div className="relative w-[80px] h-[60px] rounded-[10px] overflow-hidden flex-shrink-0">
-                        <PostImage
-                          src={post.coverImage}
-                          alt={post.title}
-                          className="w-full h-full transition-transform duration-500 group-hover:scale-105"
-                        />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        {post.tags?.[0] && (
-                          <span
-                            className="text-caption-2 font-bold uppercase tracking-wider mb-1.5 inline-block"
-                            style={getCategoryStyle(post.tags[0])}
-                          >
-                            {post.tags[0]}
-                          </span>
-                        )}
-                        <h3 className="font-display font-[700] text-footnote text-[#1D1D1F] leading-snug tracking-tight group-hover:text-[#D4891A] transition-colors line-clamp-2 mb-1">
-                          {post.title}
-                        </h3>
-                        <span className="text-caption-1 font-medium text-[#86868B]">{formatDate(post.createdAt)}</span>
-                      </div>
-                    </article>
-                  </Link>
-                </motion.div>
-              ))}
-            </div>
-          </>
-        )}
       </div>
     </section>
   );
