@@ -6,6 +6,7 @@ import api from "../../../services/api";
 import toast from "react-hot-toast";
 import { User as UserIcon, Lock, Camera, Phone, MapPin, Save, ShieldCheck, Activity, Code as Github, MessageCircle as Twitter, Link as Linkedin, Star } from "lucide-react";
 import { motion } from "framer-motion";
+import SHA256 from 'crypto-js/sha256';
 
 export default function ProfilePage() {
  const { user: authUser, refreshUser } = useAuth();
@@ -84,9 +85,12 @@ export default function ProfilePage() {
  }
  setIsLoading(true);
  try {
+ const hashedOldPassword = SHA256(passwords.oldPassword).toString();
+ const hashedNewPassword = SHA256(passwords.newPassword).toString();
+
  const { data } = await api.put("/users/me/password", {
- oldPassword: passwords.oldPassword,
- newPassword: passwords.newPassword
+ oldPassword: hashedOldPassword,
+ newPassword: hashedNewPassword
  });
  if (data.success) {
  toast.success("Đổi mật khẩu thành công!");

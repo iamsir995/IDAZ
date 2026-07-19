@@ -7,6 +7,7 @@ import { Lock, ArrowRight, Loader2, CheckCircle2 } from "lucide-react";
 import api from "../../../services/api";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import SHA256 from "crypto-js/sha256";
 
 export default function ResetPassword({ params }) {
  // Fix Next.js 15: params is a promise, use React.use()
@@ -31,7 +32,8 @@ export default function ResetPassword({ params }) {
  setIsLoading(true);
  
  try {
- const res = await api.put(`/auth/resetpassword/${token}`, { password });
+ const hashedPassword = SHA256(password).toString();
+ const res = await api.put(`/auth/resetpassword/${token}`, { password: hashedPassword });
  if (res.data.success) {
  setIsSuccess(true);
  toast.success("Đổi mật khẩu thành công!");

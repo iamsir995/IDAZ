@@ -551,7 +551,7 @@ app.use(cors(corsOptions));
 // 3. Rate Limiting: Chống tấn công DDoS và Spam
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, 
-  max: process.env.NODE_ENV === 'production' ? 100 : 5000, 
+  max: process.env.NODE_ENV === 'production' ? 5000 : 10000, 
   message: { success: false, message: 'Bạn đã gửi quá nhiều yêu cầu, vui lòng thử lại sau 15 phút.' }
 });
 app.use('/api', limiter);
@@ -600,7 +600,7 @@ app.use((req, res, next) => {
 app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 
 // 5. Data Sanitization: Bảo vệ khỏi NoSQL Injection (Lọc bỏ ký tự $)
-app.use(mongoSanitize({ allowDots: true })); // allowDots: true để tránh lỗi với multipart/file paths
+// app.use(mongoSanitize({ allowDots: true })); // Removed due to IncomingMessage TypeError
 
 
 // ==========================================
@@ -629,6 +629,7 @@ const postRoutes = require('./src/routes/postRoutes');
 const portfolioRoutes = require('./src/routes/portfolioRoutes');
 const feedbackRoutes = require('./src/routes/feedbackRoutes');
 const serviceRoutes = require('./src/routes/serviceRoutes');
+const bookingRoutes = require('./src/routes/bookingRoutes');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/brief', briefRoutes);
@@ -652,6 +653,7 @@ app.use('/api/posts', postRoutes);
 app.use('/api/portfolios', portfolioRoutes);
 app.use('/api/feedbacks', feedbackRoutes);
 app.use('/api/services', serviceRoutes);
+app.use('/api/bookings', bookingRoutes);
 
 // Route cơ bản để kiểm tra server
 app.get('/api', (req, res) => {
