@@ -8,7 +8,8 @@ const path = require('path');
 // @access  Private (Admin/Manager)
 exports.createFolder = async (req, res) => {
   try {
-    const { name, projectId, parentId } = req.body;
+    const { name, parentId } = req.body;
+    const projectId = req.body.projectId === 'global' ? null : req.body.projectId;
     
     // Check trùng tên thư mục trong cùng parent
     const existing = await Folder.findOne({ 
@@ -40,16 +41,17 @@ exports.createFolder = async (req, res) => {
 exports.getProjectFolders = async (req, res) => {
   try {
     const { projectId } = req.params;
+    const queryProjectId = projectId === 'global' ? null : projectId;
     
-    if (req.user && req.user.role === 'client') {
+    if (queryProjectId && req.user && req.user.role === 'client') {
       const Project = require('../models/Project');
-      const project = await Project.findById(projectId);
+      const project = await Project.findById(queryProjectId);
       if (!project || project.clientId.toString() !== req.user._id.toString()) {
         return res.status(403).json({ success: false, message: 'Không có quyền truy cập.' });
       }
     }
     
-    const folders = await Folder.find({ projectId }).sort('name');
+    const folders = await Folder.find({ projectId: queryProjectId }).sort('name');
     res.status(200).json({ success: true, data: folders });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Lỗi tải danh sách thư mục' });

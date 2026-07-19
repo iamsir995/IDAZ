@@ -13,6 +13,10 @@ const settingSchema = new mongoose.Schema({
     type: String,
     default: '#4f46e5' // default indigo-600
   },
+  googleClientId: {
+    type: String,
+    default: ''
+  },
   paymentGateways: {
     bankTransfer: {
       enabled: { type: Boolean, default: true },

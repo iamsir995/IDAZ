@@ -8,7 +8,7 @@ const taskSchema = new mongoose.Schema({
   role: {
     type: String,
     required: true,
-    enum: ['account', 'designer', 'developer', 'copywriter', 'manager']
+    enum: ['account', 'designer', 'developer', 'copywriter', 'manager', 'admin', 'marketing', 'sales']
   },
   status: {
     type: String,

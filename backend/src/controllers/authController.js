@@ -323,7 +323,7 @@ exports.refreshToken = async (req, res) => {
     const refreshToken = req.cookies.refreshToken;
     
     if (!refreshToken) {
-      return res.status(401).json({ success: false, message: 'Không có Refresh Token.' });
+      return res.status(200).json({ success: false, message: 'Không có Refresh Token.', isGuest: true });
     }
 
     // Xác thực cookie
@@ -332,7 +332,8 @@ exports.refreshToken = async (req, res) => {
     // Tìm user
     const user = await User.findById(decoded.id);
     if (!user) {
-      return res.status(401).json({ success: false, message: 'User không tồn tại.' });
+      res.clearCookie('refreshToken');
+      return res.status(200).json({ success: false, message: 'User không tồn tại.', isGuest: true });
     }
 
     // Cấp Access Token mới
@@ -343,7 +344,8 @@ exports.refreshToken = async (req, res) => {
       accessToken: newAccessToken
     });
   } catch (error) {
-    res.status(401).json({ success: false, message: 'Refresh Token không hợp lệ hoặc đã hết hạn.' });
+    res.clearCookie('refreshToken');
+    res.status(200).json({ success: false, message: 'Refresh Token không hợp lệ hoặc đã hết hạn.', isGuest: true });
   }
 };
 
@@ -516,10 +518,13 @@ exports.forgotPassword = async (req, res) => {
         html: htmlContent
       });
 
+      // Fallback: Nếu không có SMTP thật, trả về link trực tiếp để test
+      const hasRealSmtp = process.env.SMTP_HOST && process.env.SMTP_HOST !== 'sandbox.smtp.mailtrap.io';
+
       res.status(200).json({ 
         success: true, 
-        message: 'Email đặt lại mật khẩu đã được gửi thành công.',
-        ...(process.env.NODE_ENV !== 'production' && { devNote: `(DEV) Link reset: ${resetUrl}` })
+        message: 'Email đặt lại mật khẩu đã được xử lý.',
+        ...(!hasRealSmtp && { devNote: `Link reset (Vì chưa cấu hình SMTP): ${resetUrl}` })
       });
     } catch (err) {
       // Fallback trong môi trường phát triển để tránh nghẽn khi không có SMTP

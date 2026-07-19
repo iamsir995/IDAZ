@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Environment Variables - NEVER COMMIT THESE
+.env
+.env.local
+.env.production
+
+# Build outputs
+build/
+dist/
+
+# OS Files
+.DS_Store
+
+# Logs & Debug
+*.log
+logs/
+
+# Uploads - lưu trên server, không cần commit
+public/uploads/
+
+# mongodb-memory-server binary cache
+.cache/

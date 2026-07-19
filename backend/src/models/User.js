@@ -29,6 +29,10 @@ const userSchema = new mongoose.Schema({
     enum: ['superadmin', 'admin', 'manager', 'developer', 'designer', 'account', 'copywriter', 'marketing', 'sales', 'client'],
     default: 'client'
   },
+  jobTitle: {
+    type: String,
+    default: ''
+  },
   avatar: {
     type: String,
     default: ''

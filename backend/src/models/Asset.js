@@ -36,7 +36,7 @@ const assetSchema = new mongoose.Schema({
   projectId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Project',
-    required: true // Bắt buộc phải thuộc một dự án
+    required: false // Không bắt buộc (Global Asset)
   },
   folderId: {
     type: mongoose.Schema.Types.ObjectId,

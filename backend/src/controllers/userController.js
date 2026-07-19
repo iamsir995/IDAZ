@@ -62,7 +62,7 @@ exports.getAllUsers = async (req, res) => {
 // Tạo người dùng mới
 exports.createUser = async (req, res) => {
   try {
-    const { name, email, password, role, company, phone, customerStatus, revenue } = req.body;
+    const { name, email, password, role, jobTitle, company, phone, customerStatus, revenue } = req.body;
     
     // Check exist
     const existUser = await User.findOne({ email });
@@ -86,6 +86,7 @@ exports.createUser = async (req, res) => {
       email,
       password: passwordToSave,
       role: role || 'client',
+      jobTitle,
       company,
       phone,
       customerStatus,
@@ -127,7 +128,7 @@ exports.createUser = async (req, res) => {
 exports.updateUser = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, email, role, phone, company, customerStatus, revenue } = req.body;
+    const { name, email, role, jobTitle, phone, company, customerStatus, revenue } = req.body;
     
     const targetUser = await User.findById(id);
     if (!targetUser) return res.status(404).json({ success: false, message: 'Không tìm thấy user' });
@@ -144,7 +145,7 @@ exports.updateUser = async (req, res) => {
     
     const user = await User.findByIdAndUpdate(
       id,
-      { name, email, role, phone, company, customerStatus, revenue },
+      { name, email, role, jobTitle, phone, company, customerStatus, revenue },
       { new: true, runValidators: true }
     ).select('-password');
 
@@ -323,10 +324,12 @@ exports.updatePassword = async (req, res) => {
 
     const user = await User.findById(userId).select('+password');
     
-    // Kiểm tra MK cũ
-    const isMatch = await user.matchPassword(oldPassword);
-    if (!isMatch) {
-      return res.status(401).json({ success: false, message: 'Mật khẩu cũ không chính xác' });
+    // Kiểm tra MK cũ nếu người dùng đã có mật khẩu
+    if (user.password) {
+      const isMatch = await user.matchPassword(oldPassword);
+      if (!isMatch) {
+        return res.status(401).json({ success: false, message: 'Mật khẩu cũ không chính xác' });
+      }
     }
 
     // Gán MK mới (pre-save hook sẽ tự hash)

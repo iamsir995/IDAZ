@@ -35,7 +35,8 @@ exports.getProjectAssets = async (req, res) => {
     const { projectId } = req.params;
     const folderId = req.query.folderId || null;
 
-    const filter = { projectId, folderId };
+    const queryProjectId = projectId === 'global' ? null : projectId;
+    const filter = { projectId: queryProjectId, folderId };
     
     // Nếu Client, chỉ lấy asset của Client đó (hoặc public)
     if (req.user && req.user.role === 'client') {
@@ -62,7 +63,8 @@ exports.getProjectAssets = async (req, res) => {
 // @access  Private
 exports.uploadAssets = async (req, res) => {
   try {
-    const { projectId, folderId, userId } = req.body;
+    const { folderId, userId } = req.body;
+    const projectId = req.body.projectId === 'global' ? null : req.body.projectId;
     const files = req.files;
 
     if (!files || files.length === 0) {
@@ -140,21 +142,91 @@ exports.uploadSingleImage = async (req, res) => {
     }
 
     const { folder } = req.body; // 'projects', 'posts', 'services', etc.
-    const subFolderStr = folder && ['projects', 'services', 'posts', 'chat', 'portfolios'].includes(folder) 
-      ? `${folder}/` : '';
+    let relativePath = file.destination.split('public/')[1] || 'uploads';
+    if (relativePath.startsWith('/')) relativePath = relativePath.substring(1);
+    if (relativePath.endsWith('/')) relativePath = relativePath.substring(0, relativePath.length - 1);
     
-    const url = `/uploads/${subFolderStr}${file.filename}`;
+    const url = `/${relativePath}/${file.filename}`;
+    const filePath = `public/${relativePath}/${file.filename}`;
+    
+    // Auto create Global Asset if no projectId provided
+    const asset = await Asset.create({
+      name: file.originalname,
+      originalName: file.originalname,
+      url,
+      filePath,
+      type: 'image',
+      mimeType: file.mimetype,
+      fileSize: file.size,
+      projectId: null,
+      folderId: null,
+      userId: req.user?._id || null,
+      uploadedBy: req.user?._id || null,
+      version: 1
+    });
 
     res.status(201).json({
       success: true,
       data: {
         url,
         name: file.originalname,
-        size: file.size
+        size: file.size,
+        asset
       }
     });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Lỗi tải ảnh lên.', error: error.message });
+  }
+};
+
+// @desc    Upload single file general
+// @route   POST /api/assets/upload-single
+// @access  Private
+exports.uploadSingle = async (req, res) => {
+  try {
+    const file = req.file;
+    if (!file) {
+      return res.status(400).json({ success: false, message: 'Không tìm thấy file tải lên.' });
+    }
+
+    let type = 'other';
+    if (file.mimetype.startsWith('image/')) type = 'image';
+    else if (file.mimetype.startsWith('video/')) type = 'video';
+    else if (file.mimetype.includes('pdf') || file.mimetype.includes('word') || file.mimetype.includes('excel')) type = 'document';
+
+    let relativePath = file.destination.split('public/')[1] || 'uploads';
+    if (relativePath.startsWith('/')) relativePath = relativePath.substring(1);
+    if (relativePath.endsWith('/')) relativePath = relativePath.substring(0, relativePath.length - 1);
+    
+    const url = `/${relativePath}/${file.filename}`;
+    const filePath = `public/${relativePath}/${file.filename}`;
+    
+    const asset = await Asset.create({
+      name: file.originalname,
+      originalName: file.originalname,
+      url,
+      filePath,
+      type,
+      mimeType: file.mimetype,
+      fileSize: file.size,
+      projectId: null,
+      folderId: null,
+      userId: req.user?._id || null,
+      uploadedBy: req.user?._id || null,
+      version: 1
+    });
+
+    res.status(201).json({
+      success: true,
+      data: {
+        url,
+        name: file.originalname,
+        size: file.size,
+        asset
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Lỗi tải file lên.', error: error.message });
   }
 };
 

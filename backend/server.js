@@ -31,13 +31,18 @@ const connectDB = async () => {
   const isDevOrTest = process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test' || !process.env.NODE_ENV;
 
   try {
+    if (process.env.USE_MEMORY_DB === 'true') {
+      throw new Error('Chủ động sử dụng Database Memory theo biến môi trường USE_MEMORY_DB');
+    }
     if (process.env.NODE_ENV !== 'production') console.log('🔄 Đang kết nối đến Database chính (MongoDB Atlas)...');
     const options = isDevOrTest ? { serverSelectionTimeoutMS: 4000 } : {};
     await mongoose.connect(uri, options);
     if (process.env.NODE_ENV !== 'production') console.log(`✅ Kết nối MongoDB Atlas thành công!`);
   } catch (error) {
-    console.warn('⚠️ Lỗi kết nối Atlas (chưa whitelist IP hoặc mạng lỗi):', error.message);
-    
+    console.warn('⚠️ Lỗi kết nối Atlas (chưa whitelist IP hoặc sai chuỗi kết nối):', error.message);
+    if (error.message.includes('querySrv ENOTFOUND')) {
+      console.warn('💡 GỢI Ý Render: Lỗi phân giải DNS (SRV). Vui lòng thử dùng chuỗi kết nối chuẩn (Standard mongodb://) thay vì mongodb+srv:// trong tab Environment của Render.');
+    }
     if (isDevOrTest) {
       if (process.env.NODE_ENV !== 'production') console.log('🔄 Đang khởi tạo Database Memory dự phòng (mongodb-memory-server)...');
       try {
@@ -209,7 +214,7 @@ const connectDB = async () => {
     }
 
     // CREATE PROJECTS
-    const projectStatuses = ['briefing', 'planning', 'designing', 'development', 'reviewing', 'completed', 'cancelled'];
+    const projectStatuses = ['pending', 'designing', 'coding', 'done'];
     const projects = [];
     for (let i = 0; i < vnProjects.length; i++) {
       const randomClient = clients[Math.floor(Math.random() * clients.length)];
@@ -375,33 +380,123 @@ const connectDB = async () => {
     // CREATE POSTS
     const posts = [
       {
-        title: 'Xu hướng thiết kế UI/UX nổi bật năm 2026',
-        slug: 'xu-huong-thiet-ke-ui-ux-noi-bat-nam-2026',
-        content: '<p>Thiết kế giao diện đang ngày càng hướng tới sự tối giản và sử dụng không gian âm...</p>',
-        excerpt: 'Khám phá các xu hướng thiết kế sẽ định hình năm 2026.',
+        title: 'Bí quyết Xây dựng Thương hiệu Cá nhân trong thời đại AI',
+        slug: 'bi-quyet-xay-dung-thuong-hieu-ca-nhan-thoi-dai-ai',
+        content: '<p>Trong bối cảnh AI phát triển mạnh mẽ, việc xây dựng thương hiệu cá nhân không còn chỉ là tạo hình ảnh đẹp mà là khẳng định giá trị độc bản. Đây là lúc con người cần trở nên "người" nhất để không bị thay thế...</p>',
+        excerpt: 'Cách làm nổi bật giá trị bản thân khi AI đang dần làm tốt mọi thứ.',
         author: admin._id,
-        coverImage: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&auto=format&fit=crop',
-        tags: ['Design', 'UI/UX'],
+        coverImage: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&auto=format&fit=crop',
+        tags: ['Branding', 'Kinh doanh'],
         status: 'published'
       },
       {
-        title: 'Tối ưu hóa SEO: Bí quyết tăng trưởng tự nhiên',
-        slug: 'toi-uu-hoa-seo-bi-quyet-tang-truong-tu-nhien',
-        content: '<p>Làm thế nào để website của bạn luôn nằm ở trang nhất Google...</p>',
-        excerpt: 'Cách tối ưu SEO hiệu quả cho doanh nghiệp B2B.',
+        title: 'Case Study: Tái định vị thương hiệu mang lại tăng trưởng x3',
+        slug: 'case-study-tai-dinh-vi-thuong-hieu-mang-lai-tang-truong-x3',
+        content: '<p>Quá trình tái định vị không chỉ là đổi logo, mà là cấu trúc lại toàn bộ trải nghiệm khách hàng. Bài viết này phân tích hành trình của một startup công nghệ đã lột xác ngoạn mục...</p>',
+        excerpt: 'Phân tích sâu chiến lược tái định vị giúp startup bứt phá doanh thu.',
+        author: admin._id,
+        coverImage: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&auto=format&fit=crop',
+        tags: ['Branding', 'Case Study'],
+        status: 'published'
+      },
+      {
+        title: 'Tối ưu hóa Tỷ lệ Chuyển đổi (CRO) bằng UI/UX',
+        slug: 'toi-uu-hoa-ty-le-chuyen-doi-cro-bang-ui-ux',
+        content: '<p>Một nút bấm đổi màu có thể tăng 15% tỷ lệ chuyển đổi. Trải nghiệm người dùng tốt là nền tảng của doanh thu vững chắc. Cùng tìm hiểu các kỹ thuật tối ưu UI/UX thực chiến...</p>',
+        excerpt: 'Các thay đổi nhỏ trong giao diện mang lại hiệu quả kinh doanh lớn.',
+        author: admin._id,
+        coverImage: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=800&auto=format&fit=crop',
+        tags: ['UI/UX', 'Marketing'],
+        status: 'published'
+      },
+      {
+        title: 'Hiểu đúng về Marketing dựa trên Dữ liệu (Data-Driven)',
+        slug: 'hieu-dung-ve-marketing-dua-tren-du-lieu-data-driven',
+        content: '<p>Đừng để dữ liệu đánh lừa bạn. Phân tích dữ liệu trong Marketing đòi hỏi trực giác kinh doanh để biến những con số khô khan thành Insight đắt giá...</p>',
+        excerpt: 'Cách chuyển hóa số liệu thành chiến lược Marketing thực chiến.',
         author: admin._id,
         coverImage: 'https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?w=800&auto=format&fit=crop',
-        tags: ['Marketing', 'SEO'],
+        tags: ['Marketing', 'Công nghệ'],
+        status: 'published'
+      },
+      {
+        title: 'Xu hướng Thiết kế Giao diện (UI) nổi bật năm 2026',
+        slug: 'xu-huong-thiet-ke-giao-dien-ui-noi-bat-nam-2026',
+        content: '<p>Thiết kế giao diện đang ngày càng hướng tới sự tối giản, hiệu ứng chuyển động mượt mà (micro-interactions) và không gian âm (negative space)...</p>',
+        excerpt: 'Khám phá các xu hướng thiết kế sẽ định hình năm 2026.',
+        author: admin._id,
+        coverImage: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&auto=format&fit=crop',
+        tags: ['Thiết kế', 'UI/UX'],
         status: 'published'
       },
       {
         title: 'Tại sao ReactJS là lựa chọn hàng đầu cho Web App?',
         slug: 'tai-sao-reactjs-la-lua-chon-hang-dau-cho-web-app',
-        content: '<p>ReactJS mang lại hiệu năng và trải nghiệm người dùng tuyệt vời...</p>',
+        content: '<p>Hệ sinh thái phong phú, kiến trúc Component mạnh mẽ và cộng đồng hỗ trợ lớn khiến ReactJS không bao giờ lỗi thời trong việc phát triển ứng dụng Web phức tạp...</p>',
         excerpt: 'Phân tích điểm mạnh của ReactJS trong lập trình Frontend.',
         author: admin._id,
         coverImage: 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&auto=format&fit=crop',
-        tags: ['Coding', 'React'],
+        tags: ['Công nghệ', 'Thiết kế'],
+        status: 'published'
+      },
+      {
+        title: 'Nghệ thuật Storytelling trong Truyền thông',
+        slug: 'nghe-thuat-storytelling-trong-truyen-thong',
+        content: '<p>Khách hàng không mua sản phẩm, họ mua câu chuyện phía sau sản phẩm đó. Xây dựng một câu chuyện thương hiệu chạm đến cảm xúc là nghệ thuật đỉnh cao của Marketing...</p>',
+        excerpt: 'Cách kể chuyện thương hiệu để tạo sự kết nối sâu sắc với khách hàng.',
+        author: admin._id,
+        coverImage: 'https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?w=800&auto=format&fit=crop',
+        tags: ['Marketing', 'Branding'],
+        status: 'published'
+      },
+      {
+        title: 'Thiết kế Logo: Bắt đầu từ đâu?',
+        slug: 'thiet-ke-logo-bat-dau-tu-dau',
+        content: '<p>Logo không chỉ là một biểu tượng đẹp, nó là bộ mặt của doanh nghiệp. Quy trình thiết kế logo chuẩn quốc tế bao gồm nghiên cứu, phác thảo, và tinh chỉnh không ngừng...</p>',
+        excerpt: 'Hướng dẫn quy trình thiết kế Logo chuẩn chỉnh cho người mới.',
+        author: admin._id,
+        coverImage: 'https://images.unsplash.com/photo-1626785774573-4b799315345d?w=800&auto=format&fit=crop',
+        tags: ['Thiết kế', 'Branding'],
+        status: 'published'
+      },
+      {
+        title: 'Quản trị Khủng hoảng Truyền thông Mạng xã hội',
+        slug: 'quan-tri-khung-hoang-truyen-thong-mang-xa-hoi',
+        content: '<p>Một bình luận tiêu cực có thể lan truyền như cháy rừng trên Facebook hay TikTok. Quy trình xử lý khủng hoảng truyền thông cần sự phản ứng nhanh, chân thành và minh bạch...</p>',
+        excerpt: 'Bộ cẩm nang xử lý rủi ro trên nền tảng mạng xã hội.',
+        author: admin._id,
+        coverImage: 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=800&auto=format&fit=crop',
+        tags: ['Marketing', 'Kinh doanh'],
+        status: 'published'
+      },
+      {
+        title: 'Tự động hóa Quy trình Bán hàng (Sales Automation)',
+        slug: 'tu-dong-hoa-quy-trinh-ban-hang-sales-automation',
+        content: '<p>Sử dụng CRM và các công cụ Automation để tự động hóa việc chăm sóc khách hàng giúp tiết kiệm 40% thời gian cho đội ngũ Sales và tăng tỷ lệ chốt đơn...</p>',
+        excerpt: 'Áp dụng công nghệ vào quy trình Sale để tối đa hóa doanh thu.',
+        author: admin._id,
+        coverImage: 'https://images.unsplash.com/photo-1558655146-d09347e92766?w=800&auto=format&fit=crop',
+        tags: ['Kinh doanh', 'Công nghệ'],
+        status: 'published'
+      },
+      {
+        title: 'Màu sắc trong Thiết kế Tác động đến Tâm lý Khách hàng',
+        slug: 'mau-sac-trong-thiet-ke-tac-dong-den-tam-ly-khach-hang',
+        content: '<p>Tại sao các app ngân hàng thường dùng màu xanh dương? Tại sao các nút kêu gọi hành động (CTA) thường có màu đỏ hoặc cam? Tâm lý học màu sắc là chìa khóa của UI/UX...</p>',
+        excerpt: 'Giải mã bí mật đằng sau việc lựa chọn màu sắc thương hiệu.',
+        author: admin._id,
+        coverImage: 'https://images.unsplash.com/photo-1502691857118-846f42440fce?w=800&auto=format&fit=crop',
+        tags: ['UI/UX', 'Thiết kế'],
+        status: 'published'
+      },
+      {
+        title: 'Kinh nghiệm Mở rộng Quy mô (Scaling) cho Agency',
+        slug: 'kinh-nghiem-mo-rong-quy-mo-scaling-cho-agency',
+        content: '<p>Phát triển Agency từ 5 người lên 50 người là một thách thức lớn về mặt quản trị nhân sự, quy trình làm việc và duy trì chất lượng sáng tạo. Đây là bài học từ những người đi trước...</p>',
+        excerpt: 'Chiến lược quản trị và phát triển bền vững cho Creative Agency.',
+        author: admin._id,
+        coverImage: 'https://images.unsplash.com/photo-1517048676732-d65bc937f952?w=800&auto=format&fit=crop',
+        tags: ['Kinh doanh', 'Quản trị'],
         status: 'published'
       }
     ];
@@ -462,7 +557,8 @@ const limiter = rateLimit({
 app.use('/api', limiter);
 
 // 4. Body Parser: Đọc JSON từ request body và giới hạn kích thước (Chống quá tải RAM)
-app.use(express.json({ limit: '10kb' })); 
+app.use(express.json({ limit: '50mb' })); 
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 // Middleware tự động chuyển các đường dẫn tương đối /uploads/... thành URL tuyệt đối để frontend không bị lỗi 404
 app.use((req, res, next) => {
@@ -503,8 +599,8 @@ app.use((req, res, next) => {
 // Phục vụ thư mục static cho Uploads (Truy cập bằng url /uploads/...)
 app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 
-// 5. Data Sanitization: Bảo vệ khỏi NoSQL Injection (Lọc bỏ các ký tự $, .)
-// app.use(mongoSanitize()); // COMMENT OUT due to IncomingMessage bug
+// 5. Data Sanitization: Bảo vệ khỏi NoSQL Injection (Lọc bỏ ký tự $)
+app.use(mongoSanitize({ allowDots: true })); // allowDots: true để tránh lỗi với multipart/file paths
 
 
 // ==========================================
@@ -560,6 +656,248 @@ app.use('/api/services', serviceRoutes);
 // Route cơ bản để kiểm tra server
 app.get('/api', (req, res) => {
   res.json({ message: 'API Hệ sinh thái Agency đang hoạt động an toàn!' });
+});
+
+// Route Seed Data chuyên nghiệp
+app.post('/api/seed-mock-data', async (req, res) => {
+  try {
+    const Service = require('./src/models/Service');
+    const Portfolio = require('./src/models/Portfolio');
+    const Post = require('./src/models/Post');
+    const User = require('./src/models/User');
+
+    await Service.deleteMany({});
+    await Portfolio.deleteMany({});
+    await Post.deleteMany({});
+
+    const admin = await User.findOne({ role: 'admin' });
+    const adminId = admin ? admin._id : null;
+
+    const services = [
+      {
+        title: 'Thiết Kế Giao Diện UI/UX',
+        slug: 'thiet-ke-giao-dien-ui-ux',
+        description: 'Tạo ra những trải nghiệm người dùng mượt mà, trực quan và đầy cảm xúc với triết lý thiết kế lấy con người làm trung tâm (Human-Centric Design).',
+        icon: 'Palette',
+        features: ['Phân tích Hành vi Người dùng', 'Wireframing & Prototyping', 'Design System Độc quyền', 'Kiểm thử Usability Testing'],
+        order: 1
+      },
+      {
+        title: 'Phát Triển Ứng Dụng Di Động',
+        slug: 'phat-trien-ung-dung-di-dong',
+        description: 'Xây dựng ứng dụng di động hiệu năng cao trên cả iOS và Android bằng Flutter/React Native, đảm bảo tính ổn định và bảo mật tuyệt đối.',
+        icon: 'Smartphone',
+        features: ['Đồng bộ Thời gian thực (Real-time)', 'Kiến trúc Microservices', 'Bảo mật Sinh trắc học', 'Tối ưu Pin và Bộ nhớ'],
+        order: 2
+      },
+      {
+        title: 'Xây Dựng Website Doanh Nghiệp',
+        slug: 'xay-dung-website-doanh-nghiep',
+        description: 'Phát triển nền tảng Web độc bản, tối ưu hóa tốc độ tải trang (LCP < 2.5s) và thân thiện với các công cụ tìm kiếm (Chuẩn SEO).',
+        icon: 'MonitorPlay',
+        features: ['Kiến trúc Headless CMS', 'Tốc độ tải siêu tốc (Next.js)', 'Thiết kế Responsive Đa thiết bị', 'Tích hợp Thanh toán Online'],
+        order: 3
+      },
+      {
+        title: 'Nhận Diện Thương Hiệu (Branding)',
+        slug: 'nhan-dien-thuong-hieu',
+        description: 'Định hình DNA của doanh nghiệp thông qua bộ nhận diện thương hiệu đồng nhất, từ Logo đến tài liệu Marketing truyền thông.',
+        icon: 'Sparkles',
+        features: ['Thiết kế Logo Độc quyền', 'Brand Guidelines Chuẩn quốc tế', 'Bộ ấn phẩm Văn phòng', 'Sáng tạo Slogan / Tagline'],
+        order: 4
+      },
+      {
+        title: 'Tiếp Thị Số (Digital Marketing)',
+        slug: 'tiep-thi-so-digital-marketing',
+        description: 'Đẩy mạnh doanh số và độ phủ sóng của thương hiệu thông qua chiến dịch đa kênh (Omnichannel) được cá nhân hóa bởi dữ liệu.',
+        icon: 'TrendingUp',
+        features: ['Tối ưu hóa SEO / SEM', 'Chạy quảng cáo Facebook / Google', 'Tiếp thị Nội dung (Content)', 'Phân tích Dữ liệu Data-driven'],
+        order: 5
+      },
+      {
+        title: 'Hệ Thống Quản Lý Nội Bộ (ERP/CRM)',
+        slug: 'he-thong-quan-ly-noi-bo',
+        description: 'Tự động hóa luồng công việc với hệ thống phần mềm quản trị doanh nghiệp chuyên biệt, được tinh chỉnh cho từng mô hình kinh doanh.',
+        icon: 'Shield',
+        features: ['Quản trị Khách hàng CRM', 'Hệ thống Quản lý Kho bãi', 'Báo cáo Thống kê Tự động', 'Phân quyền Truy cập Bảo mật'],
+        order: 6
+      }
+    ];
+    await Service.insertMany(services);
+
+    const portfolios = [
+      {
+        title: 'Nền tảng Thương mại Điện tử V-Shop',
+        slug: 'nen-tang-thuong-mai-dien-tu-v-shop',
+        description: 'Xây dựng hệ thống bán lẻ trực tuyến quy mô lớn có khả năng chịu tải hàng triệu lượt truy cập đồng thời.',
+        category: 'Thiết kế Web',
+        clientName: 'Tập đoàn V-Shop',
+        coverImage: 'https://images.unsplash.com/photo-1661956602116-aa6865609028?w=1080&auto=format&fit=crop',
+        isFeatured: true,
+        tags: ['Next.js', 'Node.js', 'E-commerce', 'Tailwind CSS']
+      },
+      {
+        title: 'Ứng dụng Đặt đồ ăn Sinh Thái EcoFood',
+        slug: 'ung-dung-dat-do-an-ecofood',
+        description: 'Thiết kế UX/UI và lập trình ứng dụng di động cho startup giao thức ăn chú trọng vào sức khỏe và môi trường.',
+        category: 'Mobile App',
+        clientName: 'EcoFood VN',
+        coverImage: 'https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=1080&auto=format&fit=crop',
+        isFeatured: true,
+        tags: ['Flutter', 'Firebase', 'Google Maps API']
+      },
+      {
+        title: 'Định vị Thương hiệu Alpha Group',
+        slug: 'dinh-vi-thuong-hieu-alpha-group',
+        description: 'Tái thiết kế toàn bộ hệ thống nhận diện thương hiệu cho tập đoàn công nghệ Alpha, mang đến diện mạo tương lai và bền vững.',
+        category: 'Branding',
+        clientName: 'Alpha Tech Group',
+        coverImage: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=1080&auto=format&fit=crop',
+        isFeatured: true,
+        tags: ['Logo Design', 'Brand Identity', 'Illustration']
+      },
+      {
+        title: 'Cổng thông tin Đào tạo EduStar',
+        slug: 'cong-thong-tin-dao-tao-edustar',
+        description: 'Phát triển hệ thống E-Learning tích hợp phòng học ảo và AI chấm điểm tự động cho hơn 50.000 học viên.',
+        category: 'Thiết kế Web',
+        clientName: 'Học viện EduStar',
+        coverImage: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1080&auto=format&fit=crop',
+        isFeatured: true,
+        tags: ['React', 'WebRTC', 'AI Integration']
+      },
+      {
+        title: 'Ví Điện tử Thanh toán Nhanh PayNow',
+        slug: 'vi-dien-tu-thanh-toan-nhanh-paynow',
+        description: 'Giao diện ứng dụng ví điện tử với ngôn ngữ thiết kế Liquid Glass, tạo cảm giác an toàn, hiện đại và sang trọng.',
+        category: 'Mobile App',
+        clientName: 'PayNow Financial',
+        coverImage: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1080&auto=format&fit=crop',
+        isFeatured: false,
+        tags: ['Fintech', 'UI/UX', 'Swift', 'Kotlin']
+      },
+      {
+        title: 'Hệ thống Quản lý Kho vận Global Logis',
+        slug: 'he-thong-quan-ly-kho-van-global-logis',
+        description: 'Thiết kế lại Dashboard hệ thống ERP quản lý kho hàng với hàng chục ngàn SKU, giúp giảm 40% thời gian xử lý đơn hàng.',
+        category: 'Phần mềm',
+        clientName: 'Global Logistics',
+        coverImage: 'https://images.unsplash.com/photo-1586528116311-ad8ed7c80a30?w=1080&auto=format&fit=crop',
+        isFeatured: false,
+        tags: ['Dashboard', 'CRM', 'Data Viz']
+      }
+    ];
+    await Portfolio.insertMany(portfolios);
+
+    const posts = [
+      {
+        title: 'Xu Hướng Thiết Kế Giao Diện UI/UX Thống Trị Năm 2026',
+        slug: 'xu-huong-thiet-ke-giao-dien-ui-ux-thong-tri-nam-2026',
+        content: '<p>Năm 2026 đánh dấu sự trưởng thành của ngôn ngữ thiết kế Glassmorphism, tiến hóa thành <strong>Liquid Glass</strong>.</p><div class="video-wrapper"><iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div><h2>Sự Tối Giản Nhận Thức</h2><p>Người dùng ngày càng ít kiên nhẫn hơn, do đó giao diện cần phải trong suốt và không có quá nhiều yếu tố cản trở.</p><img src="https://images.unsplash.com/photo-1558655146-d09347e92766?w=1080&auto=format&fit=crop" alt="Liquid Glass Design" />',
+        excerpt: 'Khám phá sự tiến hóa của ngôn ngữ Liquid Glass và ứng dụng tối giản nhận thức qua Video phân tích.',
+        author: adminId,
+        coverImage: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=1080&auto=format&fit=crop',
+        tags: ['Thiết kế', 'Video', 'UI/UX'],
+        status: 'published'
+      },
+      {
+        title: 'Bí Quyết Tối Ưu Tốc Độ Tải Trang (LCP) Cho Ứng Dụng Next.js',
+        slug: 'bi-quyet-toi-uu-toc-do-tai-trang-lcp-cho-ung-dung-nextjs',
+        content: '<p>LCP là một trong ba chỉ số Core Web Vitals cốt lõi của Google...</p><h2>Tải ngay Tài liệu Hướng dẫn</h2><p>Chúng tôi đã tổng hợp toàn bộ các kỹ thuật tối ưu hóa LCP vào một cuốn E-Book duy nhất.</p><a href="#" class="download-box"><div class="download-icon">⬇</div><div class="download-info"><span class="download-title">E-Book: Tối ưu LCP Next.js 15</span><span class="download-meta">PDF • 2.4 MB • 50 Trang</span></div></a><p>Trang web tải chậm hơn 2.5s sẽ mất đi 40% người dùng ngay từ lúc chưa thấy nội dung.</p>',
+        excerpt: 'Hướng dẫn chi tiết cách đạt 100 điểm Lighthouse Performance kèm E-Book miễn phí.',
+        author: adminId,
+        coverImage: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1080&auto=format&fit=crop',
+        tags: ['Công nghệ', 'Tài liệu', 'Next.js'],
+        status: 'published'
+      },
+      {
+        title: 'Xây Dựng Nhận Diện Thương Hiệu Trong Kỷ Nguyên AI',
+        slug: 'xay-dung-nhan-dien-thuong-hieu-trong-ky-nguyen-ai',
+        content: '<p>Nhiều doanh nghiệp lầm tưởng rằng có thể dùng AI để tự tạo logo và bộ nhận diện thương hiệu...</p><h2>AI Chỉ Là Công Cụ, Con Người Mới Là Linh Hồn</h2><p>Logo do AI tạo ra thường vô hồn và thiếu tính đồng nhất trong một hệ sinh thái brand guidelines phức tạp.</p>',
+        excerpt: 'Cách kết hợp trí tuệ nhân tạo (AI) vào quy trình thiết kế thương hiệu.',
+        author: adminId,
+        coverImage: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1080&auto=format&fit=crop',
+        tags: ['Branding', 'AI', 'Strategy'],
+        status: 'published'
+      },
+      {
+        title: 'Tối Ưu Tỷ Lệ Chuyển Đổi (CRO) Cho Website Bán Hàng',
+        slug: 'toi-uu-ty-le-chuyen-doi-cro-cho-website-ban-hang',
+        content: '<p>Kéo hàng ngàn người truy cập vào website sẽ vô nghĩa nếu tỷ lệ chuyển đổi (CRO) của bạn dưới 1%...</p><h2>Tâm Lý Học Hành Vi</h2><p>Sử dụng các hiệu ứng mỏ neo và FOMO một cách khéo léo để điều hướng người dùng đến nút Checkout.</p>',
+        excerpt: 'Các kỹ thuật Tâm lý học Hành vi ứng dụng trong thiết kế nhằm tăng doanh thu.',
+        author: adminId,
+        coverImage: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1080&auto=format&fit=crop',
+        tags: ['Marketing', 'E-commerce', 'CRO'],
+        status: 'published'
+      },
+      {
+        title: 'Bí Mật Đằng Sau Các Chiến Dịch Viral Marketing Đỉnh Cao',
+        slug: 'bi-mat-dang-sau-cac-chien-dich-viral-marketing-dinh-cao',
+        content: '<p>Sự thành công của một chiến dịch không đến từ sự may mắn, mà là sự tính toán kỹ lưỡng về thời điểm và cảm xúc...</p><h2>Cảm xúc là chìa khóa</h2><p>Đánh mạnh vào nỗi đau (pain point) hoặc sự tò mò sẽ giúp content lan truyền với tốc độ chóng mặt.</p>',
+        excerpt: 'Phân tích các case study thành công từ các brand lớn trên toàn cầu.',
+        author: adminId,
+        coverImage: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=1080&auto=format&fit=crop',
+        tags: ['Marketing', 'Viral', 'Case Study'],
+        status: 'published'
+      },
+      {
+        title: 'Làm Sao Để Bắt Đầu Với Khởi Nghiệp Công Nghệ?',
+        slug: 'lam-sao-de-bat-dau-voi-khoi-nghiep-cong-nghe',
+        content: '<p>Hành trình xây dựng một startup tech đầy rẫy những cạm bẫy...</p><h2>Validate Ý Tưởng</h2><p>Đừng vội viết code, hãy đi bán ý tưởng của bạn trước.</p>',
+        excerpt: 'Những bài học đắt giá dành cho Founder trong giai đoạn Seed Funding.',
+        author: adminId,
+        coverImage: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=1080&auto=format&fit=crop',
+        tags: ['Kinh doanh', 'Startup', 'Founder'],
+        status: 'published'
+      },
+      {
+        title: 'Typography Trong Thiết Kế Web: Đừng Xem Thường Con Chữ',
+        slug: 'typography-trong-thiet-ke-web-dung-xem-thuong-con-chu',
+        content: '<p>Phông chữ không chỉ để đọc, nó còn truyền tải cảm xúc của thương hiệu...</p><h2>Hierarchy (Phân Cấp)</h2><p>Sử dụng độ đậm nhạt và kích thước chữ khác nhau để điều hướng mắt người xem.</p>',
+        excerpt: 'Cách lựa chọn và kết hợp font chữ chuẩn Typography hiện đại.',
+        author: adminId,
+        coverImage: 'https://images.unsplash.com/photo-1526040652367-600053625333?w=1080&auto=format&fit=crop',
+        tags: ['Thiết kế', 'Typography', 'Web Design'],
+        status: 'published'
+      },
+      {
+        title: 'Micro-interactions: Điểm Chạm Nhỏ, Cảm Xúc Lớn',
+        slug: 'micro-interactions-diem-cham-nho-cam-xuc-lon',
+        content: '<p>Những chuyển động nhỏ xíu như nút like nhảy nhẹ, thanh progress bar trôi mượt mà...</p><h2>Delight The User</h2><p>Đó là cách Apple đã làm để giữ chân người dùng trong suốt thập kỷ qua.</p>',
+        excerpt: 'Tầm quan trọng của animation nhỏ bé trong trải nghiệm tổng thể.',
+        author: adminId,
+        coverImage: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=1080&auto=format&fit=crop',
+        tags: ['UI/UX', 'Animation', 'UX'],
+        status: 'published'
+      },
+      {
+        title: 'Data-driven Marketing vs Intuition-driven Marketing',
+        slug: 'data-driven-vs-intuition-driven-marketing',
+        content: '<p>Cảm giác của Marketer có còn đáng tin cậy trong thời đại số hóa?</p><h2>Dữ liệu Không Biết Nói Dối</h2><p>A/B Testing sẽ cho bạn câu trả lời chính xác về màu nút CTA nào giúp tăng tỷ lệ chuyển đổi gấp đôi.</p>',
+        excerpt: 'Khi dữ liệu lên ngôi, trực giác có còn đất diễn?',
+        author: adminId,
+        coverImage: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1080&auto=format&fit=crop',
+        tags: ['Marketing', 'Data', 'Analytics'],
+        status: 'published'
+      },
+      {
+        title: 'Quản Lý Dòng Tiền Cho Agency: Bài Học Sống Còn',
+        slug: 'quan-ly-dong-tien-cho-agency-bai-hoc-song-con',
+        content: '<p>Rất nhiều Agency chết trên đống doanh thu ảo chỉ vì không thu được tiền từ khách hàng...</p><h2>Quy Trình Billing Cứng Rắn</h2><p>Làm sao để vừa chiều khách, vừa đảm bảo tiền luôn về tài khoản công ty đúng hạn?</p>',
+        excerpt: 'Cách xây dựng quy trình thu hồi công nợ cho công ty Dịch vụ.',
+        author: adminId,
+        coverImage: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1080&auto=format&fit=crop',
+        tags: ['Kinh doanh', 'Finance', 'Agency'],
+        status: 'published'
+      }
+    ];
+    await Post.insertMany(posts);
+
+    res.json({ message: 'Seeded professional mock data successfully!' });
+  } catch (error) {
+    console.error('Lỗi khi seed mock data:', error);
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // ==========================================
@@ -916,6 +1254,30 @@ io.on('connection', (socket) => {
 });
 
 // Khởi động server
-server.listen(PORT, () => {
+const serverInstance = server.listen(PORT, () => {
   if (process.env.NODE_ENV !== 'production') console.log(`🔒 Server bảo mật đang chạy tại http://localhost:${PORT}`);
+});
+
+// Graceful Shutdown - Giải phóng Port khi server bị đóng/restart
+const gracefulShutdown = () => {
+  console.log('🔄 Đang tắt server một cách an toàn...');
+  serverInstance.close(() => {
+    console.log('✅ Server đã đóng các kết nối đang mở.');
+    mongoose.connection.close(false).then(() => {
+      console.log('✅ Đã ngắt kết nối cơ sở dữ liệu MongoDB.');
+      process.exit(0);
+    });
+  });
+};
+
+process.on('SIGTERM', gracefulShutdown);
+process.on('SIGINT', gracefulShutdown);
+process.on('uncaughtException', (err) => {
+  console.error('❌ Có lỗi nghiêm trọng không được bắt (Uncaught Exception):', err);
+  gracefulShutdown();
+});
+process.once('SIGUSR2', () => {
+  serverInstance.close(() => {
+    process.kill(process.pid, 'SIGUSR2');
+  });
 });

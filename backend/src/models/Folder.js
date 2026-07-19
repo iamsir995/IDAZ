@@ -9,7 +9,7 @@ const folderSchema = new mongoose.Schema({
   projectId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Project',
-    required: true // Bắt buộc phải thuộc về một dự án
+    required: false // Không bắt buộc (Global Folder)
   },
   parentId: {
     type: mongoose.Schema.Types.ObjectId,

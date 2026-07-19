@@ -5,6 +5,7 @@ const { protect, roleCheck } = require('../middleware/authMiddleware');
 
 // Public route
 router.get('/public', serviceController.getServices);
+router.get('/public/:slug', serviceController.getServiceBySlug);
 
 // Admin routes
 router.use(protect);

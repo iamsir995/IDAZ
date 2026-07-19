@@ -25,8 +25,8 @@ const projectSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['briefing', 'planning', 'designing', 'development', 'reviewing', 'completed', 'cancelled'],
-    default: 'briefing'
+    enum: ['pending', 'designing', 'coding', 'done'],
+    default: 'pending'
   },
   deadline: {
     type: Date
@@ -42,6 +42,9 @@ const projectSchema = new mongoose.Schema({
   briefId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Brief'
+  },
+  brief: {
+    type: String
   },
   managerId: {
     type: mongoose.Schema.Types.ObjectId,

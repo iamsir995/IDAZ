@@ -8,16 +8,17 @@ const path = require('path');
 // Cấu hình Multer (Step 31, 32)
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    let folder = 'public/uploads/';
+    const date = new Date();
+    const yearMonth = `${date.getFullYear()}/${String(date.getMonth() + 1).padStart(2, '0')}`;
+    let folder = `public/uploads/${yearMonth}/`;
+    
     if (req.body.folder || req.query.folder) {
       const subFolder = req.body.folder || req.query.folder;
-      // Allow only specific safe folder names
       if (['projects', 'services', 'posts', 'chat', 'portfolios'].includes(subFolder)) {
-        folder = `public/uploads/${subFolder}/`;
+        folder = `public/uploads/${subFolder}/${yearMonth}/`;
       }
     }
     const absoluteFolder = path.join(__dirname, '../../', folder);
-    // Create directory if it doesn't exist
     if (!require('fs').existsSync(absoluteFolder)) {
       require('fs').mkdirSync(absoluteFolder, { recursive: true });
     }
@@ -31,15 +32,14 @@ const storage = multer.diskStorage({
 });
 
 const fileFilter = (req, file, cb) => {
-  // Chỉ cho phép ảnh, video, tài liệu
-  const allowedTypes = /jpeg|jpg|png|gif|webp|mp4|webm|pdf|doc|docx|xls|xlsx|ppt|pptx|zip|rar/;
-  const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-  const mimetype = allowedTypes.test(file.mimetype);
+  // Cho phép nhiều định dạng file agency hơn, và bỏ check mimetype strict vì hay lỗi
+  const allowedExts = /jpeg|jpg|png|gif|webp|svg|mp4|webm|pdf|doc|docx|xls|xlsx|ppt|pptx|zip|rar|ai|psd|eps|csv|txt|json|fig|sketch|xd/;
+  const extname = allowedExts.test(path.extname(file.originalname).toLowerCase());
 
-  if (extname && mimetype) {
+  if (extname) {
     return cb(null, true);
   } else {
-    cb(new Error('Chỉ hỗ trợ upload các định dạng: Ảnh, Video, Tài liệu an toàn.'));
+    cb(new Error('Định dạng file không được hỗ trợ.'));
   }
 };
 
@@ -50,14 +50,13 @@ const upload = multer({
 });
 
 const imageFileFilter = (req, file, cb) => {
-  const allowedTypes = /jpeg|jpg|png|gif|webp/;
+  const allowedTypes = /jpeg|jpg|png|gif|webp|svg|heic|heif|pdf|doc|docx|xls|xlsx|ppt|pptx/;
   const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-  const mimetype = allowedTypes.test(file.mimetype);
 
-  if (extname && mimetype) {
+  if (extname) {
     return cb(null, true);
   } else {
-    cb(new Error('Chỉ hỗ trợ upload các định dạng ảnh: JPG, PNG, GIF, WEBP.'));
+    cb(new Error('Chỉ hỗ trợ upload: JPG, PNG, GIF, WEBP, SVG, HEIC và các file Văn phòng (PDF, DOC, XLS, PPT).'));
   }
 };
 
@@ -85,18 +84,6 @@ router.post('/link', protect, assetController.createLinkAsset);
 router.put('/:id', protect, assetController.updateAsset);
 router.post('/bulk-delete', protect, assetController.bulkDeleteAssets);
 router.delete('/:id', protect, assetController.deleteAsset);
-router.post('/upload-single', protect, upload.single('file'), (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ success: false, message: 'Không tìm thấy file tải lên.' });
-  }
-  res.status(200).json({
-    success: true,
-    data: {
-      url: `/uploads/${req.file.filename}`,
-      name: req.file.originalname,
-      size: req.file.size
-    }
-  });
-});
+router.post('/upload-single', protect, upload.single('file'), assetController.uploadSingle);
 
 module.exports = router;

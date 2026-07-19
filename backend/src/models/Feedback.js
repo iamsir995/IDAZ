@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const feedbackSchema = new mongoose.Schema({
   fileId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'ProjectFile',
+    ref: 'Asset',
     required: true
   },
   creatorId: {

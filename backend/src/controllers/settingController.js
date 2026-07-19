@@ -30,19 +30,20 @@ exports.getAdminSettings = async (req, res) => {
   }
 };
 
-// Cập nhật Setting (Admin only)
-exports.updateSettings = async (req, res) => {
-  try {
-    const { agencyName, logoUrl, primaryColor, paymentGateways } = req.body;
-    let setting = await Setting.findOne();
-    
-    if (!setting) {
-      setting = await Setting.create({ agencyName, logoUrl, primaryColor, paymentGateways });
-    } else {
-      setting.agencyName = agencyName || setting.agencyName;
-      setting.logoUrl = logoUrl !== undefined ? logoUrl : setting.logoUrl;
-      setting.primaryColor = primaryColor || setting.primaryColor;
-      if (paymentGateways) {
+  // Cập nhật Setting (Admin only)
+  exports.updateSettings = async (req, res) => {
+    try {
+      const { agencyName, logoUrl, primaryColor, googleClientId, paymentGateways } = req.body;
+      let setting = await Setting.findOne();
+      
+      if (!setting) {
+        setting = await Setting.create({ agencyName, logoUrl, primaryColor, googleClientId, paymentGateways });
+      } else {
+        setting.agencyName = agencyName || setting.agencyName;
+        setting.logoUrl = logoUrl !== undefined ? logoUrl : setting.logoUrl;
+        setting.primaryColor = primaryColor || setting.primaryColor;
+        if (googleClientId !== undefined) setting.googleClientId = googleClientId;
+        if (paymentGateways) {
         setting.paymentGateways = { ...setting.paymentGateways, ...paymentGateways };
       }
       setting.updatedAt = Date.now();

@@ -10,6 +10,19 @@ exports.getServices = async (req, res) => {
   }
 };
 
+// Lấy chi tiết dịch vụ theo slug (Public)
+exports.getServiceBySlug = async (req, res) => {
+  try {
+    const service = await Service.findOne({ slug: req.params.slug, isActive: true });
+    if (!service) {
+      return res.status(404).json({ success: false, message: 'Không tìm thấy dịch vụ' });
+    }
+    res.status(200).json({ success: true, data: service });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+};
+
 // Lấy danh sách dịch vụ (Admin - Bao gồm cả bị ẩn)
 exports.getAllServicesAdmin = async (req, res) => {
   try {
