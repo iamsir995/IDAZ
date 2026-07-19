@@ -857,9 +857,13 @@ export default function ClientChat() {
  <div className="flex items-center gap-3">
  <div 
  style={{ backgroundColor: settings.primaryColor || '#4f46e5' }}
- className="w-10 h-10 rounded-3xl text-white flex items-center justify-center font-bold"
+ className="w-10 h-10 rounded-3xl text-white flex items-center justify-center font-bold overflow-hidden shrink-0"
  >
- {(activeChat.data.name || 'C').charAt(0).toUpperCase()}
+ {activeChat.data.avatar ? (
+  <img src={activeChat.data.avatar} alt="Avatar" className="w-full h-full object-cover" />
+ ) : (
+  (activeChat.data.name || 'C').charAt(0).toUpperCase()
+ )}
  </div>
  <div>
  <div className="font-bold text-idaz-black text-sm flex items-center gap-1.5">
@@ -1379,8 +1383,12 @@ export default function ClientChat() {
  <div className="space-y-2">
  {activeChat.data.members?.filter(m => m.role !== 'client').map(member => (
  <div key={member._id} className="flex items-center gap-2">
- <div className="w-8 h-8 rounded-full bg-indigo-500/10 text-indigo-500 font-bold flex items-center justify-center shrink-0">
- {(member.name || 'U').charAt(0).toUpperCase()}
+ <div className="w-8 h-8 rounded-full bg-indigo-500/10 text-indigo-500 font-bold flex items-center justify-center shrink-0 overflow-hidden">
+ {member.avatar ? (
+  <img src={member.avatar} alt="Avatar" className="w-full h-full object-cover" />
+ ) : (
+  (member.name || 'U').charAt(0).toUpperCase()
+ )}
  </div>
  <div>
  <div className="font-semibold text-idaz-black">{member.name}</div>

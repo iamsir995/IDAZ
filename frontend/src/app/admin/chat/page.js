@@ -672,8 +672,12 @@ export default function AdminChat() {
  }`}
  >
  <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center font-bold text-idaz-black shrink-0 relative">
-  <div className="w-8 h-8 rounded-full bg-indigo-500/10 text-indigo-500 font-bold flex items-center justify-center shrink-0">
-  {(contact.name || 'U').charAt(0).toUpperCase()}
+  <div className="w-8 h-8 rounded-full bg-indigo-500/10 text-indigo-500 font-bold flex items-center justify-center shrink-0 overflow-hidden">
+  {contact.avatar ? (
+   <img src={contact.avatar} alt="Avatar" className="w-full h-full object-cover" />
+  ) : (
+   (contact.name || 'U').charAt(0).toUpperCase()
+  )}
   </div>
  {onlineUserIds.includes(contact._id) ? (
  <div className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 rounded-full border-2 border-black animate-pulse"></div>
@@ -724,8 +728,14 @@ export default function AdminChat() {
  {/* Chat Header */}
  <div className="p-6 border-b border-white/40 flex items-center justify-between bg-idaz-gray shrink-0">
  <div className="flex items-center gap-4">
- <div className="w-12 h-12 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold">
- {activeChat.type === 'channel' ? <Hash size={24} /> : activeChat.data.name?.charAt(0)}
+ <div className="w-12 h-12 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold overflow-hidden">
+ {activeChat.type === 'channel' ? <Hash size={24} /> : (
+  activeChat.data.avatar ? (
+   <img src={activeChat.data.avatar} alt="Avatar" className="w-full h-full object-cover" />
+  ) : (
+   activeChat.data.name?.charAt(0)
+  )
+ )}
  </div>
  <div>
  <h2 className="text-xl font-bold text-idaz-black">

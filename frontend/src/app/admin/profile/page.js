@@ -8,7 +8,7 @@ import { User as UserIcon, Lock, Camera, Phone, MapPin, Save, ShieldCheck, Activ
 import { motion } from "framer-motion";
 
 export default function ProfilePage() {
- const { user: authUser } = useAuth();
+ const { user: authUser, refreshUser } = useAuth();
  const [activeTab, setActiveTab] = useState("info");
  
  // States cho Form
@@ -68,6 +68,7 @@ export default function ProfilePage() {
  });
  if (data.success) {
  toast.success("Cập nhật thông tin thành công!");
+ if (refreshUser) refreshUser();
  }
  } catch (error) {
  toast.error("Lỗi khi cập nhật thông tin");
@@ -126,6 +127,7 @@ export default function ProfilePage() {
  if (data.success) {
  setProfile({ ...profile, avatar: data.data.avatar });
  toast.success("Cập nhật ảnh đại diện thành công!");
+ if (refreshUser) refreshUser();
  }
  } catch (error) {
  toast.error("Lỗi upload ảnh");

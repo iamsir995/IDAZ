@@ -100,13 +100,13 @@ export default function Login() {
   };
 
   return (
-    <main className="min-h-screen bg-mesh-light flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden font-sans selection:bg-idaz-orange/30">
+    <main className="min-h-screen bg-mesh-light flex flex-col justify-center py-8 px-4 sm:px-6 lg:px-8 relative overflow-hidden font-sans selection:bg-idaz-orange/30">
       
-      <div className="sm:mx-auto sm:w-full sm:max-w-md z-10 text-center">
+      <div className="sm:mx-auto sm:w-full sm:max-w-md z-10 text-center mt-4 sm:mt-0">
         <Link href="/" className="font-bold text-4xl tracking-tighter text-idaz-black hover:opacity-80 transition-opacity flex justify-center items-center gap-2">
           IDAZ<span className="text-idaz-orange">.</span>
         </Link>
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-idaz-black">
+        <h2 className="mt-4 sm:mt-6 text-center text-2xl sm:text-3xl font-extrabold text-idaz-black">
           Cổng Khách Hàng
         </h2>
         <p className="mt-2 text-center text-sm text-gray-500">
@@ -118,9 +118,9 @@ export default function Login() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="mt-8 sm:mx-auto sm:w-full sm:max-w-md z-10"
+        className="mt-6 sm:mt-8 sm:mx-auto sm:w-full sm:max-w-md z-10"
       >
-        <div className="glass-card py-8 px-4 sm:rounded-[2rem] sm:px-10 border border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.04)]">
+        <div className="glass-card py-6 px-4 sm:py-8 sm:rounded-[2rem] sm:px-10 border border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.04)]">
           
           {step === 1 ? (
             <form className="space-y-6" onSubmit={handleLogin}>
@@ -196,6 +196,15 @@ export default function Login() {
                   </div>
                 </>
               )}
+
+              <div className="mt-6 text-center">
+                <p className="text-sm text-gray-600">
+                  Chưa có tài khoản?{" "}
+                  <Link href="/register" className="font-bold text-idaz-orange hover:text-idaz-orange-dark transition-colors">
+                    Đăng ký ngay
+                  </Link>
+                </p>
+              </div>
             </form>
           ) : (
             <form className="space-y-6" onSubmit={handleVerifyOTP}>

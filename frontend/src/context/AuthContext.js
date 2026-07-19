@@ -133,8 +133,20 @@ export function AuthProvider({ children }) {
     return () => window.removeEventListener('force-logout', handleForceLogout);
   }, [router]);
 
+  // Hàm làm mới thông tin user (ví dụ sau khi update avatar)
+  const refreshUser = async () => {
+    try {
+      const meRes = await api.get('/users/me');
+      if (meRes.data.success) {
+        setUser(meRes.data.data);
+      }
+    } catch (error) {
+      console.error("Lỗi làm mới user", error);
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, setUser, loading, login, register, verify2FA, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, register, verify2FA, logout, refreshUser }}>
       {children}
     </AuthContext.Provider>
   );

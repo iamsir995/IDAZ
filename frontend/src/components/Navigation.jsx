@@ -48,8 +48,12 @@ export default function Navigation() {
             </>
           ) : (
             <div className="flex items-center gap-4">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-500 to-cyan-500 flex items-center justify-center text-idaz-black font-bold cursor-pointer">
-                {user?.name?.charAt(0)?.toUpperCase()}
+              <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-idaz-orange to-idaz-orange-dark flex items-center justify-center text-idaz-black font-bold cursor-pointer overflow-hidden border border-white/60 shadow-lg">
+                {user?.avatar ? (
+                  <img src={user.avatar} alt="Avatar" className="w-full h-full object-cover" />
+                ) : (
+                  user?.name?.charAt(0)?.toUpperCase()
+                )}
               </div>
             </div>
           )}

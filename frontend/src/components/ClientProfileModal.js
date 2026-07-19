@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import { useAuth } from "../context/AuthContext";
 
 export default function ClientProfileModal({ isOpen, onClose }) {
-  const { user, setUser } = useAuth();
+  const { user, refreshUser } = useAuth();
   const [formData, setFormData] = useState({
     bio: "",
     company: "",
@@ -59,7 +59,7 @@ export default function ClientProfileModal({ isOpen, onClose }) {
       });
       if (res.data.success) {
         toast.success("Cập nhật ảnh đại diện thành công", { id: loadId });
-        setUser(res.data.data);
+        if (refreshUser) refreshUser();
       }
     } catch (err) {
       toast.error("Lỗi khi tải ảnh lên", { id: loadId });
@@ -81,7 +81,7 @@ export default function ClientProfileModal({ isOpen, onClose }) {
       
       if (res.data.success) {
         toast.success("Cập nhật hồ sơ thành công");
-        setUser(res.data.data);
+        if (refreshUser) refreshUser();
         onClose();
       }
     } catch (err) {
@@ -98,7 +98,7 @@ export default function ClientProfileModal({ isOpen, onClose }) {
       const res = await api.put('/users/me/2fa', { is2FAEnabled: newStatus });
       if (res.data.success) {
         toast.success(res.data.message, { id: loadId });
-        setUser({ ...user, is2FAEnabled: newStatus });
+        if (refreshUser) refreshUser();
       }
     } catch (err) {
       toast.error("Lỗi cập nhật 2FA", { id: loadId });
