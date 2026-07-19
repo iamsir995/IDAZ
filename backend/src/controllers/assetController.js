@@ -72,8 +72,13 @@ exports.getProjectAssets = async (req, res) => {
 // @access  Private
 exports.uploadAssets = async (req, res) => {
   try {
-    const { folderId, userId } = req.body;
-    const projectId = (!req.body.projectId || req.body.projectId === 'global') ? null : req.body.projectId;
+    let folderId = req.body.folderId;
+    if (folderId === 'undefined' || folderId === 'null' || folderId === '') folderId = null;
+    
+    let userId = req.body.userId;
+    if (userId === 'undefined' || userId === 'null' || userId === '') userId = null;
+
+    const projectId = (!req.body.projectId || req.body.projectId === 'global' || req.body.projectId === 'undefined' || req.body.projectId === 'null') ? null : req.body.projectId;
     const files = req.files;
 
     if (!files || files.length === 0) {
@@ -170,7 +175,13 @@ exports.uploadSingleImage = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Không tìm thấy file tải lên.' });
     }
 
-    const { folder } = req.body; // 'projects', 'posts', 'services', etc.
+    const folder = req.body.folder; // 'projects', 'posts', 'services', etc.
+    let folderId = req.body.folderId;
+    if (folderId === 'undefined' || folderId === 'null' || folderId === '') folderId = null;
+
+    let projectId = req.body.projectId;
+    if (projectId === 'undefined' || projectId === 'null' || projectId === 'global' || projectId === '') projectId = null;
+    
     let relativePath = file.destination.split('public/')[1] || 'uploads';
     if (relativePath.startsWith('/')) relativePath = relativePath.substring(1);
     if (relativePath.endsWith('/')) relativePath = relativePath.substring(0, relativePath.length - 1);
@@ -187,8 +198,8 @@ exports.uploadSingleImage = async (req, res) => {
       type: 'image',
       mimeType: file.mimetype,
       fileSize: file.size,
-      projectId: null,
-      folderId: null,
+      projectId: projectId || null,
+      folderId: folderId || null,
       userId: req.user?._id || null,
       uploadedBy: req.user?._id || null,
       version: 1
@@ -223,6 +234,12 @@ exports.uploadSingle = async (req, res) => {
     else if (file.mimetype.startsWith('video/')) type = 'video';
     else if (file.mimetype.includes('pdf') || file.mimetype.includes('word') || file.mimetype.includes('excel')) type = 'document';
 
+    let folderId = req.body.folderId;
+    if (folderId === 'undefined' || folderId === 'null' || folderId === '') folderId = null;
+
+    let projectId = req.body.projectId;
+    if (projectId === 'undefined' || projectId === 'null' || projectId === 'global' || projectId === '') projectId = null;
+
     let relativePath = file.destination.split('public/')[1] || 'uploads';
     if (relativePath.startsWith('/')) relativePath = relativePath.substring(1);
     if (relativePath.endsWith('/')) relativePath = relativePath.substring(0, relativePath.length - 1);
@@ -238,8 +255,8 @@ exports.uploadSingle = async (req, res) => {
       type,
       mimeType: file.mimetype,
       fileSize: file.size,
-      projectId: null,
-      folderId: null,
+      projectId: projectId || null,
+      folderId: folderId || null,
       userId: req.user?._id || null,
       uploadedBy: req.user?._id || null,
       version: 1
@@ -264,9 +281,12 @@ exports.uploadSingle = async (req, res) => {
 // @access  Private
 exports.createLinkAsset = async (req, res) => {
   try {
-    const { name, url, type, folderId, userId } = req.body;
-    const projectId = (!req.body.projectId || req.body.projectId === 'global') ? null : req.body.projectId;
+    let { name, url, type, folderId, userId } = req.body;
+    let projectId = (!req.body.projectId || req.body.projectId === 'global' || req.body.projectId === 'undefined' || req.body.projectId === 'null') ? null : req.body.projectId;
     
+    if (folderId === 'undefined' || folderId === 'null' || folderId === '') folderId = null;
+    if (userId === 'undefined' || userId === 'null' || userId === '') userId = null;
+
     const finalName = await getUniqueFilename(name, projectId, folderId);
 
     const asset = await Asset.create({

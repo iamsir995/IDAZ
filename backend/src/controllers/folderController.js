@@ -41,7 +41,14 @@ exports.createFolder = async (req, res) => {
 exports.getProjectFolders = async (req, res) => {
   try {
     const { projectId } = req.params;
-    const queryProjectId = projectId === 'global' ? null : projectId;
+    const isGlobal = projectId === 'global';
+    const queryProjectId = isGlobal ? null : projectId;
+    
+    const mongoose = require('mongoose');
+
+    if (queryProjectId && !mongoose.Types.ObjectId.isValid(queryProjectId)) {
+      return res.status(400).json({ success: false, message: 'Project ID không hợp lệ.' });
+    }
     
     if (queryProjectId && req.user && req.user.role === 'client') {
       const Project = require('../models/Project');
@@ -54,7 +61,8 @@ exports.getProjectFolders = async (req, res) => {
     const folders = await Folder.find({ projectId: queryProjectId }).sort('name');
     res.status(200).json({ success: true, data: folders });
   } catch (error) {
-    res.status(500).json({ success: false, message: 'Lỗi tải danh sách thư mục' });
+    console.error('[getProjectFolders] Lỗi:', error.message);
+    res.status(500).json({ success: false, message: 'Lỗi tải danh sách thư mục', error: error.message });
   }
 };
 
