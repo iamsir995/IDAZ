@@ -110,7 +110,7 @@ export default function ClientBrief() {
  <p className="text-gray-600 mb-6">
  Cảm ơn bạn đã cung cấp thông tin. Đội ngũ Account và Design của chúng tôi đang phân tích yêu cầu của <strong>{brief.companyName}</strong> và sẽ liên hệ lại với bạn trong thời gian sớm nhất để thống nhất hướng đi.
  </p>
- <div className="grid grid-cols-2 gap-4 text-sm text-gray-700">
+ <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-700">
  <div className="bg-idaz-gray p-4 rounded-3xl border border-white/40">
  <span className="block text-gray-400 font-medium mb-1">Ngành nghề</span>
  <span className="font-semibold">{brief.industry}</span>

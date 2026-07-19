@@ -1,12 +1,14 @@
 "use client";
 
-import { FolderKanban, Receipt, LayoutDashboard, LogOut, ImageIcon, ClipboardList, LifeBuoy, MessageSquare, Target, HelpCircle } from "lucide-react";
+import { FolderKanban, Receipt, LayoutDashboard, LogOut, ImageIcon, ClipboardList, LifeBuoy, MessageSquare, Target, HelpCircle, Menu, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "../../context/AuthContext";
 import NotificationCenter from "../../components/NotificationCenter";
-import FloatingChat from "../../components/FloatingChat";
-import ClientProfileModal from "../../components/ClientProfileModal";
+import dynamic from 'next/dynamic';
+
+const FloatingChat = dynamic(() => import('../../components/FloatingChat'), { ssr: false });
+const ClientProfileModal = dynamic(() => import('../../components/ClientProfileModal'), { ssr: false });
 import { useEffect, useState } from "react";
 
 export default function ClientLayout({ children }) {
@@ -14,6 +16,7 @@ export default function ClientLayout({ children }) {
  const router = useRouter();
  const { user, loading, logout } = useAuth();
  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+ const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
  
  // Protect route
  useEffect(() => {
@@ -25,6 +28,11 @@ export default function ClientLayout({ children }) {
  }
  }
  }, [user, loading, router]);
+
+ // Close mobile menu on route change
+ useEffect(() => {
+   setIsMobileMenuOpen(false);
+ }, [pathname]);
 
  if (loading) return <div className="h-screen w-full bg-idaz-gray flex items-center justify-center text-gray-500">Loading...</div>;
  if (!user || user.role !== 'client') return null;
@@ -38,19 +46,35 @@ export default function ClientLayout({ children }) {
  { name: "Kho Tài sản", icon: <FolderKanban size={20} />, path: "/client/assets" },
  { name: "Hóa đơn & Thanh toán", icon: <Receipt size={20} />, path: "/client/invoices" },
  { name: "Hỗ trợ (Tickets)", icon: <HelpCircle size={20} />, path: "/client/support" },
+ { name: "Chat với Admin", icon: <MessageSquare size={20} />, path: "/client/chat" },
  ];
 
  return (
- <div className="min-h-screen bg-mesh-light flex font-sans selection:bg-idaz-orange/30">
- {/* Sidebar Client (Sáng sủa, Tinh tế hơn) */}
- <aside className="w-64 hidden md:flex flex-col m-4 h-[calc(100vh-2rem)] rounded-3xl glass-panel shadow-sm">
- <div className="h-24 flex items-center justify-center px-8 border-b border-gray-100/50">
+ <div className="min-h-screen bg-apple-light flex font-sans selection:bg-idaz-orange/30">
+ 
+ {/* Mobile Overlay */}
+ {isMobileMenuOpen && (
+   <div 
+     className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 md:hidden"
+     onClick={() => setIsMobileMenuOpen(false)}
+   />
+ )}
+
+ {/* Sidebar Client */}
+ <aside className={`fixed md:relative inset-y-0 left-0 w-64 m-4 h-[calc(100vh-2rem)] rounded-3xl glass-panel shadow-sm z-50 flex flex-col overflow-hidden transition-transform duration-300 md:translate-x-0 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-[120%]'}`}>
+ <div className="h-24 flex items-center justify-between px-8 border-b border-gray-100/50">
   <Link href="/client" className="font-bold text-title-2 tracking-tighter text-idaz-black">
   Agency<span className="text-idaz-orange">.</span> Portal
   </Link>
+  <button 
+    className="md:hidden text-gray-500 hover:text-idaz-orange"
+    onClick={() => setIsMobileMenuOpen(false)}
+  >
+    <X size={24} />
+  </button>
  </div>
  
- <nav className="flex-1 py-8 px-4 space-y-2">
+ <nav className="flex-1 py-8 px-4 space-y-2 overflow-y-auto custom-scrollbar">
  {menuItems.map((item) => {
  // Match exactly for /client, otherwise startsWith
  const isActive = item.path === '/client' ? pathname === '/client' : pathname.startsWith(item.path);
@@ -58,7 +82,7 @@ export default function ClientLayout({ children }) {
  <Link 
  key={item.name} 
  href={item.path}
- className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${isActive ? 'bg-idaz-orange-light text-idaz-orange-dark shadow-sm border border-orange-100 font-semibold' : 'text-gray-500 hover:bg-idaz-gray hover:text-idaz-black font-medium'}`}
+ className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${isActive ? 'bg-idaz-orange-light text-idaz-orange-dark shadow-sm border border-orange-100 font-semibold' : 'text-gray-500 hover:bg-white/50 hover:text-idaz-black font-medium'}`}
  >
   {item.icon}
   <span className="text-footnote">{item.name}</span>
@@ -81,13 +105,27 @@ export default function ClientLayout({ children }) {
  {/* Main Content */}
  <main className="flex-1 flex flex-col h-screen overflow-hidden">
  {/* Top Header */}
- <header className="h-20 mx-4 mt-4 mb-2 rounded-3xl glass-panel flex items-center justify-between px-8 shrink-0 shadow-sm z-10 sticky top-4">
-  <div className="text-footnote font-medium text-gray-500 flex items-center gap-2">
-  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-  Xin chào, {user?.name || "Quý khách"}
+ <header className="h-20 mx-4 mt-4 mb-2 rounded-3xl glass-panel flex items-center justify-between px-4 md:px-8 shrink-0 shadow-sm z-10 sticky top-4">
+  <div className="flex items-center gap-3">
+    {/* Mobile Menu Toggle */}
+    <button 
+      className="md:hidden p-2 text-gray-500 hover:text-idaz-orange hover:bg-orange-50 rounded-xl transition-all"
+      onClick={() => setIsMobileMenuOpen(true)}
+    >
+      <Menu size={24} />
+    </button>
+    
+    <div className="hidden md:flex text-footnote font-medium text-gray-500 items-center gap-2">
+      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+      Xin chào, {user?.name || "Quý khách"}
+    </div>
+    
+    <div className="md:hidden font-bold text-headline tracking-tighter text-idaz-black">
+      Agency<span className="text-idaz-orange">.</span>
+    </div>
   </div>
  
- <div className="flex items-center gap-4">
+ <div className="flex items-center gap-3 md:gap-4">
  <NotificationCenter />
   <div className="text-right hidden sm:block cursor-pointer" onClick={() => setIsProfileModalOpen(true)}>
   <div className="text-footnote font-bold text-idaz-black hover:text-idaz-orange transition-colors">{user?.name || "Client"}</div>
@@ -107,7 +145,7 @@ export default function ClientLayout({ children }) {
  </header>
 
  {/* Page Content */}
- <div className="flex-1 overflow-y-auto p-6 md:p-10 custom-scrollbar">
+ <div className="flex-1 overflow-y-auto p-4 md:p-10 custom-scrollbar">
  {children}
  </div>
  

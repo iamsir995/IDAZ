@@ -97,8 +97,14 @@ export default function TicketDetail() {
  <div className="space-y-6">
  {/* Initial Message */}
  <div className="flex gap-4 flex-row-reverse">
- <div className="w-10 h-10 rounded-full bg-idaz-orange overflow-hidden shrink-0 flex items-center justify-center text-white font-bold">
- {ticket.userId?.name?.charAt(0) || user?.name?.charAt(0)}
+ <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold shrink-0 overflow-hidden">
+ {ticket.userId?.avatar ? (
+ <img src={ticket.userId.avatar} alt="User" className="w-full h-full object-cover" />
+ ) : user?.avatar ? (
+ <img src={user.avatar} alt="User" className="w-full h-full object-cover" />
+ ) : (
+ ticket.userId?.name?.charAt(0) || user?.name?.charAt(0) || 'U'
+ )}
  </div>
  <div className="max-w-[80%] text-right">
  <div className="text-sm font-semibold text-gray-700 mb-1">
@@ -113,10 +119,15 @@ export default function TicketDetail() {
  {/* Replies */}
  {ticket.replies?.map((reply, idx) => {
  const isMe = reply.senderId === user?.id;
+ const isAdmin = reply.senderRole === 'admin';
  return (
  <div key={idx} className={`flex gap-4 ${isMe ? 'flex-row-reverse' : 'flex-row'}`}>
- <div className={`w-10 h-10 rounded-full overflow-hidden shrink-0 flex items-center justify-center font-bold text-white ${isMe ? 'bg-idaz-orange' : 'bg-indigo-600'}`}>
- {reply.senderName?.charAt(0)}
+ <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold shrink-0 text-xs overflow-hidden ${isAdmin ? 'bg-rose-100 text-rose-600' : 'bg-indigo-100 text-indigo-600'}`}>
+ {reply.senderAvatar ? (
+ <img src={reply.senderAvatar} alt="Avatar" className="w-full h-full object-cover" />
+ ) : (
+ reply.senderName?.charAt(0) || 'U'
+ )}
  </div>
  <div className={`max-w-[80%] ${isMe ? 'text-right' : 'text-left'}`}>
  <div className="text-sm font-semibold text-gray-700 mb-1">

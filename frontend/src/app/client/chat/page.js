@@ -14,7 +14,9 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
-import VideoCallModal from "../../../components/VideoCallModal";
+import dynamic from 'next/dynamic';
+const VideoCallModal = dynamic(() => import('../../../components/VideoCallModal'), { ssr: false });
+import FilePreviewModal from "../../../components/FilePreviewModal";
 
 export default function ClientChat() {
  const { user } = useAuth();
@@ -33,6 +35,7 @@ export default function ClientChat() {
  const [attachments, setAttachments] = useState([]);
  const [replyToMsg, setReplyToMsg] = useState(null);
  const fileInputRef = useRef(null);
+ const [previewAttachment, setPreviewAttachment] = useState(null);
 
  const [typingUsers, setTypingUsers] = useState({});
  const [onlineUserIds, setOnlineUserIds] = useState([]);
@@ -107,12 +110,12 @@ export default function ClientChat() {
  const [e2eeEnabled, setE2eeEnabled] = useState(false);
 
  const validateFile = (file) => {
- const maxSizeBytes = 25 * 1024 * 1024; // 25MB
+ const maxSizeBytes = 10 * 1024 * 1024; // 10MB
  const blockedExtensions = ['.exe', '.bat', '.sh', '.cmd', '.msi', '.dmg', '.com', '.bin'];
  const ext = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
  
  if (file.size > maxSizeBytes) {
- toast.error(`Tệp ${file.name} quá lớn! Giới hạn tối đa là 25MB.`);
+ toast.error(`Tệp ${file.name} quá lớn! Giới hạn tối đa là 10MB để đảm bảo ổn định.`);
  return false;
  }
  if (blockedExtensions.includes(ext)) {
@@ -842,11 +845,11 @@ export default function ClientChat() {
  onDrop={handleDrop}
  className="absolute inset-0 bg-idaz-black/60 backdrop-blur-md z-50 flex flex-col items-center justify-center border-4 border-dashed border-indigo-500/50 m-4 rounded-3xl transition-all duration-300"
  >
- <div className="bg-idaz-orange/20 p-6 rounded-full border border-indigo-500/30 text-indigo-400 mb-4 animate-bounce">
+ <div className="bg-idaz-orange/20 p-6 rounded-full border border-indigo-200 text-indigo-400 mb-4 animate-bounce">
  <Paperclip size={40} />
  </div>
  <h3 className="text-xl font-bold text-white mb-2">Thả tệp tin tại đây</h3>
- <p className="text-sm text-slate-300">Tải lên tài liệu hoặc hình ảnh bảo mật (Tối đa 25MB)</p>
+ <p className="text-sm text-gray-700">Tải lên tài liệu hoặc hình ảnh bảo mật (Tối đa 25MB)</p>
  </div>
  )}
  {/* Header */}
@@ -856,17 +859,17 @@ export default function ClientChat() {
  style={{ backgroundColor: settings.primaryColor || '#4f46e5' }}
  className="w-10 h-10 rounded-3xl text-white flex items-center justify-center font-bold"
  >
- {activeChat.data.name.charAt(0).toUpperCase()}
+ {(activeChat.data.name || 'C').charAt(0).toUpperCase()}
  </div>
  <div>
  <div className="font-bold text-idaz-black text-sm flex items-center gap-1.5">
- {activeChat.data.name}
+ {activeChat.data.name || 'Phòng Hỗ trợ'}
  {activeChat.data.type === 'support' && (
  <span className="text-[10px] font-bold bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded-full border border-emerald-100">CSKH</span>
  )}
  </div>
  <div className="text-[10px] text-gray-400 flex items-center gap-1 mt-0.5">
- <span className={`w-2 h-2 rounded-full ${isStaffOnline(activeChat.data.members) ? 'bg-emerald-500' : 'bg-slate-300'}`} />
+ <span className={`w-2 h-2 rounded-full ${isStaffOnline(activeChat.data.members) ? 'bg-emerald-500' : 'bg-gray-300'}`} />
  {isStaffOnline(activeChat.data.members) ? 'Hỗ trợ trực tuyến' : 'Ngoại tuyến'}
  </div>
  </div>
@@ -1082,7 +1085,7 @@ export default function ClientChat() {
  <textarea
  value={editingMsgText}
  onChange={(e) => setEditingMsgText(e.target.value)}
- className="w-full bg-idaz-black/10 border border-slate-900/20 rounded-3xl p-2 text-xs focus:outline-none focus:border-indigo-500 resize-none h-16"
+ className="w-full bg-idaz-black/10 border border-white/60 rounded-3xl p-2 text-xs focus:outline-none focus:border-indigo-500 resize-none h-16"
  style={{ color: isMe ? 'white' : 'inherit' }}
  />
  <div className="flex gap-1.5 justify-end">
@@ -1129,7 +1132,7 @@ export default function ClientChat() {
  ? 'bg-idaz-orange/20 border-indigo-400 text-white' 
  : 'bg-idaz-orange-light border-orange-100 text-idaz-orange-dark'
  : isMe 
- ? 'bg-white/5 border-white/10 text-zinc-300 hover:bg-white/10'
+ ? 'bg-white/50 border-white/10 text-zinc-300 hover:bg-white/10'
  : 'bg-idaz-gray border-white/40 text-gray-500 hover:bg-gray-100'
  }`}
  >
@@ -1213,7 +1216,7 @@ export default function ClientChat() {
  <video src={file.url} controls className="max-h-60 rounded-xl w-full bg-idaz-black" />
  </div>
  ) : (
- <div className="flex items-center justify-between gap-3 p-1">
+ <div onClick={() => setPreviewAttachment(file)} className="flex items-center justify-between gap-3 p-1 cursor-pointer hover:bg-black/10 rounded-xl transition-colors">
  <div className="flex items-center gap-2 min-w-0">
  <FileText size={16} className="text-indigo-400 shrink-0" />
  <span className="truncate font-semibold text-[11px]">{file.name}</span>
@@ -1222,7 +1225,7 @@ export default function ClientChat() {
  href={file.url} 
  download
  target="_blank"
- className="p-1.5 bg-idaz-orange hover:bg-idaz-orange text-white rounded-xl transition-all"
+ onClick={(e) => e.stopPropagation()} className="p-1.5 bg-idaz-orange hover:bg-idaz-orange text-white rounded-xl transition-all"
  title="Tải về"
  >
  <Download size={12} />
@@ -1234,7 +1237,7 @@ export default function ClientChat() {
  </div>
  )}
 
- <div className={`flex items-center justify-end gap-1 mt-1 text-[9px] ${isMe ? 'text-indigo-200' : 'text-gray-400'}`}>
+ <div className={`flex items-center justify-end gap-1 mt-1 text-[9px] ${isMe ? 'text-indigo-700' : 'text-gray-400'}`}>
  <span>{formattedTime}</span>
  {isMe && (
  <div 
@@ -1248,7 +1251,7 @@ export default function ClientChat() {
  {msg.readBy && msg.readBy.some(r => r.user !== user?._id && r.user?._id !== user?._id) ? (
  <CheckCheck size={10} className="text-blue-400 font-bold" />
  ) : (
- <Check size={10} className="text-slate-300" />
+ <Check size={10} className="text-gray-700" />
  )}
  </div>
  )}
@@ -1264,9 +1267,9 @@ export default function ClientChat() {
  {typingUsers[activeChat.id] && (
  <div className="flex items-start">
  <div className="glass-panel border border-white/40 rounded-3xl rounded-bl-none px-4 py-2.5 flex gap-1 items-center shadow-sm">
- <span className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce [animation-delay:0ms]" />
- <span className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce [animation-delay:150ms]" />
- <span className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce [animation-delay:300ms]" />
+ <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce [animation-delay:0ms]" />
+ <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce [animation-delay:150ms]" />
+ <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce [animation-delay:300ms]" />
  <span className="text-[10px] text-gray-400 ml-1 font-semibold">{typingUsers[activeChat.id]} đang nhập...</span>
  </div>
  </div>
@@ -1376,8 +1379,8 @@ export default function ClientChat() {
  <div className="space-y-2">
  {activeChat.data.members?.filter(m => m.role !== 'client').map(member => (
  <div key={member._id} className="flex items-center gap-2">
- <div className="w-7 h-7 rounded-full bg-indigo-150 flex items-center justify-center font-bold text-idaz-orange-dark">
- {member.name.charAt(0)}
+ <div className="w-8 h-8 rounded-full bg-indigo-500/10 text-indigo-500 font-bold flex items-center justify-center shrink-0">
+ {(member.name || 'U').charAt(0).toUpperCase()}
  </div>
  <div>
  <div className="font-semibold text-idaz-black">{member.name}</div>
@@ -1431,7 +1434,7 @@ export default function ClientChat() {
  >
  <button 
  onClick={() => setActiveImage(null)}
- className="absolute top-4 right-4 text-white hover:bg-white/10 p-2 rounded-full transition-all"
+ className="absolute top-4 right-4 text-white hover:bg-white/80 p-2 rounded-full transition-all"
  >
  <X size={24} />
  </button>
@@ -1487,6 +1490,7 @@ export default function ClientChat() {
  setCallUser={setCallUser}
  isCallMuted={isMuted}
  />
+ <FilePreviewModal asset={previewAttachment} onClose={() => setPreviewAttachment(null)} />
  </div>
  );
 }

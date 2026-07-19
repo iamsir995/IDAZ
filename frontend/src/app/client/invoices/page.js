@@ -180,7 +180,8 @@ export default function ClientInvoices() {
  <p className="text-gray-400 font-medium">Bạn chưa có hóa đơn nào.</p>
  </div>
  ) : (
- <table className="w-full text-left border-collapse">
+ <div className="overflow-x-auto min-w-0">
+ <table className="w-full text-left border-collapse min-w-[800px]">
  <thead>
  <tr className="bg-idaz-gray text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-white/60">
  <th className="p-4 pl-6">Mã HĐ</th>
@@ -196,8 +197,8 @@ export default function ClientInvoices() {
  <motion.tr
  key={inv._id}
  initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.04 }}
- className={`border-b border-white/40 text-sm transition-colors ${
- inv.status === 'pending' ? 'hover:bg-amber-50/30' : 'hover:bg-idaz-gray'
+ className={`border-b border-white/40 text-sm transition-colors even:bg-white/40 ${
+ inv.status === 'pending' ? 'hover:bg-amber-50/50' : 'hover:bg-white/60'
  }`}
  >
  <td className="p-4 pl-6 font-mono font-bold text-gray-700 text-xs">{inv.invoiceNumber}</td>
@@ -207,7 +208,7 @@ export default function ClientInvoices() {
  <div className="text-xs text-indigo-500 font-medium mt-0.5">📁 {inv.projectId.title || inv.projectId}</div>
  )}
  </td>
- <td className="p-4 font-extrabold text-idaz-orange-dark text-base">{inv.amount.toLocaleString('vi-VN')} ₫</td>
+ <td className="p-4 font-extrabold text-idaz-orange-dark text-lg">{inv.amount.toLocaleString('vi-VN')} ₫</td>
  <td className="p-4 text-gray-500">{new Date(inv.dueDate).toLocaleDateString('vi-VN')}</td>
  <td className="p-4">
  {inv.status === 'paid' && (
@@ -249,6 +250,7 @@ export default function ClientInvoices() {
  ))}
  </tbody>
  </table>
+ </div>
  )}
  </div>
 

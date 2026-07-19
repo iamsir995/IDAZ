@@ -92,7 +92,8 @@ export default function ClientSupport() {
  </div>
  ) : (
  <div className="glass-panel border border-white/60 rounded-3xl overflow-hidden shadow-sm">
- <table className="w-full text-left border-collapse">
+ <div className="overflow-x-auto min-w-0">
+ <table className="w-full text-left border-collapse min-w-[800px]">
  <thead>
  <tr className="bg-idaz-gray border-b border-white/60 text-sm font-bold text-gray-500 uppercase tracking-wider">
  <th className="p-6">Tiêu đề</th>
@@ -125,6 +126,7 @@ export default function ClientSupport() {
  ))}
  </tbody>
  </table>
+ </div>
  </div>
  )}
 

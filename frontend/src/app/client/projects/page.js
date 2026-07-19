@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Search, Folder, Calendar, Download, Eye, Link as LinkIcon, MessageSquare, X, CheckCircle } from "lucide-react";
+import { Search, Folder, Calendar, Download, Eye, Link as LinkIcon, MessageSquare, X, CheckCircle, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import api from "../../../services/api";
 import Link from "next/link";
@@ -81,10 +81,10 @@ export default function ClientProjects() {
  animate={{ opacity: 1, y: 0 }}
  transition={{ delay: index * 0.1 }}
  key={project._id}
- className="glass-panel border border-white/60 rounded-3xl overflow-hidden hover:shadow-lg transition-all group"
+ className="glass-panel border border-white/60 rounded-[32px] overflow-hidden hover:shadow-xl transition-all group"
  >
- <div className="p-6">
- <div className="flex justify-between items-start mb-4">
+ <div className="p-8">
+ <div className="flex justify-between items-start mb-6">
  <div className="w-12 h-12 rounded-3xl bg-idaz-orange-light text-idaz-orange flex items-center justify-center border border-orange-100">
  <Folder size={24} />
  </div>
@@ -109,13 +109,13 @@ export default function ClientProjects() {
  <div className="flex gap-2">
  <button 
  onClick={() => setSelectedProject(project)}
- className="flex-1 py-2 bg-idaz-orange-light hover:bg-orange-100 text-idaz-orange-dark rounded-3xl text-sm font-bold transition-colors flex items-center justify-center gap-2"
+ className="flex-1 py-3 bg-idaz-orange hover:bg-orange-600 text-white rounded-2xl text-sm font-bold transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 hover:-translate-y-0.5"
  >
- <Eye size={16} /> Xem
+ <Eye size={16} /> Xem Chi Tiết
  </button>
  {project.progress > 0 && (
- <Link href={`/client/feedbacks?projectId=${project._id}`} className="py-2 px-4 bg-idaz-gray hover:bg-gray-100 border border-white/60 text-gray-700 rounded-3xl text-sm font-bold transition-colors flex items-center justify-center" title="Xem File Feedback">
- <MessageSquare size={16} />
+ <Link href={`/client/feedbacks?projectId=${project._id}`} className="py-3 px-5 bg-white/50 hover:bg-white border border-white/60 text-idaz-black rounded-2xl text-sm font-bold transition-all shadow-sm hover:shadow-md flex items-center justify-center hover:-translate-y-0.5" title="Xem File Feedback">
+ <MessageSquare size={18} />
  </Link>
  )}
  </div>
@@ -138,10 +138,10 @@ export default function ClientProjects() {
  initial={{ opacity: 0, scale: 0.95, y: 20 }}
  animate={{ opacity: 1, scale: 1, y: 0 }}
  exit={{ opacity: 0, scale: 0.95, y: 20 }}
- className="relative w-full max-w-3xl glass-panel rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh]"
+ className="relative w-full max-w-4xl glass-panel rounded-[32px] shadow-2xl overflow-hidden flex flex-col max-h-[85vh] border border-white/40"
  >
  {/* Header */}
- <div className="p-6 border-b border-white/40 flex items-start justify-between bg-idaz-gray/50">
+ <div className="p-8 border-b border-white/40 flex items-start justify-between bg-white/20 backdrop-blur-md">
  <div className="flex items-center gap-4">
  <div className="w-14 h-14 bg-orange-100 text-idaz-orange rounded-3xl flex items-center justify-center">
  <Folder size={28} />
@@ -168,9 +168,9 @@ export default function ClientProjects() {
  </div>
 
  {/* Body */}
- <div className="p-6 overflow-y-auto custom-scrollbar flex-1">
- <div className="mb-8">
- <div className="flex justify-between items-end mb-2">
+ <div className="p-8 overflow-y-auto custom-scrollbar flex-1 bg-white/30 backdrop-blur-sm">
+ <div className="mb-10 bg-white/40 border border-white/60 p-6 rounded-[24px] shadow-sm">
+ <div className="flex justify-between items-end mb-4">
  <h3 className="text-sm font-bold text-idaz-black">Tiến độ tổng thể</h3>
  <span className="text-2xl font-extrabold text-idaz-orange">{selectedProject.progress}%</span>
  </div>
@@ -185,25 +185,25 @@ export default function ClientProjects() {
  </div>
 
  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
- <div className="space-y-6">
+ <div className="space-y-8">
  <div>
- <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-3">Mô tả dự án</h3>
- <div className="bg-idaz-gray rounded-3xl p-4 text-gray-700 text-sm leading-relaxed whitespace-pre-wrap border border-white/40">
+ <h3 className="text-sm font-bold text-idaz-black uppercase tracking-wider mb-4 flex items-center gap-2"><Folder size={16} className="text-idaz-orange" /> Mô tả dự án</h3>
+ <div className="glass-panel bg-white/60 rounded-[24px] p-6 text-gray-700 text-[15px] leading-relaxed whitespace-pre-wrap border border-white/60 shadow-sm">
  {selectedProject.description || "Chưa có mô tả."}
  </div>
  </div>
  <div>
- <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-3">Yêu cầu (Brief)</h3>
- <div className="bg-idaz-gray rounded-3xl p-4 text-gray-700 text-sm leading-relaxed whitespace-pre-wrap border border-white/40 max-h-[250px] overflow-y-auto custom-scrollbar">
+ <h3 className="text-sm font-bold text-idaz-black uppercase tracking-wider mb-4 flex items-center gap-2"><MessageSquare size={16} className="text-indigo-500" /> Yêu cầu (Brief)</h3>
+ <div className="glass-panel bg-white/60 rounded-[24px] p-6 text-gray-700 text-[15px] leading-relaxed whitespace-pre-wrap border border-white/60 max-h-[250px] overflow-y-auto custom-scrollbar shadow-sm">
  {selectedProject.brief || "Chưa có thông tin Brief."}
  </div>
  </div>
  {selectedProject.projectUrl && (
  <div>
- <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-3">Liên kết nghiệm thu</h3>
- <a href={selectedProject.projectUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2 bg-idaz-gray hover:bg-gray-100 border border-white/60 text-gray-700 rounded-3xl transition-colors font-medium text-sm">
- <LinkIcon size={16} className="text-indigo-500" />
- {selectedProject.projectUrl}
+ <h3 className="text-sm font-bold text-idaz-black uppercase tracking-wider mb-4 flex items-center gap-2"><LinkIcon size={16} className="text-emerald-500" /> Liên kết nghiệm thu</h3>
+ <a href={selectedProject.projectUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-3 px-6 py-4 glass-panel bg-white/60 hover:bg-white border border-white/80 text-idaz-black rounded-[20px] transition-all font-bold text-[15px] shadow-sm hover:shadow-md hover:-translate-y-0.5">
+ <span className="text-emerald-600">Truy cập Link</span>
+ <ChevronRight size={18} className="text-gray-400" />
  </a>
  </div>
  )}
@@ -211,8 +211,8 @@ export default function ClientProjects() {
  
  {/* Tasks / Feedback Loop */}
  <div className="flex flex-col h-full">
- <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-3">Hạng mục cần duyệt</h3>
- <div className="bg-idaz-gray rounded-3xl p-4 border border-white/40 flex-1 overflow-y-auto custom-scrollbar max-h-[500px]">
+ <h3 className="text-sm font-bold text-idaz-black uppercase tracking-wider mb-4 flex items-center gap-2"><CheckCircle size={16} className="text-rose-500" /> Hạng mục cần duyệt</h3>
+ <div className="glass-panel bg-white/40 rounded-[24px] p-6 border border-white/60 flex-1 overflow-y-auto custom-scrollbar max-h-[500px] shadow-inner">
  {tasksLoading ? (
  <div className="text-center py-8 text-gray-400 text-sm animate-pulse">Đang tải hạng mục...</div>
  ) : projectTasks.length === 0 ? (
