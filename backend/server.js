@@ -599,10 +599,15 @@ app.use((req, res, next) => {
 // Phục vụ thư mục static cho Uploads (Truy cập bằng url /uploads/...)
 app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 
-// 5. Data Sanitization: Bảo vệ khỏi NoSQL Injection (Lọc bỏ ký tự $)
-// app.use(mongoSanitize({ allowDots: true })); // Removed due to IncomingMessage TypeError
-
-
+// 5. Data Sanitization: Bảo vệ khỏi NoSQL Injection an toàn
+const mongoSanitize = require('express-mongo-sanitize');
+// Chỉ sanitize body, query, params (Bỏ qua stream của Multer)
+app.use((req, res, next) => {
+  if (req.body) mongoSanitize.sanitize(req.body, { replaceWith: '_' });
+  if (req.query) mongoSanitize.sanitize(req.query, { replaceWith: '_' });
+  if (req.params) mongoSanitize.sanitize(req.params, { replaceWith: '_' });
+  next();
+});
 // ==========================================
 // ROUTER & LOGIC
 // ==========================================
