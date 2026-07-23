@@ -600,8 +600,8 @@ app.use((req, res, next) => {
 app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 
 // 5. Data Sanitization: Bảo vệ khỏi NoSQL Injection an toàn
-const mongoSanitize = require('express-mongo-sanitize');
-// Chỉ sanitize body, query, params (Bỏ qua stream của Multer)
+// mongoSanitize đã được require ở đầu file (line 6)
+// Chỉ sanitize body, query, params — không dùng app.use(mongoSanitize()) vì xung đột Multer stream
 app.use((req, res, next) => {
   if (req.body) mongoSanitize.sanitize(req.body, { replaceWith: '_' });
   if (req.query) mongoSanitize.sanitize(req.query, { replaceWith: '_' });
