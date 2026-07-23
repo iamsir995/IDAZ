@@ -55,7 +55,8 @@ exports.getAllUsers = async (req, res) => {
       }
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: 'Lỗi khi lấy danh sách user.' });
+    console.error('[getAllUsers] Error:', error);
+    res.status(500).json({ success: false, message: 'Lỗi khi lấy danh sách user.', detail: error.message });
   }
 };
 
@@ -120,7 +121,8 @@ exports.createUser = async (req, res) => {
 
     res.status(201).json({ success: true, data: user, message: 'Tạo tài khoản thành công!' });
   } catch (error) {
-    res.status(500).json({ success: false, message: 'Lỗi tạo user mới' });
+    console.error('[createUser] Error:', error);
+    res.status(500).json({ success: false, message: 'Lỗi tạo user mới', detail: error.message });
   }
 };
 
@@ -128,6 +130,11 @@ exports.createUser = async (req, res) => {
 exports.updateUser = async (req, res) => {
   try {
     const { id } = req.params;
+    const mongoose = require('mongoose');
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ success: false, message: 'ID người dùng không hợp lệ' });
+    }
+
     const { name, email, role, jobTitle, phone, company, customerStatus, revenue } = req.body;
     
     const targetUser = await User.findById(id);
@@ -143,15 +150,27 @@ exports.updateUser = async (req, res) => {
       }
     }
     
+    // Xây dựng object update, bỏ các trường undefined
+    const updateObj = {};
+    if (name !== undefined) updateObj.name = name;
+    if (email !== undefined) updateObj.email = email;
+    if (role !== undefined) updateObj.role = role;
+    if (jobTitle !== undefined) updateObj.jobTitle = jobTitle;
+    if (phone !== undefined) updateObj.phone = phone;
+    if (company !== undefined) updateObj.company = company;
+    if (customerStatus !== undefined) updateObj.customerStatus = customerStatus;
+    if (revenue !== undefined && revenue !== "") updateObj.revenue = Number(revenue);
+
     const user = await User.findByIdAndUpdate(
       id,
-      { name, email, role, jobTitle, phone, company, customerStatus, revenue },
+      updateObj,
       { new: true, runValidators: true }
     ).select('-password');
 
     res.status(200).json({ success: true, data: user, message: 'Cập nhật thành công!' });
   } catch (error) {
-    res.status(500).json({ success: false, message: 'Lỗi cập nhật user' });
+    console.error('[updateUser] Error:', error);
+    res.status(500).json({ success: false, message: 'Lỗi cập nhật user', detail: error.message });
   }
 };
 
@@ -159,6 +178,10 @@ exports.updateUser = async (req, res) => {
 exports.deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
+    const mongoose = require('mongoose');
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ success: false, message: 'ID người dùng không hợp lệ' });
+    }
 
     const targetUser = await User.findById(id);
     if (!targetUser) return res.status(404).json({ success: false, message: 'Không tìm thấy user' });
@@ -173,7 +196,8 @@ exports.deleteUser = async (req, res) => {
 
     res.status(200).json({ success: true, message: 'Đã vô hiệu hóa (Soft Delete) người dùng' });
   } catch (error) {
-    res.status(500).json({ success: false, message: 'Lỗi vô hiệu hóa user' });
+    console.error('[deleteUser] Error:', error);
+    res.status(500).json({ success: false, message: 'Lỗi vô hiệu hóa user', detail: error.message });
   }
 };
 
@@ -181,6 +205,11 @@ exports.deleteUser = async (req, res) => {
 exports.getClientProfile = async (req, res) => {
   try {
     const { id } = req.params;
+    const mongoose = require('mongoose');
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ success: false, message: 'ID người dùng không hợp lệ' });
+    }
+
     const user = await User.findById(id).select('-password');
     
     if (!user || user.role !== 'client') {
@@ -218,7 +247,8 @@ exports.getClientProfile = async (req, res) => {
       }
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: 'Lỗi khi lấy thông tin Khách hàng' });
+    console.error('[getClientProfile] Error:', error);
+    res.status(500).json({ success: false, message: 'Lỗi khi lấy thông tin Khách hàng', detail: error.message });
   }
 };
 
@@ -226,6 +256,11 @@ exports.getClientProfile = async (req, res) => {
 exports.toggle2FA = async (req, res) => {
   try {
     const { id } = req.params;
+    const mongoose = require('mongoose');
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ success: false, message: 'ID người dùng không hợp lệ' });
+    }
+
     const { is2FAEnabled } = req.body;
 
     const user = await User.findByIdAndUpdate(
@@ -238,7 +273,8 @@ exports.toggle2FA = async (req, res) => {
 
     res.status(200).json({ success: true, message: `Đã ${is2FAEnabled ? 'bật' : 'tắt'} 2FA thành công.`, data: user });
   } catch (error) {
-    res.status(500).json({ success: false, message: 'Lỗi khi thay đổi 2FA.' });
+    console.error('[toggle2FA] Error:', error);
+    res.status(500).json({ success: false, message: 'Lỗi khi thay đổi 2FA.', detail: error.message });
   }
 };
 
