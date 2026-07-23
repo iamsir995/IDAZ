@@ -19,6 +19,7 @@ if (!fs.existsSync(recordingsDir)) {
 }
 
 const app = express();
+app.set('trust proxy', true); // Tin tưởng reverse proxy (Render / Cloudflare) để đọc đúng IP client
 const PORT = process.env.PORT || 5000;
 
 // Kết nối MongoDB Persistent

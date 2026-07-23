@@ -21,59 +21,77 @@ exports.getAllInvoices = async (req, res) => {
 };
 exports.createInvoice = async (req, res) => {
   try {
-    const { userId, projectId, invoiceNumber, title, amount, dueDate, paymentUrl } = req.body;
-    
+    const { userId, projectId, title, amount, dueDate, paymentUrl } = req.body;
+    // Auto-generate invoiceNumber nếu không truyền lên, hoặc dùng giá trị từ client
+    const invoiceNumber = req.body.invoiceNumber || `INV-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+
+    if (!userId) return res.status(400).json({ success: false, message: 'Thiếu userId.' });
+    if (!title) return res.status(400).json({ success: false, message: 'Thiếu tiêu đề hóa đơn.' });
+    if (!amount) return res.status(400).json({ success: false, message: 'Thiếu số tiền.' });
+    if (!dueDate) return res.status(400).json({ success: false, message: 'Thiếu hạn thanh toán.' });
+
     const invoice = await Invoice.create({
       userId,
-      projectId,
+      projectId: projectId || undefined,
       invoiceNumber,
       title,
-      amount,
+      amount: Number(amount),
       dueDate,
       paymentUrl
     });
 
-    const populatedInvoice = await Invoice.findById(invoice._id).populate('userId', 'name email').populate('projectId', 'title');
-    
-    // Gửi thông báo realtime cho Client
-    const Notification = require('../models/Notification');
-    const sendEmail = require('../utils/sendEmail');
+    const populatedInvoice = await Invoice.findById(invoice._id)
+      .populate('userId', 'name email')
+      .populate('projectId', 'title');
 
-    const newNotif = await Notification.create({
-      recipient: userId,
-      sender: req.user ? req.user.id : null,
-      type: 'invoice',
-      title: 'Hóa đơn mới từ Agency',
-      message: `Bạn có hóa đơn mới: ${title} - ${Number(amount).toLocaleString('vi-VN')} ₫. Hạn thanh toán: ${dueDate ? new Date(dueDate).toLocaleDateString('vi-VN') : 'Chưa xác định'}.`,
-      link: '/client/invoices'
-    });
+    // Gửi thông báo + email — bọc trong try riêng để không crash route chính
+    try {
+      const Notification = require('../models/Notification');
+      const sendEmail = require('../utils/sendEmail');
 
-    const io = req.app.get('io');
-    if (io) io.to(userId.toString()).emit('new_notification', newNotif);
-
-    // Gửi email thông báo cho khách hàng
-    if (populatedInvoice.userId?.email) {
-      await sendEmail({
-        email: populatedInvoice.userId.email,
-        subject: `Hóa đơn mới: ${title}`,
-        html: `<div style="font-family:Arial,sans-serif;max-width:500px;margin:auto;padding:20px;border:1px solid #e2e8f0;border-radius:10px;">
-          <h2 style="color:#4f46e5;">Bạn có Hóa đơn mới</h2>
-          <p>Chào <strong>${populatedInvoice.userId.name}</strong>,</p>
-          <p>Agency vừa tạo hóa đơn mới dành cho bạn:</p>
-          <table style="width:100%;border-collapse:collapse;margin:16px 0;">
-            <tr><td style="padding:8px;background:#f8fafc;font-weight:bold;">Tiêu đề</td><td style="padding:8px;">${title}</td></tr>
-            <tr><td style="padding:8px;background:#f8fafc;font-weight:bold;">Số tiền</td><td style="padding:8px;color:#e11d48;font-size:18px;font-weight:bold;">${Number(amount).toLocaleString('vi-VN')} ₫</td></tr>
-            <tr><td style="padding:8px;background:#f8fafc;font-weight:bold;">Số hóa đơn</td><td style="padding:8px;">${invoiceNumber}</td></tr>
-            ${dueDate ? `<tr><td style="padding:8px;background:#f8fafc;font-weight:bold;">Hạn thanh toán</td><td style="padding:8px;">${new Date(dueDate).toLocaleDateString('vi-VN')}</td></tr>` : ''}
-          </table>
-          <p style="color:#64748b;font-size:14px;">Vui lòng đăng nhập vào hệ thống để xem chi tiết và thực hiện thanh toán.</p>
-        </div>`
+      const newNotif = await Notification.create({
+        recipient: userId,
+        sender: req.user ? req.user.id : null,
+        type: 'invoice',
+        title: 'Hóa đơn mới từ Agency',
+        message: `Bạn có hóa đơn mới: ${title} - ${Number(amount).toLocaleString('vi-VN')} ₫. Hạn thanh toán: ${dueDate ? new Date(dueDate).toLocaleDateString('vi-VN') : 'Chưa xác định'}.`,
+        link: '/client/invoices'
       });
+
+      const io = req.app.get('io');
+      if (io) io.to(userId.toString()).emit('new_notification', newNotif);
+
+      if (populatedInvoice.userId?.email) {
+        await sendEmail({
+          email: populatedInvoice.userId.email,
+          subject: `Hóa đơn mới: ${title}`,
+          html: `<div style="font-family:Arial,sans-serif;max-width:500px;margin:auto;padding:20px;border:1px solid #e2e8f0;border-radius:10px;">
+            <h2 style="color:#4f46e5;">Bạn có Hóa đơn mới</h2>
+            <p>Chào <strong>${populatedInvoice.userId.name}</strong>,</p>
+            <p>Agency vừa tạo hóa đơn mới dành cho bạn:</p>
+            <table style="width:100%;border-collapse:collapse;margin:16px 0;">
+              <tr><td style="padding:8px;background:#f8fafc;font-weight:bold;">Tiêu đề</td><td style="padding:8px;">${title}</td></tr>
+              <tr><td style="padding:8px;background:#f8fafc;font-weight:bold;">Số tiền</td><td style="padding:8px;color:#e11d48;font-size:18px;font-weight:bold;">${Number(amount).toLocaleString('vi-VN')} ₫</td></tr>
+              <tr><td style="padding:8px;background:#f8fafc;font-weight:bold;">Số hóa đơn</td><td style="padding:8px;">${invoiceNumber}</td></tr>
+              ${dueDate ? `<tr><td style="padding:8px;background:#f8fafc;font-weight:bold;">Hạn thanh toán</td><td style="padding:8px;">${new Date(dueDate).toLocaleDateString('vi-VN')}</td></tr>` : ''}
+            </table>
+            <p style="color:#64748b;font-size:14px;">Vui lòng đăng nhập vào hệ thống để xem chi tiết và thực hiện thanh toán.</p>
+          </div>`
+        });
+      }
+    } catch (notifErr) {
+      // Không crash cả route nếu chỉ thông báo/email thất bại
+      console.warn('[createInvoice] Notification/Email error (non-fatal):', notifErr.message);
     }
 
     res.status(201).json({ success: true, data: populatedInvoice });
   } catch (error) {
-    res.status(500).json({ success: false, message: 'Lỗi khi tạo hóa đơn.' });
+    console.error('[createInvoice] Error:', error.message, error.code);
+    // Xử lý lỗi duplicate invoiceNumber rõ ràng hơn
+    if (error.code === 11000) {
+      return res.status(400).json({ success: false, message: 'Số hóa đơn đã tồn tại. Vui lòng dùng số khác.' });
+    }
+    res.status(500).json({ success: false, message: 'Lỗi khi tạo hóa đơn.', detail: error.message });
   }
 };
 
