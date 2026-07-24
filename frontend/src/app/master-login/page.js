@@ -58,7 +58,7 @@ export default function MasterLogin() {
 
  <form onSubmit={handleMasterLogin} className="space-y-6">
  <div className="space-y-2">
- <label className="text-xs font-bold text-red-500 uppercase tracking-wider">
+ <label htmlFor="master-key" className="text-xs font-bold text-red-500 uppercase tracking-wider">
  Khóa Hệ Thống (Master Key)
  </label>
  <div className="relative group">
@@ -66,7 +66,10 @@ export default function MasterLogin() {
  <KeyRound className="text-zinc-500 group-focus-within:text-red-500 transition-colors" size={20} />
  </div>
  <input
+ id="master-key"
+ name="password"
  type="password"
+ autoComplete="current-password"
  value={masterKey}
  onChange={(e) => setMasterKey(e.target.value)}
  required

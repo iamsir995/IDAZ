@@ -65,13 +65,16 @@ export default function Register() {
         <div className="glass-card py-6 px-4 sm:py-8 sm:rounded-[2rem] sm:px-10 border border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.04)]">
           <form className="space-y-6" onSubmit={handleRegister}>
             <div>
-              <label className="block text-sm font-bold text-gray-700 ml-1 mb-2">
+              <label htmlFor="reg-name" className="block text-sm font-bold text-gray-700 ml-1 mb-2">
                 Họ và Tên
               </label>
               <div className="relative">
                 <UserIcon className="absolute left-4 top-3.5 text-gray-400" size={20} />
                 <input
+                  id="reg-name"
+                  name="name"
                   type="text"
+                  autoComplete="name"
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
@@ -82,13 +85,16 @@ export default function Register() {
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-gray-700 ml-1 mb-2">
+              <label htmlFor="reg-email" className="block text-sm font-bold text-gray-700 ml-1 mb-2">
                 Email / Tài khoản
               </label>
               <div className="relative">
                 <Mail className="absolute left-4 top-3.5 text-gray-400" size={20} />
                 <input
+                  id="reg-email"
+                  name="username"
                   type="email"
+                  autoComplete="username"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -99,13 +105,16 @@ export default function Register() {
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-gray-700 ml-1 mb-2">
+              <label htmlFor="reg-password" className="block text-sm font-bold text-gray-700 ml-1 mb-2">
                 Mật khẩu
               </label>
               <div className="relative">
                 <Lock className="absolute left-4 top-3.5 text-gray-400" size={20} />
                 <input
+                  id="reg-password"
+                  name="new-password"
                   type="password"
+                  autoComplete="new-password"
                   required
                   minLength={6}
                   value={password}
