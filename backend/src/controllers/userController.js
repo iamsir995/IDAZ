@@ -386,7 +386,9 @@ exports.updateAvatar = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Không tìm thấy file ảnh' });
     }
 
-    const avatarUrl = `/uploads/avatars/${req.file.filename}`;
+    const { uploadToCloudOrLocal } = require('../utils/uploader');
+    const uploadResult = await uploadToCloudOrLocal(req.file, 'avatars', req);
+    const avatarUrl = uploadResult.url;
     
     const user = await User.findByIdAndUpdate(
       userId,
@@ -396,7 +398,8 @@ exports.updateAvatar = async (req, res) => {
 
     res.status(200).json({ success: true, data: user, message: 'Cập nhật Avatar thành công!' });
   } catch (error) {
-    res.status(500).json({ success: false, message: 'Lỗi cập nhật Avatar' });
+    console.error('[updateAvatar] Error:', error);
+    res.status(500).json({ success: false, message: 'Lỗi cập nhật Avatar', detail: error.message });
   }
 };
 
@@ -408,7 +411,9 @@ exports.updateCoverImage = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Không tìm thấy file ảnh' });
     }
 
-    const coverUrl = `/uploads/avatars/${req.file.filename}`;
+    const { uploadToCloudOrLocal } = require('../utils/uploader');
+    const uploadResult = await uploadToCloudOrLocal(req.file, 'avatars', req);
+    const coverUrl = uploadResult.url;
     
     const user = await User.findByIdAndUpdate(
       userId,
@@ -418,7 +423,8 @@ exports.updateCoverImage = async (req, res) => {
 
     res.status(200).json({ success: true, data: user, message: 'Cập nhật Ảnh bìa thành công!' });
   } catch (error) {
-    res.status(500).json({ success: false, message: 'Lỗi cập nhật Ảnh bìa' });
+    console.error('[updateCoverImage] Error:', error);
+    res.status(500).json({ success: false, message: 'Lỗi cập nhật Ảnh bìa', detail: error.message });
   }
 };
 

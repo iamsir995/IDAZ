@@ -113,12 +113,11 @@ exports.uploadAssets = async (req, res) => {
       ) type = 'document';
       else if (mime.includes('zip') || mime.includes('rar') || mime.includes('7z')) type = 'archive';
 
-      // Xử lý URL: lấy từ destination để có đường dẫn đầy đủ (kể cả subfolder như 2026/)
-      let relativePath = (file.destination || '').split('public/')[1] || 'uploads';
-      if (relativePath.startsWith('/')) relativePath = relativePath.substring(1);
-      if (relativePath.endsWith('/')) relativePath = relativePath.slice(0, -1);
-      const fileUrl = `/${relativePath}/${file.filename}`;
-      const filePath = `public/${relativePath}/${file.filename}`;
+      // Upload file qua hybrid uploader (Cloudinary CDN nếu có ENV, hoặc Local HTTPS URL)
+      const { uploadToCloudOrLocal } = require('../utils/uploader');
+      const uploadResult = await uploadToCloudOrLocal(file, req.body.folder || 'assets', req);
+      const fileUrl = uploadResult.url;
+      const filePath = uploadResult.filePath;
 
       // Xử lý trùng lặp tên
       const finalName = await getUniqueFilename(file.originalname, projectId, folderId);
@@ -184,19 +183,17 @@ exports.uploadSingleImage = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Không tìm thấy file tải lên.' });
     }
 
-    const folder = req.body.folder; // 'projects', 'posts', 'services', etc.
+    const folder = req.body.folder || 'posts';
     let folderId = req.body.folderId;
     if (folderId === 'undefined' || folderId === 'null' || folderId === '') folderId = null;
 
     let projectId = req.body.projectId;
     if (projectId === 'undefined' || projectId === 'null' || projectId === 'global' || projectId === '') projectId = null;
     
-    let relativePath = file.destination.split('public/')[1] || 'uploads';
-    if (relativePath.startsWith('/')) relativePath = relativePath.substring(1);
-    if (relativePath.endsWith('/')) relativePath = relativePath.substring(0, relativePath.length - 1);
-    
-    const url = `/${relativePath}/${file.filename}`;
-    const filePath = `public/${relativePath}/${file.filename}`;
+    const { uploadToCloudOrLocal } = require('../utils/uploader');
+    const uploadResult = await uploadToCloudOrLocal(file, folder, req);
+    const url = uploadResult.url;
+    const filePath = uploadResult.filePath;
     
     // Auto create Global Asset if no projectId provided
     const asset = await Asset.create({
@@ -249,12 +246,10 @@ exports.uploadSingle = async (req, res) => {
     let projectId = req.body.projectId;
     if (projectId === 'undefined' || projectId === 'null' || projectId === 'global' || projectId === '') projectId = null;
 
-    let relativePath = file.destination.split('public/')[1] || 'uploads';
-    if (relativePath.startsWith('/')) relativePath = relativePath.substring(1);
-    if (relativePath.endsWith('/')) relativePath = relativePath.substring(0, relativePath.length - 1);
-    
-    const url = `/${relativePath}/${file.filename}`;
-    const filePath = `public/${relativePath}/${file.filename}`;
+    const { uploadToCloudOrLocal } = require('../utils/uploader');
+    const uploadResult = await uploadToCloudOrLocal(file, req.body.folder || 'assets', req);
+    const url = uploadResult.url;
+    const filePath = uploadResult.filePath;
     
     const asset = await Asset.create({
       name: file.originalname,
