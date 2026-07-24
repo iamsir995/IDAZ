@@ -125,13 +125,16 @@ export default function Login() {
           {step === 1 ? (
             <form className="space-y-6" onSubmit={handleLogin}>
               <div>
-                <label className="block text-sm font-bold text-gray-700 ml-1 mb-2">
+                <label htmlFor="login-email" className="block text-sm font-bold text-gray-700 ml-1 mb-2">
                   Email / Tài khoản
                 </label>
                 <div className="relative">
                   <Mail className="absolute left-4 top-3.5 text-gray-400" size={20} />
                   <input
+                    id="login-email"
+                    name="username"
                     type="email"
+                    autoComplete="username"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -143,7 +146,7 @@ export default function Login() {
 
               <div>
                 <div className="flex items-center justify-between ml-1 mb-2">
-                  <label className="block text-sm font-bold text-gray-700">
+                  <label htmlFor="login-password" className="block text-sm font-bold text-gray-700">
                     Mật khẩu
                   </label>
                   <Link href="/forgot-password" className="text-sm font-bold text-idaz-orange hover:text-idaz-orange-dark transition-colors">
@@ -153,7 +156,10 @@ export default function Login() {
                 <div className="relative">
                   <Lock className="absolute left-4 top-3.5 text-gray-400" size={20} />
                   <input
+                    id="login-password"
+                    name="password"
                     type="password"
+                    autoComplete="current-password"
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}

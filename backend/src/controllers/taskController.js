@@ -1,54 +1,69 @@
 const Task = require('../models/Task');
 const Channel = require('../models/Channel');
 const Message = require('../models/Message');
+const User = require('../models/User');
+const Notification = require('../models/Notification');
+const Project = require('../models/Project');
+const asyncHandler = require('../utils/asyncHandler');
+const { isValidObjectId, parseObjectId } = require('../utils/objectIdHelper');
 
-exports.getTasks = async (req, res) => {
-  try {
-    const filter = {};
+exports.getTasks = asyncHandler(async (req, res) => {
+  const filter = {};
+  
+  const queryProjectId = parseObjectId(req.query.projectId);
+  const queryAssignee = parseObjectId(req.query.assignee);
+
+  if (req.user && req.user.role === 'client') {
+    const clientProjects = await Project.find({ clientId: req.user.id }).select('_id');
+    const projectIds = clientProjects.map(p => p._id.toString());
     
-    if (req.user && req.user.role === 'client') {
-      const Project = require('../models/Project');
-      const clientProjects = await Project.find({ clientId: req.user.id }).select('_id');
-      const projectIds = clientProjects.map(p => p._id.toString());
-      
-      if (req.query.projectId) {
-        if (!projectIds.includes(req.query.projectId)) {
-          return res.status(403).json({ success: false, message: 'Không có quyền truy cập.' });
-        }
-        filter.projectId = req.query.projectId;
-      } else {
-        filter.projectId = { $in: projectIds };
+    if (queryProjectId) {
+      if (!projectIds.includes(queryProjectId.toString())) {
+        return res.status(403).json({ success: false, message: 'Không có quyền truy cập.' });
       }
+      filter.projectId = queryProjectId;
     } else {
-      if (req.query.projectId) filter.projectId = req.query.projectId;
+      filter.projectId = { $in: projectIds };
     }
-    
-    if (req.query.assignee) filter.assignee = req.query.assignee;
-    
-    const tasks = await Task.find(filter).populate('assignee', 'name avatar').populate('projectId', 'title clientName').sort({ createdAt: -1 });
-    res.status(200).json({ success: true, data: tasks });
-  } catch (error) {
-    res.status(500).json({ success: false, message: 'Lỗi server khi lấy danh sách Task' });
+  } else {
+    if (queryProjectId) filter.projectId = queryProjectId;
   }
-};
+  
+  if (queryAssignee) filter.assignee = queryAssignee;
+  
+  const tasks = await Task.find(filter)
+    .populate('assignee', 'name avatar')
+    .populate('projectId', 'title clientName')
+    .sort({ createdAt: -1 });
 
+  res.status(200).json({ success: true, data: tasks });
+});
 
-exports.createTask = async (req, res) => {
-  try {
-    const { title, role, status, project, projectId, assignee, dueDate, priority } = req.body;
-    const newTask = await Task.create({ title, role, status, project, projectId, assignee, dueDate, priority });
-    
-    // Nếu có gán người, báo cho người đó, nếu không báo cho admin
-    const User = require('../models/User');
-    const Notification = require('../models/Notification');
-    
-    let targetUserId = assignee;
-    if (!targetUserId) {
-      const admin = await User.findOne({ role: { $in: ['admin', 'superadmin'] } });
-      if (admin) targetUserId = admin._id;
-    }
-    
-    if (targetUserId) {
+exports.createTask = asyncHandler(async (req, res) => {
+  const { title, role, status, project, projectId, assignee, dueDate, priority } = req.body;
+  
+  const cleanProjectId = parseObjectId(projectId);
+  const cleanAssignee = parseObjectId(assignee);
+
+  const newTask = await Task.create({
+    title,
+    role,
+    status: status || 'todo',
+    project,
+    projectId: cleanProjectId,
+    assignee: cleanAssignee,
+    dueDate: dueDate || undefined,
+    priority: priority || 'medium'
+  });
+  
+  let targetUserId = cleanAssignee;
+  if (!targetUserId) {
+    const admin = await User.findOne({ role: { $in: ['admin', 'superadmin'] } });
+    if (admin) targetUserId = admin._id;
+  }
+  
+  if (targetUserId) {
+    try {
       const newNotif = await Notification.create({
         recipient: targetUserId,
         sender: req.user ? req.user.id : null,
@@ -60,36 +75,49 @@ exports.createTask = async (req, res) => {
       
       const io = req.app.get('io');
       if (io) io.to(targetUserId.toString()).emit('new_notification', newNotif);
+    } catch (notifErr) {
+      console.warn('[createTask] Notification error:', notifErr.message);
     }
-
-    // Populate để trả về FE có data assignee và projectId
-    const populatedTask = await Task.findById(newTask._id).populate('assignee', 'name avatar').populate('projectId', 'title clientName');
-
-    res.status(201).json({ success: true, data: populatedTask });
-  } catch (error) {
-    res.status(500).json({ success: false, message: 'Lỗi server khi tạo Task' });
   }
-};
 
-exports.updateTask = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { title, role, projectId, assignee, dueDate, priority, status } = req.body;
-    
-    // Lấy task cũ để so sánh status
-    const oldTask = await Task.findById(id);
+  const populatedTask = await Task.findById(newTask._id)
+    .populate('assignee', 'name avatar')
+    .populate('projectId', 'title clientName');
 
-    const task = await Task.findByIdAndUpdate(
-      id,
-      { title, role, projectId, assignee, dueDate, priority, status },
-      { new: true, runValidators: true }
-    ).populate('assignee', 'name avatar').populate('projectId', 'title');
-    
-    if (!task) return res.status(404).json({ success: false, message: 'Không tìm thấy Task' });
+  res.status(201).json({ success: true, data: populatedTask });
+});
 
-    // ==== Gửi System Message vào Project Channel nếu chuyển trạng thái ====
-    const effectiveProjectId = projectId || oldTask?.projectId;
-    if (oldTask && status && oldTask.status !== status && effectiveProjectId) {
+exports.updateTask = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  if (!isValidObjectId(id)) {
+    return res.status(400).json({ success: false, message: 'Task ID không hợp lệ.' });
+  }
+
+  const { title, role, projectId, assignee, dueDate, priority, status } = req.body;
+  const cleanProjectId = parseObjectId(projectId);
+  const cleanAssignee = parseObjectId(assignee);
+  
+  const oldTask = await Task.findById(id);
+  if (!oldTask) return res.status(404).json({ success: false, message: 'Không tìm thấy Task' });
+
+  const updateData = {};
+  if (title !== undefined) updateData.title = title;
+  if (role !== undefined) updateData.role = role;
+  if (status !== undefined) updateData.status = status;
+  if (dueDate !== undefined) updateData.dueDate = dueDate;
+  if (priority !== undefined) updateData.priority = priority;
+  if (cleanProjectId !== undefined) updateData.projectId = cleanProjectId;
+  if (cleanAssignee !== undefined) updateData.assignee = cleanAssignee;
+
+  const task = await Task.findByIdAndUpdate(
+    id,
+    updateData,
+    { new: true, runValidators: true }
+  ).populate('assignee', 'name avatar').populate('projectId', 'title');
+
+  const effectiveProjectId = cleanProjectId || oldTask?.projectId;
+  if (oldTask && status && oldTask.status !== status && effectiveProjectId) {
+    try {
       const channel = await Channel.findOne({ projectId: effectiveProjectId, type: 'project' });
       if (channel) {
         const msg = await Message.create({
@@ -111,36 +139,36 @@ exports.updateTask = async (req, res) => {
           io.to(`channel_${channel._id}`).emit('receive_message', populatedMsg);
         }
       }
+    } catch (msgErr) {
+      console.warn('[updateTask] Channel bot notification error:', msgErr.message);
     }
-    // ======================================================================
-
-    res.status(200).json({ success: true, data: task });
-  } catch (error) {
-    res.status(500).json({ success: false, message: 'Lỗi cập nhật Task' });
   }
-};
 
-exports.deleteTask = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const task = await Task.findByIdAndDelete(id);
-    if (!task) return res.status(404).json({ success: false, message: 'Không tìm thấy Task' });
-    res.status(200).json({ success: true, message: 'Đã xóa Task' });
-  } catch (error) {
-    res.status(500).json({ success: false, message: 'Lỗi xóa Task' });
+  res.status(200).json({ success: true, data: task });
+});
+
+exports.deleteTask = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  if (!isValidObjectId(id)) {
+    return res.status(400).json({ success: false, message: 'Task ID không hợp lệ.' });
   }
-};
+  const task = await Task.findByIdAndDelete(id);
+  if (!task) return res.status(404).json({ success: false, message: 'Không tìm thấy Task' });
+  res.status(200).json({ success: true, message: 'Đã xóa Task' });
+});
 
-exports.updateTaskStatus = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { status } = req.body;
+exports.updateTaskStatus = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  if (!isValidObjectId(id)) {
+    return res.status(400).json({ success: false, message: 'Task ID không hợp lệ.' });
+  }
+  const { status } = req.body;
 
-    const task = await Task.findByIdAndUpdate(id, { status }, { new: true }).populate('assignee', 'name avatar');
-    
-    if (!task) {
-      return res.status(404).json({ success: false, message: 'Không tìm thấy Task' });
-    }
+  const task = await Task.findByIdAndUpdate(id, { status }, { new: true }).populate('assignee', 'name avatar');
+  
+  if (!task) {
+    return res.status(404).json({ success: false, message: 'Không tìm thấy Task' });
+  }
 
     const io = req.app.get('io');
 
@@ -164,10 +192,7 @@ exports.updateTaskStatus = async (req, res) => {
     }
 
     res.status(200).json({ success: true, data: task });
-  } catch (error) {
-    res.status(500).json({ success: false, message: 'Lỗi server khi cập nhật Task' });
-  }
-};
+});
 
 // ==========================================
 // CHECKLISTS

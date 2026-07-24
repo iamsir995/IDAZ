@@ -66,8 +66,19 @@ const ProjectForm = ({ data, setData, onSubmit, title, submitLabel, onClose, cli
  </div>
  <div>
  <label className="block text-sm font-medium text-gray-400 mb-1">Khách hàng</label>
- <select value={data.clientId || ''} onChange={e => setData({ ...data, clientId: e.target.value })}
- className="w-full glass-panel border border-white/60 rounded-3xl px-4 py-3 text-idaz-black text-sm focus:outline-none focus:border-rose-500 transition-colors">
+ <select 
+   value={typeof data.clientId === 'object' ? (data.clientId?._id || '') : (data.clientId || '')} 
+   onChange={e => {
+     const selectedId = e.target.value;
+     const selectedClient = clients.find(c => c._id === selectedId);
+     setData({ 
+       ...data, 
+       clientId: selectedId || null, 
+       clientName: selectedClient ? selectedClient.name : (data.clientName || '') 
+     });
+   }}
+   className="w-full glass-panel border border-white/60 rounded-3xl px-4 py-3 text-idaz-black text-sm focus:outline-none focus:border-rose-500 transition-colors"
+ >
  <option value="">-- Chọn khách hàng --</option>
  {clients.map(c => <option key={c._id} value={c._id}>{c.name} ({c.email})</option>)}
  </select>
