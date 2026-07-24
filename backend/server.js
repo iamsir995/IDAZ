@@ -530,8 +530,17 @@ connectDB();
 // ==========================================
 
 // 1. Helmet: Thiết lập các HTTP Headers bảo mật (Chống Clickjacking, XSS, Sniffing...)
+app.disable('x-powered-by');
 app.use(helmet({
-  crossOriginResourcePolicy: { policy: "cross-origin" }
+  crossOriginResourcePolicy: { policy: "cross-origin" },
+  frameguard: { action: 'sameorigin' },
+  noSniff: true,
+  referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+  hsts: process.env.NODE_ENV === 'production' ? {
+    maxAge: 31536000,
+    includeSubDomains: true,
+    preload: true
+  } : false
 }));
 
 const cookieParser = require('cookie-parser');
@@ -545,7 +554,7 @@ const corsOptions = {
       'http://127.0.0.1:3000', 'http://127.0.0.1:3001',
       'https://idaz.com.vn', 'https://www.idaz.com.vn',
       process.env.FRONTEND_URL
-    ];
+    ].filter(Boolean);
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
@@ -560,7 +569,9 @@ app.use(cors(corsOptions));
 // 3. Rate Limiting: Chống tấn công DDoS và Spam
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, 
-  max: process.env.NODE_ENV === 'production' ? 5000 : 10000, 
+  max: process.env.NODE_ENV === 'production' ? 300 : 1000, 
+  standardHeaders: true,
+  legacyHeaders: false,
   message: { success: false, message: 'Bạn đã gửi quá nhiều yêu cầu, vui lòng thử lại sau 15 phút.' }
 });
 app.use('/api', limiter);
@@ -675,6 +686,10 @@ app.use('/api/bookings', bookingRoutes);
 app.get('/api', (req, res) => {
   res.json({ message: 'API Hệ sinh thái Agency đang hoạt động an toàn!' });
 });
+
+// Register Global Error Handler
+const errorHandler = require('./src/middleware/errorHandler');
+app.use(errorHandler);
 
 // Route Seed Data chuyên nghiệp
 app.post('/api/seed-mock-data', async (req, res) => {

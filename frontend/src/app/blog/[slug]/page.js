@@ -4,6 +4,7 @@ import ContactSection from "../../../components/public/ContactSection";
 import { ArrowLeft, Clock, Calendar, User, Share2, Link as LinkIcon } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { sanitizeHtml } from "../../../utils/sanitize";
 
 async function getPostData(slug) {
   try {
@@ -112,7 +113,7 @@ export default async function BlogPostPage({ params }) {
               Class `prose-idaz` (tự định nghĩa trong global.css) sẽ handle style cho h2, h3, p, ul, li
             */}
             {post.content ? (
-              <div dangerouslySetInnerHTML={{ __html: post.content }} />
+              <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(post.content) }} />
             ) : (
               <p>Nội dung đang được cập nhật...</p>
             )}

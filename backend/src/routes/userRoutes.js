@@ -28,6 +28,8 @@ const upload = multer({
   }
 });
 
+const validateObjectId = require('../middleware/validateObjectId');
+
 // Profile APIs (Self)
 router.get('/me', protect, userController.getMe);
 router.put('/me/profile', protect, userController.updateProfile);
@@ -40,9 +42,9 @@ router.put('/me/2fa', protect, userController.toggleMy2FA);
 // Admin & Manager APIs (Role Check)
 router.get('/', protect, roleCheck(['admin', 'manager']), userController.getAllUsers);
 router.post('/', protect, roleCheck(['admin', 'manager']), userController.createUser);
-router.get('/:id', protect, roleCheck(['admin', 'manager']), userController.getClientProfile); // getClientProfile
-router.put('/:id', protect, roleCheck(['admin', 'manager']), userController.updateUser);
-router.delete('/:id', protect, roleCheck(['admin']), userController.deleteUser);
-router.put('/:id/2fa', protect, roleCheck(['admin']), userController.toggle2FA);
+router.get('/:id', protect, validateObjectId('id'), roleCheck(['admin', 'manager']), userController.getClientProfile);
+router.put('/:id', protect, validateObjectId('id'), roleCheck(['admin', 'manager']), userController.updateUser);
+router.delete('/:id', protect, validateObjectId('id'), roleCheck(['admin']), userController.deleteUser);
+router.put('/:id/2fa', protect, validateObjectId('id'), roleCheck(['admin']), userController.toggle2FA);
 
 module.exports = router;

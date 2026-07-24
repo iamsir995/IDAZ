@@ -15,8 +15,8 @@ exports.protect = async (req, res, next) => {
 
       // Tìm user trong DB bằng ID giải mã (bỏ password đi)
       req.user = await User.findById(decoded.id).select('-password');
-      if (!req.user || !req.user.isActive) {
-        return res.status(401).json({ success: false, message: 'Tài khoản không tồn tại hoặc đã bị vô hiệu hóa.' });
+      if (!req.user || req.user.isActive === false) {
+        return res.status(401).json({ success: false, message: 'Tài khoản không tồn tại hoặc đã bị khóa/vô hiệu hóa.' });
       }
       
       next(); // Cho phép đi tiếp vào controller
@@ -24,7 +24,7 @@ exports.protect = async (req, res, next) => {
       if (error.name === 'TokenExpiredError') {
         return res.status(401).json({ success: false, code: 'TOKEN_EXPIRED', message: 'Token đã hết hạn.' });
       }
-      return res.status(401).json({ success: false, message: 'Token không hợp lệ.' });
+      return res.status(401).json({ success: false, message: 'Token không hợp lệ hoặc đã hết hạn.' });
     }
   }
 
@@ -34,25 +34,25 @@ exports.protect = async (req, res, next) => {
 };
 
 // Middleware kiểm tra quyền linh hoạt (RBAC)
-// Middleware kiểm tra quyền linh hoạt (RBAC)
 exports.roleCheck = (roles) => {
   return (req, res, next) => {
-    if (!req.user) {
-      return res.status(403).json({ success: false, message: 'Từ chối truy cập. Bạn không có quyền thực hiện hành động này.' });
+    if (!req.user || req.user.isActive === false) {
+      return res.status(403).json({ success: false, message: 'Từ chối truy cập. Tài khoản không hợp lệ hoặc đã bị khóa.' });
     }
     // Super Admin có quyền truy cập tất cả (Universal Access)
     if (req.user.role === 'superadmin') {
       return next();
     }
-    if (!roles.includes(req.user.role)) {
+    if (!roles || !roles.includes(req.user.role)) {
       return res.status(403).json({ success: false, message: 'Từ chối truy cập. Bạn không có quyền thực hiện hành động này.' });
     }
     next();
   };
 };
 
-// Vẫn giữ adminOnly cho tương thích ngược nếu cần
+// Vẫn giữ adminOnly cho tương thích ngược
 exports.adminOnly = exports.roleCheck(['superadmin', 'admin']);
 
 // Quyền tối cao (Chỉ dành cho Super Admin)
 exports.superAdminOnly = exports.roleCheck(['superadmin']);
+

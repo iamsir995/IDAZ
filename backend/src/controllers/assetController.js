@@ -4,6 +4,7 @@ const Message = require('../models/Message');
 const Project = require('../models/Project');
 const fs = require('fs');
 const path = require('path');
+const sendErrorResponse = require('../utils/errorResponse');
 
 // Hàm Helper để xử lý trùng lặp tên file trong cùng Folder
 const getUniqueFilename = async (originalName, projectId, folderId) => {
@@ -71,8 +72,7 @@ exports.getProjectAssets = async (req, res) => {
 
     res.status(200).json({ success: true, data: assets });
   } catch (error) {
-    console.error('[getProjectAssets] Lỗi:', error.message);
-    res.status(500).json({ success: false, message: 'Lỗi tải danh sách file.', error: error.message });
+    return sendErrorResponse(res, 500, 'Lỗi tải danh sách file.', error);
   }
 };
 

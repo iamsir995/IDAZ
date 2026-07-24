@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
+const sendErrorResponse = require('../utils/errorResponse');
 
 // ==========================================
 // ADMIN APIS
@@ -55,8 +56,7 @@ exports.getAllUsers = async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('[getAllUsers] Error:', error);
-    res.status(500).json({ success: false, message: 'Lỗi khi lấy danh sách user.', detail: error.message });
+    return sendErrorResponse(res, 500, 'Lỗi khi lấy danh sách user.', error);
   }
 };
 

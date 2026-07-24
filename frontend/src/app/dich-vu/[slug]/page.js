@@ -4,6 +4,7 @@ import ContactSection from "../../../components/public/ContactSection";
 import { ArrowLeft, CheckCircle2, ChevronRight, Layers, Layout, Zap, Shield, Sparkles, Smartphone, MonitorPlay, TrendingUp } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { sanitizeHtml } from "../../../utils/sanitize";
 
 // Tắt cache để luôn lấy dữ liệu mới nhất khi develop, hoặc set revalidate hợp lý
 async function getServiceData(slug) {
@@ -90,7 +91,7 @@ export default async function ServiceDetailPage({ params }) {
             {/* HTML Content (if any) or long description */}
             <div className="prose prose-lg md:prose-xl prose-idaz max-w-none text-idaz-text-muted font-light leading-relaxed mb-20">
               {service.content ? (
-                <div dangerouslySetInnerHTML={{ __html: service.content }} />
+                <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(service.content) }} />
               ) : (
                 <p>{service.description}</p>
               )}
