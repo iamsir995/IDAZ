@@ -41,7 +41,7 @@ exports.createFolder = async (req, res) => {
 exports.getProjectFolders = async (req, res) => {
   try {
     const { projectId } = req.params;
-    const isGlobal = projectId === 'global';
+    const isGlobal = !projectId || projectId === 'global' || projectId === 'undefined' || projectId === 'null';
     const queryProjectId = isGlobal ? null : projectId;
     
     const mongoose = require('mongoose');

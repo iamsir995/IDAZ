@@ -33,10 +33,19 @@ const getUniqueFilename = async (originalName, projectId, folderId) => {
 exports.getProjectAssets = async (req, res) => {
   try {
     const { projectId } = req.params;
-    const folderId = req.query.folderId || null;
+    let folderId = req.query.folderId;
+    if (!folderId || folderId === 'undefined' || folderId === 'null' || folderId === 'root') {
+      folderId = null;
+    }
 
-    const isGlobal = projectId === 'global';
+    const isGlobal = !projectId || projectId === 'global' || projectId === 'undefined' || projectId === 'null';
     const queryProjectId = isGlobal ? null : projectId;
+
+    const mongoose = require('mongoose');
+    if (queryProjectId && !mongoose.Types.ObjectId.isValid(queryProjectId)) {
+      return res.status(400).json({ success: false, message: 'Project ID không hợp lệ.' });
+    }
+
     const filter = { projectId: queryProjectId, folderId };
     
     // Nếu Client, chỉ lấy asset của Client đó (hoặc global)

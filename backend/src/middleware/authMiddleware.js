@@ -15,6 +15,9 @@ exports.protect = async (req, res, next) => {
 
       // Tìm user trong DB bằng ID giải mã (bỏ password đi)
       req.user = await User.findById(decoded.id).select('-password');
+      if (!req.user || !req.user.isActive) {
+        return res.status(401).json({ success: false, message: 'Tài khoản không tồn tại hoặc đã bị vô hiệu hóa.' });
+      }
       
       next(); // Cho phép đi tiếp vào controller
     } catch (error) {
