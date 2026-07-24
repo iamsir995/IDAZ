@@ -8,15 +8,23 @@ const mongoose = require('mongoose');
 const path = require('path');
 const fs = require('fs');
 
-// Ensure public/uploads directory exists
-const uploadDir = path.join(__dirname, 'public/uploads');
-const recordingsDir = path.join(__dirname, 'public/uploads/recordings');
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
-if (!fs.existsSync(recordingsDir)) {
-  fs.mkdirSync(recordingsDir, { recursive: true });
-}
+// Ensure all upload directories exist (important for Render ephemeral filesystem)
+const uploadDirs = [
+  'public/uploads',
+  'public/uploads/recordings',
+  'public/uploads/avatars',
+  'public/uploads/projects',
+  'public/uploads/services',
+  'public/uploads/posts',
+  'public/uploads/chat',
+  'public/uploads/portfolios',
+];
+uploadDirs.forEach(dir => {
+  const absoluteDir = path.join(__dirname, dir);
+  if (!fs.existsSync(absoluteDir)) {
+    fs.mkdirSync(absoluteDir, { recursive: true });
+  }
+});
 
 const app = express();
 app.set('trust proxy', true); // Tin tưởng reverse proxy (Render / Cloudflare) để đọc đúng IP client
