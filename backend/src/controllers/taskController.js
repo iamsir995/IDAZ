@@ -197,108 +197,107 @@ exports.updateTaskStatus = asyncHandler(async (req, res) => {
 // ==========================================
 // CHECKLISTS
 // ==========================================
-exports.addChecklist = async (req, res) => {
-  try {
-    const { title } = req.body;
-    const task = await Task.findById(req.params.id);
-    if (!task) return res.status(404).json({ success: false, message: 'Task not found' });
-    
-    task.checklists.push({ title, isCompleted: false });
-    await task.save();
-    
-    res.status(200).json({ success: true, data: task });
-  } catch (error) {
-    res.status(500).json({ success: false, message: 'Lỗi thêm checklist' });
+exports.addChecklist = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  if (!isValidObjectId(id)) {
+    return res.status(400).json({ success: false, message: 'Task ID không hợp lệ.' });
   }
-};
+  const { title } = req.body;
+  const task = await Task.findById(id);
+  if (!task) return res.status(404).json({ success: false, message: 'Không tìm thấy Task' });
+  
+  task.checklists.push({ title, isCompleted: false });
+  await task.save();
+  
+  res.status(200).json({ success: true, data: task });
+});
 
-exports.toggleChecklist = async (req, res) => {
-  try {
-    const task = await Task.findById(req.params.id);
-    if (!task) return res.status(404).json({ success: false, message: 'Task not found' });
-    
-    const checklist = task.checklists.id(req.params.checklistId);
-    if (!checklist) return res.status(404).json({ success: false, message: 'Checklist not found' });
-    
-    checklist.isCompleted = !checklist.isCompleted;
-    await task.save();
-    
-    res.status(200).json({ success: true, data: task });
-  } catch (error) {
-    res.status(500).json({ success: false, message: 'Lỗi toggle checklist' });
+exports.toggleChecklist = asyncHandler(async (req, res) => {
+  const { id, checklistId } = req.params;
+  if (!isValidObjectId(id)) {
+    return res.status(400).json({ success: false, message: 'Task ID không hợp lệ.' });
   }
-};
+  const task = await Task.findById(id);
+  if (!task) return res.status(404).json({ success: false, message: 'Không tìm thấy Task' });
+  
+  const checklist = task.checklists.id(checklistId);
+  if (!checklist) return res.status(404).json({ success: false, message: 'Không tìm thấy Checklist' });
+  
+  checklist.isCompleted = !checklist.isCompleted;
+  await task.save();
+  
+  res.status(200).json({ success: true, data: task });
+});
 
 // ==========================================
 // COMMENTS
 // ==========================================
-exports.addComment = async (req, res) => {
-  try {
-    const { text } = req.body;
-    const task = await Task.findById(req.params.id);
-    if (!task) return res.status(404).json({ success: false, message: 'Task not found' });
-    
-    task.comments.push({
-      user: req.user.id,
-      text
-    });
-    
-    await task.save();
-    const updatedTask = await Task.findById(req.params.id)
-      .populate('assignee', 'name avatar')
-      .populate('comments.user', 'name avatar');
-      
-    res.status(200).json({ success: true, data: updatedTask });
-  } catch (error) {
-    res.status(500).json({ success: false, message: 'Lỗi thêm comment' });
+exports.addComment = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  if (!isValidObjectId(id)) {
+    return res.status(400).json({ success: false, message: 'Task ID không hợp lệ.' });
   }
-};
+  const { text } = req.body;
+  const task = await Task.findById(id);
+  if (!task) return res.status(404).json({ success: false, message: 'Không tìm thấy Task' });
+  
+  task.comments.push({
+    user: req.user.id,
+    text
+  });
+  
+  await task.save();
+  const updatedTask = await Task.findById(id)
+    .populate('assignee', 'name avatar')
+    .populate('comments.user', 'name avatar');
+    
+  res.status(200).json({ success: true, data: updatedTask });
+});
 
 // ==========================================
 // TIME TRACKING
 // ==========================================
-exports.startTimeTracking = async (req, res) => {
-  try {
-    const task = await Task.findById(req.params.id);
-    if (!task) return res.status(404).json({ success: false, message: 'Task not found' });
-    
-    const activeSession = task.timeTracking.find(
-      s => s.user.toString() === req.user.id && !s.endTime
-    );
-    if (activeSession) {
-      return res.status(400).json({ success: false, message: 'Bạn đang có một phiên làm việc chưa kết thúc trên Task này' });
-    }
-    
-    task.timeTracking.push({
-      user: req.user.id,
-      startTime: Date.now()
-    });
-    
-    await task.save();
-    res.status(200).json({ success: true, data: task });
-  } catch (error) {
-    res.status(500).json({ success: false, message: 'Lỗi start timer' });
+exports.startTimeTracking = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  if (!isValidObjectId(id)) {
+    return res.status(400).json({ success: false, message: 'Task ID không hợp lệ.' });
   }
-};
+  const task = await Task.findById(id);
+  if (!task) return res.status(404).json({ success: false, message: 'Không tìm thấy Task' });
+  
+  const activeSession = task.timeTracking.find(
+    s => s.user.toString() === req.user.id && !s.endTime
+  );
+  if (activeSession) {
+    return res.status(400).json({ success: false, message: 'Bạn đang có một phiên làm việc chưa kết thúc trên Task này' });
+  }
+  
+  task.timeTracking.push({
+    user: req.user.id,
+    startTime: Date.now()
+  });
+  
+  await task.save();
+  res.status(200).json({ success: true, data: task });
+});
 
-exports.stopTimeTracking = async (req, res) => {
-  try {
-    const task = await Task.findById(req.params.id);
-    if (!task) return res.status(404).json({ success: false, message: 'Task not found' });
-    
-    // Tìm session chưa có endTime của user hiện tại
-    const activeSession = task.timeTracking.slice().reverse().find(
-      s => s.user.toString() === req.user.id && !s.endTime
-    );
-    
-    if (activeSession) {
-      activeSession.endTime = Date.now();
-      activeSession.duration = Math.floor((activeSession.endTime - activeSession.startTime) / 1000);
-      await task.save();
-    }
-    
-    res.status(200).json({ success: true, data: task });
-  } catch (error) {
-    res.status(500).json({ success: false, message: 'Lỗi stop timer' });
+exports.stopTimeTracking = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  if (!isValidObjectId(id)) {
+    return res.status(400).json({ success: false, message: 'Task ID không hợp lệ.' });
   }
-};
+  const task = await Task.findById(id);
+  if (!task) return res.status(404).json({ success: false, message: 'Không tìm thấy Task' });
+  
+  const activeSession = task.timeTracking.slice().reverse().find(
+    s => s.user.toString() === req.user.id && !s.endTime
+  );
+  
+  if (activeSession) {
+    activeSession.endTime = Date.now();
+    activeSession.duration = Math.floor((activeSession.endTime - activeSession.startTime) / 1000);
+    await task.save();
+  }
+  
+  res.status(200).json({ success: true, data: task });
+});
