@@ -2,11 +2,11 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { Users, Mail, Phone, Search, X, Edit2, Shield, Trash2, KeyRound } from "lucide-react";
-import { useState, useEffect } from "react";
-import api from "../../../services/api";
+import { useState, useEffect, useCallback } from "react";
 import toast from "react-hot-toast";
 import { useAuth } from "../../../context/AuthContext";
-import SHA256 from "crypto-js/sha256";
+import { userService } from "../../../services/userService";
+import { useDebounce } from "../../../hooks/useDebounce";
 
 const ROLE_LABELS = {
   superadmin: "Super Admin",
@@ -37,6 +37,7 @@ export default function AdminTeam() {
   const [teamMembers, setTeamMembers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const debouncedSearch = useDebounce(searchQuery, 500);
 
   // Modals
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -45,39 +46,28 @@ export default function AdminTeam() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editMember, setEditMember] = useState(null);
 
-  const fetchTeam = async () => {
+  const fetchTeam = useCallback(async () => {
     setIsLoading(true);
     try {
-      const { data } = await api.get('/users', {
-        params: { search: searchQuery, limit: 100 }
-      });
+      const data = await userService.getTeamMembers(debouncedSearch, 100);
       if (data.success) {
-        const team = data.data.filter(u => ['superadmin', 'admin', 'manager', 'developer', 'designer', 'account', 'copywriter', 'marketing', 'sales'].includes(u.role));
-        setTeamMembers(team);
+        setTeamMembers(data.data);
       }
     } catch {
       toast.error("Không thể tải danh sách đội ngũ");
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [debouncedSearch]);
 
   useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-      fetchTeam();
-    }, 500);
-
-    return () => clearTimeout(delayDebounceFn);
-  }, [searchQuery]);
+    fetchTeam();
+  }, [fetchTeam]);
 
   const handleAddMember = async (e) => {
     e.preventDefault();
     try {
-      const payload = { ...newMember };
-      if (payload.password) {
-        payload.password = SHA256(payload.password).toString();
-      }
-      const { data } = await api.post('/users', payload);
+      const data = await userService.createUser(newMember);
       if (data.success) {
         toast.success("Thêm nhân sự thành công!");
         setIsAddModalOpen(false);
@@ -92,7 +82,7 @@ export default function AdminTeam() {
   const handleEditMember = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await api.put(`/users/${editMember._id}`, {
+      const data = await userService.updateUser(editMember._id, {
         name: editMember.name,
         phone: editMember.phone,
         role: editMember.role,
@@ -112,7 +102,7 @@ export default function AdminTeam() {
   const handleDeleteMember = async (id) => {
     if (!window.confirm("Bạn có chắc muốn vô hiệu hóa tài khoản này?")) return;
     try {
-      const { data } = await api.delete(`/users/${id}`);
+      const data = await userService.deleteUser(id);
       if (data.success) {
         toast.success("Đã vô hiệu hóa thành viên!");
         fetchTeam();
@@ -120,12 +110,6 @@ export default function AdminTeam() {
     } catch (error) {
       toast.error(error.response?.data?.message || "Lỗi khi vô hiệu hóa thành viên");
     }
-  };
-
-  // Chỉ SuperAdmin mới được quyền tạo SuperAdmin khác, sửa role của Admin, xoá Admin
-  const canEditRole = (targetRole) => {
-    if (currentUser?.role !== 'superadmin' && targetRole === 'superadmin') return false;
-    return currentUser?.role === 'superadmin' || currentUser?.role === 'admin';
   };
 
   return (
@@ -255,7 +239,7 @@ export default function AdminTeam() {
                 </h3>
                 <button onClick={() => setIsAddModalOpen(false)} className="text-gray-400 hover:text-idaz-black transition-colors bg-gray-50 hover:bg-gray-100 p-2 rounded-full"><X size={18} /></button>
               </div>
-              
+
               <form onSubmit={handleAddMember} className="space-y-4">
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-1 ml-1">Họ tên</label>
@@ -281,7 +265,7 @@ export default function AdminTeam() {
                     className="w-full glass-panel border border-white/60 rounded-2xl px-4 py-3 text-idaz-black text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all shadow-inner"
                     placeholder="0987654321" />
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-1 ml-1 flex items-center justify-between">
                     <span>Mật khẩu</span>
@@ -310,7 +294,7 @@ export default function AdminTeam() {
                     {currentUser?.role === 'superadmin' && <option value="superadmin">Super Admin (Quản trị tối cao)</option>}
                   </select>
                 </div>
-                
+
                 <div className="pt-4 flex gap-3">
                   <button type="button" onClick={() => setIsAddModalOpen(false)}
                     className="flex-1 bg-white hover:bg-gray-50 text-gray-600 rounded-2xl py-3 font-bold transition-all border border-gray-200">
@@ -374,7 +358,7 @@ export default function AdminTeam() {
                     {currentUser?.role === 'superadmin' && <option value="superadmin">Super Admin</option>}
                   </select>
                 </div>
-                
+
                 <div className="pt-4 flex gap-3">
                   <button type="button" onClick={() => { setIsEditModalOpen(false); setEditMember(null); }}
                     className="flex-1 bg-white hover:bg-gray-50 text-gray-600 rounded-2xl py-3 font-bold transition-all border border-gray-200">
