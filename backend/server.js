@@ -569,11 +569,13 @@ app.use('/api', limiter);
 app.use(express.json({ limit: '50mb' })); 
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
-// Middleware tự động chuyển các đường dẫn tương đối /uploads/... thành URL tuyệt đối để frontend không bị lỗi 404
+// Middleware tự động chuyển các đường dẫn tương đối /uploads/... thành URL tuyệt đối chuẩn HTTPS để frontend không bị lỗi 404/Mixed Content
 app.use((req, res, next) => {
   const originalJson = res.json;
   res.json = function (body) {
-    const baseUrl = `${req.protocol}://${req.get('host')}`;
+    const proto = (req.headers['x-forwarded-proto'] || req.protocol || 'https').split(',')[0].trim();
+    const finalProto = (proto === 'http' && req.get('host')?.includes('idaz.com.vn')) ? 'https' : proto;
+    const baseUrl = `${finalProto}://${req.get('host')}`;
     
     const replaceUploads = (obj) => {
       if (obj && typeof obj.toJSON === 'function') {
@@ -605,8 +607,8 @@ app.use((req, res, next) => {
   next();
 });
 
-// Phục vụ thư mục static cho Uploads (Truy cập bằng url /uploads/...)
-app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
+// Phục vụ thư mục static cho Uploads (Cho phép Cross-Origin để Frontend hiển thị ảnh không bị block)
+app.use('/uploads', cors(), express.static(path.join(__dirname, 'public/uploads')));
 
 // 5. Data Sanitization: Bảo vệ khỏi NoSQL Injection an toàn
 // mongoSanitize đã được require ở đầu file (line 6)
